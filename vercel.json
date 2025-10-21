@@ -1,13 +1,13 @@
 {
   "functions": {
-    "api/jobs/updateData/route.ts": {
-      "runtime": "edge"
+    "src/app/api/**/route.ts": {
+      "runtime": "nodejs20.x"
     }
   },
   "crons": [
     {
-      "path": "/api/jobs/updateData",
-      "schedule": "0 * * * *"
+      "path": "/api/ingest",
+      "schedule": "@daily"
     }
   ]
 }

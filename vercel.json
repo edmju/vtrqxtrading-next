@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/jobs/updateData/route.ts": {
+      "runtime": "edge"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/jobs/updateData",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

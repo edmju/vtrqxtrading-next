@@ -1,0 +1,50 @@
+{
+  "updated": "2025-10-21T00:00:00Z",
+  "data": [
+    {
+      "country": "USA",
+      "indicators": {
+        "GDP": 26000,
+        "Inflation": 3.1,
+        "Unemployment": 3.9,
+        "InterestRate": 5.25
+      }
+    },
+    {
+      "country": "France",
+      "indicators": {
+        "GDP": 3000,
+        "Inflation": 2.7,
+        "Unemployment": 7.2,
+        "InterestRate": 4.5
+      }
+    },
+    {
+      "country": "Allemagne",
+      "indicators": {
+        "GDP": 4200,
+        "Inflation": 2.5,
+        "Unemployment": 3.1,
+        "InterestRate": 4.25
+      }
+    },
+    {
+      "country": "Japon",
+      "indicators": {
+        "GDP": 5000,
+        "Inflation": 1.8,
+        "Unemployment": 2.6,
+        "InterestRate": 0.1
+      }
+    },
+    {
+      "country": "Royaume-Uni",
+      "indicators": {
+        "GDP": 3300,
+        "Inflation": 3.2,
+        "Unemployment": 4.1,
+        "InterestRate": 5.0
+      }
+    }
+  ]
+}

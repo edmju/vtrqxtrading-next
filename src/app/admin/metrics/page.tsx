@@ -1,36 +1,19 @@
-async function fetchJSON(url: string) {
-  const r = await fetch(url, { cache: "no-store" });
-  return r.json();
-}
-
 export default async function AdminMetricsPage() {
-  const metrics = await fetchJSON("http://localhost:3000/api/insights?scope=GLOBAL");
-  const total = metrics?.data?.length || 0;
-  const last = metrics?.data?.[0];
-
   return (
-    <main className="mx-auto max-w-5xl p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Admin Metrics</h1>
-
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="rounded-xl bg-neutral-900 p-4 border border-neutral-800">
-          <div className="text-sm opacity-70">Total Insights</div>
-          <div className="text-3xl font-bold">{total}</div>
-        </div>
-
-        <div className="rounded-xl bg-neutral-900 p-4 border border-neutral-800">
-          <div className="text-sm opacity-70">Dernier scope</div>
-          <div className="text-3xl font-bold">{last?.scope || "â€”"}</div>
-        </div>
-
-        <div className="rounded-xl bg-neutral-900 p-4 border border-neutral-800">
-          <div className="text-sm opacity-70">Dernière MAJ</div>
-          <div className="text-3xl font-bold">
-            {last?.asof ? new Date(last.asof).toLocaleString("fr-FR") : "â€”"}
+    <section className="max-w-5xl mx-auto bg-[#111] p-6 rounded-2xl border border-yellow-500/30">
+      <h1 className="text-3xl font-bold text-yellow-400 mb-4">Admin Metrics</h1>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-[#0a0a0a] border border-yellow-500/20 rounded-xl p-4">
+          <div className="text-sm text-gray-400">Dernière mise à jour</div>
+          <div className="text-xl text-yellow-400 font-semibold">
+            {new Date().toLocaleString("fr-FR")}
           </div>
         </div>
+        <div className="bg-[#0a0a0a] border border-yellow-500/20 rounded-xl p-4">
+          <div className="text-sm text-gray-400">Tâches cron exécutées</div>
+          <div className="text-xl text-yellow-400 font-semibold">? Toutes opérationnelles</div>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }
-

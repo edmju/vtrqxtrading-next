@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
-import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
+import { authOptions } from "@/lib/auth"; // ✅ Correction du chemin
 
 const prisma = new PrismaClient();
 
@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
 
   const { scope, kind, threshold, channel } = await req.json();
-  const user = await prisma.users.findUnique({ where: { email: session.user.email } });
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } });
   if (!user)
     return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  await prisma.alerts.create({
+  await prisma.alert.create({
     data: {
-      user_id: user.id,
+      userId: user.id,
       scope,
       kind: kind || "sentiment",
       threshold,
@@ -28,4 +28,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true });
 }
-

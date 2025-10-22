@@ -1,84 +1,91 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, MouseEvent } from "react";
+import { useSession } from "next-auth/react";
 
-const links = [
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Screener", href: "/screener" },
-  { name: "Alerts", href: "/alerts" },
-  { name: "Research", href: "/research" },
-  { name: "Subscription", href: "/subscription" },
-  { name: "Profile", href: "/profile" },
-  { name: "Admin", href: "/admin" },
-];
+interface CustomSession {
+  user?: {
+    email?: string;
+    hasActiveSub?: boolean;
+  };
+}
 
 export default function Header() {
+  const { data: session } = useSession() as { data: CustomSession | null };
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const [notice, setNotice] = useState("");
+  const router = useRouter();
+  const [notice, setNotice] = useState<string | null>(null);
 
-  function handleClick(e: any, href: string) {
-    e.preventDefault();
-    if (
-      href === "/subscription" ||
-      href === "/profile" ||
-      href === "/" ||
-      href === ""
-    ) {
-      window.location.href = href;
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(() => setNotice(null), 3000);
+    return () => clearTimeout(timer);
+  }, [notice]);
+
+  const handleProtectedClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    const hasSession = !!session?.user?.email;
+    const hasSub = !!session?.user?.hasActiveSub;
+    if (!hasSession) {
+      e.preventDefault();
+      setNotice("Vous devez vous connecter pour accéder à cette page.");
+      router.push("/profile");
       return;
     }
-    // bloque accès
-    setNotice("🚫 Vous devez être abonné pour accéder à cette page.");
-    setTimeout(() => setNotice(""), 3000);
-  }
+    if (!hasSub) {
+      e.preventDefault();
+      setNotice("Abonnement requis pour accéder à cette page.");
+      router.push("/subscription");
+    }
+  };
+
+  const LinkItem = (p: { href: string; label: string; protected?: boolean }) => (
+    <Link
+      href={p.href}
+      onClick={p.protected ? handleProtectedClick : undefined}
+      className={`px-3 text-sm font-medium tracking-wide ${
+        pathname === p.href
+          ? "text-yellow-300 underline underline-offset-4"
+          : "text-yellow-400 hover:text-yellow-200"
+      } transition-all duration-200`}
+    >
+      {p.label}
+    </Link>
+  );
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-md border-b border-yellow-500/30 z-50">
-      <nav className="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-        <Link href="/" className="text-2xl font-bold text-yellow-400">
-          VTRQX
-        </Link>
-        <ul className="flex items-center space-x-6 text-gray-300">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                onClick={(e) => handleClick(e, l.href)}
-                className={`hover:text-yellow-400 transition ${
-                  pathname === l.href ? "text-yellow-400" : ""
-                }`}
-              >
-                {l.name}
-              </a>
-            </li>
-          ))}
-          {session?.user?.email ? (
-            <>
-              <li className="text-xs text-gray-400 hidden sm:block">
-                ({session.user.email})
-              </li>
-              <li>
-                <button
-                  onClick={() => signOut({ callbackUrl: "/profile" })}
-                  className="px-3 py-1 rounded bg-neutral-800 border border-neutral-700 hover:bg-neutral-700"
-                >
-                  Se déconnecter
-                </button>
-              </li>
-            </>
-          ) : null}
-        </ul>
-      </nav>
+    <>
+      <header className="w-full border-b border-yellow-700/20 bg-black/70 backdrop-blur-md fixed top-0 left-0 z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-6">
+          <Link href="/" className="text-yellow-400 font-extrabold tracking-widest text-xl">
+            VTRQX
+          </Link>
+
+          <nav className="flex items-center gap-2">
+            <LinkItem href="/dashboard" label="Dashboard" protected />
+            <LinkItem href="/screener" label="Screener" protected />
+            <LinkItem href="/alerts" label="Alerts" protected />
+            <LinkItem href="/research" label="Research" protected />
+            <LinkItem href="/subscription" label="Subscription" />
+            <LinkItem href="/profile" label="Profile" />
+          </nav>
+
+          <div className="text-xs text-gray-400 min-w-[160px] text-right">
+            {session?.user?.email ? (
+              <span className="text-yellow-300">{session.user.email}</span>
+            ) : (
+              <span className="text-gray-500 italic">Non connecté</span>
+            )}
+          </div>
+        </div>
+      </header>
 
       {notice && (
-        <div className="absolute top-full left-0 right-0 bg-yellow-600 text-black text-center py-2 text-sm font-semibold animate-pulse">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg z-50 animate-pulse">
           {notice}
         </div>
       )}
-    </header>
+    </>
   );
 }

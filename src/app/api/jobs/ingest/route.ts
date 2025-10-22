@@ -1,24 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
-import { fetch } from "node-fetch";
-import { redis } from "@/lib/redis";
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import fetch from "node-fetch"; // ✅ correction
 
-const FRED_BASE = "https://api.stlouisfed.org/fred";
-const FMP_BASE = "https://financialmodelingprep.com/api";
+const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest) {
-  // Ingestion FRED example
-  const fredUrl = `${FRED_BASE}/series/observations?series_id=GDP&api_key=${process.env.FRED_API_KEY}&file_type=json`;
-  const fredRes = await fetch(fredUrl);
-  const fredJson = await fredRes.json();
+export async function POST() {
+  try {
+    const response = await fetch("https://api.example.com/data");
+    const data = await response.json();
 
-  // Stocke dans Redis ou traite ici
-  await redis.set("fred:latest", JSON.stringify(fredJson), { ex: 3600 });
+    await prisma.job.create({
+      data: {
+        name: "Data Ingestion",
+        payload: JSON.stringify(data),
+      },
+    });
 
-  // Ingestion news marché via FMP
-  const fmpUrl = `${FMP_BASE}/v3/stock_news?apikey=${process.env.FMP_API_KEY}`;
-  const fmpRes = await fetch(fmpUrl);
-  const fmpJson = await fmpRes.json();
-  await redis.set("news:latest", JSON.stringify(fmpJson), { ex: 3600 });
-
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Job ingestion error:", error);
+    return NextResponse.json({ success: false, error: "Job failed" }, { status: 500 });
+  }
 }

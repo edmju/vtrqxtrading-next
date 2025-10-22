@@ -5,8 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-const protectedPaths = ["/", "/dashboard", "/screener", "/alerts", "/research"];
-
 export default function Header() {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -18,18 +16,6 @@ export default function Header() {
     const timer = setTimeout(() => setNotice(null), 3000);
     return () => clearTimeout(timer);
   }, [notice]);
-
-  useEffect(() => {
-    const usp = new URLSearchParams(window.location.search);
-    const n = usp.get("notice");
-    if (n === "login_required") setNotice("Vous devez vous connecter pour accéder à cette page.");
-    if (n === "subscribe_required") setNotice("Abonnement requis pour accéder à cette page.");
-    if (n) {
-      usp.delete("notice");
-      const url = `${window.location.pathname}${usp.toString() ? "?" + usp.toString() : ""}`;
-      window.history.replaceState({}, "", url);
-    }
-  }, [pathname]);
 
   const handleProtectedClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
     const hasSession = !!session?.user?.email;
@@ -52,7 +38,9 @@ export default function Header() {
       href={p.href}
       onClick={p.protected ? handleProtectedClick : undefined}
       className={`px-3 text-sm font-medium tracking-wide ${
-        pathname === p.href ? "text-yellow-300 underline underline-offset-4" : "text-yellow-400 hover:text-yellow-200"
+        pathname === p.href
+          ? "text-yellow-300 underline underline-offset-4"
+          : "text-yellow-400 hover:text-yellow-200"
       } transition-all duration-200`}
     >
       {p.label}
@@ -87,7 +75,7 @@ export default function Header() {
       </header>
 
       {notice && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-yellow-500 to-red-500 text-black font-semibold px-6 py-3 rounded-full shadow-lg animate-fadeInOut border border-yellow-300/30">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg z-50 animate-pulse">
           {notice}
         </div>
       )}

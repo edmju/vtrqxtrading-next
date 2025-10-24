@@ -2,8 +2,6 @@
 export default [
   {
     ignores: ["node_modules/", ".next/"],
-    rules: {
-      // Laisse ESLint muet pendant le build
-    },
+    rules: {},
   },
 ];

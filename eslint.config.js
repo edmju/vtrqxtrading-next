@@ -1,7 +1,11 @@
-// eslint.config.js
+import next from "eslint-plugin-next";
+
 export default [
+  ...next.configs["core-web-vitals"],
   {
     ignores: ["node_modules/", ".next/"],
-    rules: {},
+    rules: {
+      "@next/next/no-html-link-for-pages": "off"
+    },
   },
 ];

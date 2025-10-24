@@ -6,49 +6,46 @@ export const config = {
   api: { bodyParser: false },
 };
 
-// ✅ IMPORTANT : bascule en mode Node.js pour éviter les limites Edge
+// ✅ Paramètres Vercel : exécution en arrière-plan et NodeJS
 export const runtime = "nodejs";
+export const preferredRegion = "fra1"; // (ou change selon ta région)
+export const maxDuration = 60; // autorise jusqu’à 60s
+export const dynamic = "force-dynamic";
+export const routeSegmentConfig = {
+  runtime: "nodejs",
+  background: true, // ✅ lance la route en tâche de fond pour éviter les [429]
+};
 
-// ✅ autorise jusqu’à 60s d’exécution (par défaut Vercel = 10s)
-export const maxDuration = 60;
-
-// ✅ initialisation Stripe
+// ✅ Initialisation Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
-// ✅ handler principal
+// ✅ Webhook principal
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
     return NextResponse.json({ received: false, error: "Missing signature" }, { status: 400 });
 
   const buf = Buffer.from(await req.arrayBuffer());
+  let event: Stripe.Event;
 
-  // ✅ on renvoie immédiatement 200 à Stripe pour éviter les 429
-  queueMicrotask(async () => {
-    try {
-      const event = stripe.webhooks.constructEvent(
-        buf,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET as string
-      );
-      console.log("📩 Stripe event reçu:", event.type);
-      await handleStripeEvent(event);
-    } catch (err) {
-      console.error("❌ Stripe webhook async error:", err);
-    }
-  });
-
-  // Stripe reçoit tout de suite un 200 OK, pas de timeouts, pas de 429
-  return NextResponse.json({ received: true });
-}
-
-// ✅ fonction asynchrone pour traiter les événements Stripe
-async function handleStripeEvent(event: Stripe.Event) {
   try {
+    event = stripe.webhooks.constructEvent(
+      buf,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET as string
+    );
+  } catch (err) {
+    console.error("❌ Invalid webhook signature:", err);
+    return NextResponse.json({ received: false }, { status: 400 });
+  }
+
+  try {
+    console.log("📩 Stripe event reçu:", event.type);
+
     switch (event.type) {
-      // 🔹 Paiement réussi (utile pour tests Stripe CLI)
+      // ✅ Paiement réussi (utile pour tests Stripe CLI)
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
         console.log("✅ Payment intent succeeded:", pi.id);
@@ -64,17 +61,14 @@ async function handleStripeEvent(event: Stripe.Event) {
         break;
       }
 
-      // 🔹 Session de checkout terminée
+      // ✅ Session checkout terminée
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
         const subscriptionId = cs.subscription as string | null;
         const plan = (cs.metadata?.plan as string | undefined) ?? "unknown";
 
-        if (!customerId) {
-          console.warn("⚠️ checkout.session.completed sans customerId");
-          break;
-        }
+        if (!customerId) break;
 
         await prisma.subscription.updateMany({
           where: {
@@ -95,7 +89,7 @@ async function handleStripeEvent(event: Stripe.Event) {
         break;
       }
 
-      // 🔹 Souscription créée ou mise à jour
+      // ✅ Souscription créée / mise à jour
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
@@ -134,7 +128,7 @@ async function handleStripeEvent(event: Stripe.Event) {
         break;
       }
 
-      // 🔹 Souscription supprimée
+      // ✅ Souscription supprimée
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
@@ -157,7 +151,10 @@ async function handleStripeEvent(event: Stripe.Event) {
         console.log(`ℹ️ Event ignoré: ${event.type}`);
         break;
     }
+
+    return NextResponse.json({ received: true }, { status: 200 });
   } catch (err) {
     console.error("🔥 Webhook handler error:", err);
+    return NextResponse.json({ received: false }, { status: 500 });
   }
 }

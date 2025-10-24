@@ -32,18 +32,20 @@ export default function SubscribePage() {
       setLoading(priceId);
       setError(null);
 
-      // ✅ POST vers l’API Stripe Checkout
+      console.log("➡️ POST vers Stripe checkout", priceId);
+
+      // ✅ POST vers ton domaine production
       const res = await fetch("https://vtrqxtrading.xyz/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId }),
       });
 
-      console.log("➡️ POST vers Stripe checkout", priceId);
       console.log("Réponse brute:", res);
 
-
       if (!res.ok) {
+        const text = await res.text();
+        alert(`Erreur serveur ${res.status} : ${text}`);
         throw new Error(`Erreur serveur: ${res.status}`);
       }
 
@@ -75,7 +77,11 @@ export default function SubscribePage() {
             <p className="text-gray-400 text-center mb-6">{plan.description}</p>
             <p className="text-3xl font-bold mb-6">{plan.price}</p>
             <button
-              onClick={() => handleSubscribe(plan.priceId)}
+              type="button" // ✅ empêche le submit GET
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubscribe(plan.priceId);
+              }}
               disabled={loading === plan.priceId}
               className={`px-6 py-3 rounded-xl font-medium transition ${
                 loading === plan.priceId

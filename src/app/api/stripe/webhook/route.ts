@@ -6,17 +6,14 @@ export const config = {
   api: { bodyParser: false },
 };
 
-// ✅ Compatible avec Stripe 2025
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
-  if (!sig) {
-    console.error("❌ Webhook received without signature");
-    return NextResponse.json({ received: false }, { status: 400 });
-  }
+  if (!sig)
+    return NextResponse.json({ received: false, error: "Missing signature" }, { status: 400 });
 
   const buf = Buffer.from(await req.arrayBuffer());
   let event: Stripe.Event;
@@ -28,23 +25,37 @@ export async function POST(req: NextRequest) {
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
   } catch (err) {
-    console.error("❌ Webhook signature error:", err);
+    console.error("❌ Invalid webhook signature:", err);
     return NextResponse.json({ received: false }, { status: 400 });
   }
 
   try {
     switch (event.type) {
-      // ✅ Quand le paiement est validé
+      // ✅ Paiement réussi (utile pour tests Stripe CLI)
+      case "payment_intent.succeeded": {
+        const pi = event.data.object as Stripe.PaymentIntent;
+        console.log("✅ Payment intent succeeded:", pi.id);
+
+        // Si tu veux activer tous les comptes après paiement test :
+        await prisma.subscription.updateMany({
+          where: { status: "inactive" },
+          data: {
+            status: "active",
+            plan: "test",
+            periodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 jours
+          },
+        });
+
+        break;
+      }
+
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
         const subscriptionId = cs.subscription as string | null;
         const plan = (cs.metadata?.plan as string | undefined) ?? "unknown";
 
-        if (!customerId) {
-          console.warn("⚠️ checkout.session.completed sans customerId");
-          break;
-        }
+        if (!customerId) break;
 
         await prisma.subscription.updateMany({
           where: {
@@ -61,20 +72,18 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        console.log(`✅ Subscription activated for customer ${customerId}`);
         break;
       }
 
-      // ✅ Création ou mise à jour d’un abonnement
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
+
         const plan =
           typeof sub.items?.data?.[0]?.price?.nickname === "string"
             ? sub.items.data[0].price.nickname!.toLowerCase()
-            : (sub.items?.data?.[0]?.price?.metadata?.plan as string) ??
-              "unknown";
+            : (sub.items?.data?.[0]?.price?.metadata?.plan as string) ?? "unknown";
 
         const periodEnd =
           (sub as any).current_period?.end ??
@@ -100,11 +109,9 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        console.log(`🔄 Subscription updated for ${customerId}`);
         break;
       }
 
-      // ✅ Annulation
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
@@ -119,12 +126,11 @@ export async function POST(req: NextRequest) {
           data: { status: "canceled" },
         });
 
-        console.log(`🛑 Subscription canceled for ${customerId}`);
         break;
       }
 
       default:
-        console.log(`ℹ️ Event non géré: ${event.type}`);
+        console.log(`ℹ️ Event ignoré: ${event.type}`);
         break;
     }
 

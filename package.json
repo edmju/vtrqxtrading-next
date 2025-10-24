@@ -2,12 +2,14 @@
   "name": "vtrqxtrading_app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "update:data": "ts-node src/lib/fetchData.ts",
-    "cron:update:data": "node -e \"setInterval(() => require('child_process').exec('npm run update:data'), 3600000)\""
+    "cron:update:data": "node -e \"setInterval(() => require('child_process').exec('npm run update:data'), 3600000)\"",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",
@@ -26,18 +28,19 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.15",
-    "@types/node": "^20.19.22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^20.19.23",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@types/stripe": "^8.0.417",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9",
+    "eslint": "^9.37.0",
     "eslint-config-next": "15.5.5",
+    "eslint-plugin-next": "^15.5.5",
     "postcss": "^8.5.6",
     "prisma": "^6.17.1",
-    "tailwindcss": "^3.4.14",
+    "tailwindcss": "^3.4.18",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },

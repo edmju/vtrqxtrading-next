@@ -6,40 +6,49 @@ export const config = {
   api: { bodyParser: false },
 };
 
+// ✅ IMPORTANT : bascule en mode Node.js pour éviter les limites Edge
+export const runtime = "nodejs";
+
+// ✅ autorise jusqu’à 60s d’exécution (par défaut Vercel = 10s)
+export const maxDuration = 60;
+
+// ✅ initialisation Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
-// petit sleep pour éviter les erreurs 429 sur Vercel
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
+// ✅ handler principal
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
     return NextResponse.json({ received: false, error: "Missing signature" }, { status: 400 });
 
   const buf = Buffer.from(await req.arrayBuffer());
-  let event: Stripe.Event;
 
+  // ✅ on renvoie immédiatement 200 à Stripe pour éviter les 429
+  queueMicrotask(async () => {
+    try {
+      const event = stripe.webhooks.constructEvent(
+        buf,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET as string
+      );
+      console.log("📩 Stripe event reçu:", event.type);
+      await handleStripeEvent(event);
+    } catch (err) {
+      console.error("❌ Stripe webhook async error:", err);
+    }
+  });
+
+  // Stripe reçoit tout de suite un 200 OK, pas de timeouts, pas de 429
+  return NextResponse.json({ received: true });
+}
+
+// ✅ fonction asynchrone pour traiter les événements Stripe
+async function handleStripeEvent(event: Stripe.Event) {
   try {
-    event = stripe.webhooks.constructEvent(
-      buf,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET as string
-    );
-  } catch (err) {
-    console.error("❌ Invalid webhook signature:", err);
-    return NextResponse.json({ received: false }, { status: 400 });
-  }
-
-  try {
-    await sleep(300); // évite le spam simultané (429 sur Vercel)
-    console.log("📩 Stripe event reçu:", event.type);
-
     switch (event.type) {
-      // ✅ Paiement réussi (utile pour tests Stripe CLI)
+      // 🔹 Paiement réussi (utile pour tests Stripe CLI)
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
         console.log("✅ Payment intent succeeded:", pi.id);
@@ -49,14 +58,13 @@ export async function POST(req: NextRequest) {
           data: {
             status: "active",
             plan: "test",
-            periodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 jours
+            periodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
           },
         });
-
         break;
       }
 
-      // ✅ Session de checkout terminée
+      // 🔹 Session de checkout terminée
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
@@ -87,7 +95,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
-      // ✅ Souscription créée ou mise à jour
+      // 🔹 Souscription créée ou mise à jour
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
@@ -126,7 +134,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
-      // ✅ Souscription supprimée
+      // 🔹 Souscription supprimée
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
@@ -149,10 +157,7 @@ export async function POST(req: NextRequest) {
         console.log(`ℹ️ Event ignoré: ${event.type}`);
         break;
     }
-
-    return NextResponse.json({ received: true }, { status: 200 });
   } catch (err) {
     console.error("🔥 Webhook handler error:", err);
-    return NextResponse.json({ received: false }, { status: 500 });
   }
 }

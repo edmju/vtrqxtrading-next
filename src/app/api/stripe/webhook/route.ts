@@ -6,7 +6,6 @@ export const config = {
   api: { bodyParser: false },
 };
 
-// ✅ adapte à la version Stripe 19.x
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
@@ -31,6 +30,7 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (event.type) {
+      // ✅ SESSION DE CHECKOUT TERMINÉE
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
 
         if (!customerId) break;
 
+        // Lie le stripeCustomerId ET stripeSubId
         await prisma.subscription.updateMany({
           where: {
             OR: [
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      // ✅ SOUSCRIPTION CRÉÉE / MISE À JOUR
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
@@ -64,11 +66,9 @@ export async function POST(req: NextRequest) {
         const plan =
           typeof sub.items?.data?.[0]?.price?.nickname === "string"
             ? sub.items.data[0].price.nickname!.toLowerCase()
-            : (sub.items?.data?.[0]?.price?.metadata?.plan as
-                | string
-                | undefined) ?? "unknown";
+            : (sub.items?.data?.[0]?.price?.metadata?.plan as string) ??
+              "unknown";
 
-        // ✅ Correction ici → current_period?.end
         const periodEnd =
           (sub as any).current_period?.end ??
           (sub as any).current_period_end ??
@@ -84,7 +84,10 @@ export async function POST(req: NextRequest) {
           data: {
             stripeCustomerId: customerId,
             stripeSubId: sub.id,
-            status: sub.status === "trialing" ? "active" : sub.status,
+            status:
+              sub.status === "trialing" || sub.status === "active"
+                ? "active"
+                : sub.status,
             plan,
             periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
           },
@@ -93,6 +96,7 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      // ✅ SOUSCRIPTION ANNULÉE
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;

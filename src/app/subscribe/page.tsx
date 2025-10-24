@@ -33,11 +33,15 @@ export default function SubscribePage() {
       setError(null);
 
       // ✅ POST vers l’API Stripe Checkout
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("https://vtrqxtrading.xyz/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId }),
       });
+
+      console.log("➡️ POST vers Stripe checkout", priceId);
+      console.log("Réponse brute:", res);
+
 
       if (!res.ok) {
         throw new Error(`Erreur serveur: ${res.status}`);

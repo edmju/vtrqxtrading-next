@@ -16,13 +16,16 @@ export async function POST(req: Request) {
       );
     }
 
+    const origin =
+      process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
+
     // ✅ Crée la session de paiement Stripe
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `https://vtrqxtrading.xyz/subscription?success=1`,
-      cancel_url: `https://vtrqxtrading.xyz/subscribe?canceled=1`,
+      success_url: `${origin}/subscription?success=1`,
+      cancel_url: `${origin}/subscription?canceled=1`,
     });
 
     // ✅ Retourne l’URL Stripe au frontend

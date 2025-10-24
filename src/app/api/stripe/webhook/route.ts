@@ -6,8 +6,9 @@ export const config = {
   api: { bodyParser: false },
 };
 
+// ✅ adapte à la version Stripe 19.x
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-09-30.clover" as any,
 });
 
 export async function POST(req: NextRequest) {
@@ -33,58 +34,82 @@ export async function POST(req: NextRequest) {
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
-        const plan =
-          (cs.metadata?.plan as string | undefined) ?? "unknown";
+        const subscriptionId = cs.subscription as string | null;
+        const plan = (cs.metadata?.plan as string | undefined) ?? "unknown";
 
         if (!customerId) break;
 
-        // relie par stripeCustomerId
         await prisma.subscription.updateMany({
-          where: { stripeCustomerId: customerId },
+          where: {
+            OR: [
+              { stripeCustomerId: customerId },
+              { stripeSubId: subscriptionId ?? undefined },
+            ],
+          },
           data: {
+            stripeCustomerId: customerId,
+            stripeSubId: subscriptionId ?? undefined,
             status: "active",
             plan,
-            // date de fin à partir de la prochaine facture si dispo
           },
         });
+
         break;
       }
 
-      case "customer.subscription.updated":
-      case "customer.subscription.created": {
+      case "customer.subscription.created":
+      case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
+        const plan =
+          typeof sub.items?.data?.[0]?.price?.nickname === "string"
+            ? sub.items.data[0].price.nickname!.toLowerCase()
+            : (sub.items?.data?.[0]?.price?.metadata?.plan as
+                | string
+                | undefined) ?? "unknown";
+
+        // ✅ Correction ici → current_period?.end
+        const periodEnd =
+          (sub as any).current_period?.end ??
+          (sub as any).current_period_end ??
+          null;
 
         await prisma.subscription.updateMany({
-          where: { stripeCustomerId: customerId },
+          where: {
+            OR: [
+              { stripeCustomerId: customerId },
+              { stripeSubId: sub.id },
+            ],
+          },
           data: {
-            status: sub.status,
-            plan:
-              typeof sub.items?.data?.[0]?.price?.nickname === "string"
-                ? sub.items.data[0].price.nickname!.toLowerCase()
-                : (sub.items?.data?.[0]?.price?.metadata?.plan as
-                    | string
-                    | undefined) ?? undefined,
-            periodEnd: sub.current_period_end
-              ? new Date(sub.current_period_end * 1000)
-              : null,
+            stripeCustomerId: customerId,
+            stripeSubId: sub.id,
+            status: sub.status === "trialing" ? "active" : sub.status,
+            plan,
+            periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
           },
         });
+
         break;
       }
 
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
+
         await prisma.subscription.updateMany({
-          where: { stripeCustomerId: customerId },
+          where: {
+            OR: [
+              { stripeCustomerId: customerId },
+              { stripeSubId: sub.id },
+            ],
+          },
           data: { status: "canceled" },
         });
         break;
       }
 
       default:
-        // autres events ignorés
         break;
     }
 

@@ -10,6 +10,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
+// petit sleep pour éviter les erreurs 429 sur Vercel
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
@@ -30,13 +35,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    await sleep(300); // évite le spam simultané (429 sur Vercel)
+    console.log("📩 Stripe event reçu:", event.type);
+
     switch (event.type) {
       // ✅ Paiement réussi (utile pour tests Stripe CLI)
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
         console.log("✅ Payment intent succeeded:", pi.id);
 
-        // Si tu veux activer tous les comptes après paiement test :
         await prisma.subscription.updateMany({
           where: { status: "inactive" },
           data: {
@@ -49,13 +56,17 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      // ✅ Session de checkout terminée
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
         const customerId = cs.customer as string | null;
         const subscriptionId = cs.subscription as string | null;
         const plan = (cs.metadata?.plan as string | undefined) ?? "unknown";
 
-        if (!customerId) break;
+        if (!customerId) {
+          console.warn("⚠️ checkout.session.completed sans customerId");
+          break;
+        }
 
         await prisma.subscription.updateMany({
           where: {
@@ -72,9 +83,11 @@ export async function POST(req: NextRequest) {
           },
         });
 
+        console.log(`✅ Subscription activée pour ${customerId}`);
         break;
       }
 
+      // ✅ Souscription créée ou mise à jour
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
@@ -109,9 +122,11 @@ export async function POST(req: NextRequest) {
           },
         });
 
+        console.log(`🔄 Subscription mise à jour pour ${customerId}`);
         break;
       }
 
+      // ✅ Souscription supprimée
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
@@ -126,6 +141,7 @@ export async function POST(req: NextRequest) {
           data: { status: "canceled" },
         });
 
+        console.log(`🛑 Subscription annulée pour ${customerId}`);
         break;
       }
 

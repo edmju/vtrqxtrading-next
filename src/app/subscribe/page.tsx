@@ -32,10 +32,10 @@ export default function SubscribePage() {
       setLoading(priceId);
       setError(null);
 
-      console.log("➡️ POST vers Stripe create-session", priceId);
+      console.log("➡️ POST vers Stripe checkout", priceId);
 
-      // ✅ Appel vers la nouvelle route Stripe (POST obligatoire)
-      const res = await fetch("https://vtrqxtrading.xyz/api/stripe/create-session", {
+      // ✅ Utilise ton domaine production pour Stripe
+      const res = await fetch("https://vtrqxtrading.xyz/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ priceId }),
@@ -67,6 +67,7 @@ export default function SubscribePage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col items-center justify-center p-6">
       <h1 className="text-4xl font-bold mb-8 text-center">Choisis ton plan</h1>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
         {plans.map((plan) => (
           <div
@@ -76,8 +77,9 @@ export default function SubscribePage() {
             <h2 className="text-2xl font-semibold mb-4">{plan.name}</h2>
             <p className="text-gray-400 text-center mb-6">{plan.description}</p>
             <p className="text-3xl font-bold mb-6">{plan.price}</p>
+
             <button
-              type="button" // ✅ évite le comportement par défaut
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 handleSubscribe(plan.priceId);

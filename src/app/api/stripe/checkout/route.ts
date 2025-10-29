@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
@@ -7,7 +10,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   try {
-    const { priceId } = await req.json();
+    const body = await req.json();
+    const { priceId } = body;
 
     if (!priceId) {
       return NextResponse.json(
@@ -16,20 +20,38 @@ export async function POST(req: Request) {
       );
     }
 
-    const origin =
-      process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
+    // Récupère la session NextAuth côté serveur pour attacher l'email/userId en metadata
+    const session = await getServerSession(authOptions);
+    const userEmail = session?.user?.email;
+    const userId = (session?.user as any)?.id;
 
-    // ✅ Crée la session de paiement Stripe
-    const session = await stripe.checkout.sessions.create({
+    const origin = process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
+
+    // Crée la session de paiement Stripe avec metadata utile pour le webhook
+    const sessionStripe = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
+      // Attache l'email client si dispo (facilite le matching côté webhook / DB)
+      customer_email: userEmail ?? undefined,
+      // Metadata : plan et utilisateur côté app (si dispo)
+      metadata: {
+        plan: String(priceId).toLowerCase?.() ?? "unknown",
+        ...(userEmail ? { email: userEmail } : {}),
+        ...(userId ? { userId: String(userId) } : {}),
+      },
+      // Assure que la souscription contient aussi la metadata (utile si on veut retrouver userId depuis l'objet Subscription)
+      subscription_data: {
+        metadata: {
+          ...(userId ? { userId: String(userId) } : {}),
+          ...(userEmail ? { email: userEmail } : {}),
+        },
+      },
     });
 
-    // ✅ Retourne l’URL Stripe au frontend
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url: sessionStripe.url });
   } catch (error: any) {
     console.error("Erreur Stripe checkout:", error);
     return NextResponse.json(
@@ -39,7 +61,6 @@ export async function POST(req: Request) {
   }
 }
 
-// ❌ Bloque les autres méthodes HTTP
 export async function GET() {
   return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

@@ -34,15 +34,12 @@ export async function POST(req: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
-      // Attache l'email client si dispo (facilite le matching côté webhook / DB)
       customer_email: userEmail ?? undefined,
-      // Metadata : plan et utilisateur côté app (si dispo)
       metadata: {
-        plan: String(priceId).toLowerCase?.() ?? "unknown",
+        plan: String(priceId).toLowerCase() ?? "unknown", // ✅ correction ici
         ...(userEmail ? { email: userEmail } : {}),
         ...(userId ? { userId: String(userId) } : {}),
       },
-      // Assure que la souscription contient aussi la metadata (utile si on veut retrouver userId depuis l'objet Subscription)
       subscription_data: {
         metadata: {
           ...(userId ? { userId: String(userId) } : {}),

@@ -1,0 +1,14 @@
+name: Stripe Worker Cron
+
+on:
+  schedule:
+    - cron: "*/2 * * * *"  # toutes les 2 minutes
+  workflow_dispatch:
+
+jobs:
+  run-stripe-worker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Vercel Stripe Worker
+        run: |
+          curl -X GET https://vtrqxtrading.xyz/api/stripe/worker

@@ -1,3 +1,9 @@
+export async function POST(req: Request) {
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
 import { NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 import Stripe from "stripe";
@@ -91,4 +97,6 @@ export async function GET() {
 
   await redis.del("stripe_webhook_queue");
   return NextResponse.json({ processed });
+}
+
 }

@@ -15,7 +15,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
-// ✅ Fonction principale du webhook Stripe
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
@@ -38,9 +37,9 @@ export async function POST(req: NextRequest) {
   try {
     console.log("📩 Stripe event reçu:", event.type);
 
-    // ================
-    // 1️⃣ Paiement réussi
-    // ================
+    // ==================================================
+    // 1️⃣ Paiement terminé (checkout.session.completed)
+    // ==================================================
     if (event.type === "checkout.session.completed") {
       const cs = event.data.object as Stripe.Checkout.Session;
       const subscriptionId = cs.subscription as string | null;
@@ -51,17 +50,12 @@ export async function POST(req: NextRequest) {
       const plan = metadata.plan || "unknown";
       const userId = metadata.userId || null;
 
-      console.log("✅ Checkout session terminée pour:", email, plan, userId);
+      console.log("✅ Checkout terminé pour:", email, plan, userId);
 
-      // On tente de retrouver l'utilisateur
       let user = null;
-      if (userId) {
-        user = await prisma.user.findUnique({ where: { id: userId } });
-      } else if (email) {
-        user = await prisma.user.findUnique({ where: { email } });
-      }
+      if (userId) user = await prisma.user.findUnique({ where: { id: userId } });
+      else if (email) user = await prisma.user.findUnique({ where: { email } });
 
-      // Si l’utilisateur existe → on crée ou met à jour sa souscription
       if (user) {
         await prisma.subscription.upsert({
           where: { userId: user.id },
@@ -81,13 +75,22 @@ export async function POST(req: NextRequest) {
         });
         console.log(`🟢 Subscription activée pour ${user.email}`);
       } else {
-        console.warn("⚠️ Aucun utilisateur trouvé pour cette session Stripe.");
+        console.warn("⚠️ Aucun utilisateur trouvé → création temporaire pour traçage Stripe.");
+        await prisma.subscription.create({
+          data: {
+            userId: `temp_${Date.now()}`, // ID temporaire
+            stripeCustomerId: customerId ?? undefined,
+            stripeSubId: subscriptionId ?? undefined,
+            status: "active",
+            plan,
+          },
+        });
       }
     }
 
-    // ================
-    // 2️⃣ Création / mise à jour d'une subscription
-    // ================
+    // ==================================================
+    // 2️⃣ Création ou mise à jour de la souscription
+    // ==================================================
     if (
       event.type === "customer.subscription.created" ||
       event.type === "customer.subscription.updated"
@@ -106,7 +109,7 @@ export async function POST(req: NextRequest) {
           ? new Date((sub as any).current_period_end * 1000)
           : null;
 
-      console.log("🔄 Subscription Stripe mise à jour pour:", email, userId);
+      console.log("🔄 Subscription Stripe MAJ pour:", email, userId);
 
       let user = null;
       if (userId) user = await prisma.user.findUnique({ where: { id: userId } });
@@ -131,15 +134,25 @@ export async function POST(req: NextRequest) {
             periodEnd,
           },
         });
-        console.log(`🟢 Subscription sauvegardée / mise à jour pour ${user.email}`);
+        console.log(`🟢 Subscription MAJ pour ${user.email}`);
       } else {
-        console.warn("⚠️ Aucun utilisateur trouvé pour cette subscription Stripe.");
+        console.warn("⚠️ Aucun utilisateur trouvé → création temporaire pour traçage Stripe.");
+        await prisma.subscription.create({
+          data: {
+            userId: `temp_${Date.now()}`,
+            stripeCustomerId: customerId,
+            stripeSubId: sub.id,
+            status: sub.status === "active" ? "active" : sub.status,
+            plan,
+            periodEnd,
+          },
+        });
       }
     }
 
-    // ================
-    // 3️⃣ Suppression d'une subscription
-    // ================
+    // ==================================================
+    // 3️⃣ Suppression d'une souscription
+    // ==================================================
     if (event.type === "customer.subscription.deleted") {
       const sub = event.data.object as Stripe.Subscription;
       const customerId = sub.customer as string;

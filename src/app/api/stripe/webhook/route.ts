@@ -8,17 +8,14 @@ export const config = {
 
 export const runtime = "nodejs";
 export const preferredRegion = "fra1";
-export const maxDuration = 60;
 export const dynamic = "force-dynamic";
-export const routeSegmentConfig = {
-  runtime: "nodejs",
-  background: true,
-};
+export const maxDuration = 60;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover" as any,
 });
 
+// ✅ Fonction principale du webhook Stripe
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig)
@@ -41,186 +38,123 @@ export async function POST(req: NextRequest) {
   try {
     console.log("📩 Stripe event reçu:", event.type);
 
-    switch (event.type) {
-      case "payment_intent.succeeded": {
-        const pi = event.data.object as Stripe.PaymentIntent;
-        console.log("✅ Payment intent succeeded:", pi.id);
+    // ================
+    // 1️⃣ Paiement réussi
+    // ================
+    if (event.type === "checkout.session.completed") {
+      const cs = event.data.object as Stripe.Checkout.Session;
+      const subscriptionId = cs.subscription as string | null;
+      const customerId = cs.customer as string | null;
+      const metadata = cs.metadata || {};
 
-        await prisma.subscription.updateMany({
-          where: { status: "inactive" },
-          data: {
+      const email = cs.customer_details?.email || metadata.email;
+      const plan = metadata.plan || "unknown";
+      const userId = metadata.userId || null;
+
+      console.log("✅ Checkout session terminée pour:", email, plan, userId);
+
+      // On tente de retrouver l'utilisateur
+      let user = null;
+      if (userId) {
+        user = await prisma.user.findUnique({ where: { id: userId } });
+      } else if (email) {
+        user = await prisma.user.findUnique({ where: { email } });
+      }
+
+      // Si l’utilisateur existe → on crée ou met à jour sa souscription
+      if (user) {
+        await prisma.subscription.upsert({
+          where: { userId: user.id },
+          update: {
+            stripeCustomerId: customerId ?? undefined,
+            stripeSubId: subscriptionId ?? undefined,
             status: "active",
-            plan: "test",
-            periodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            plan,
+          },
+          create: {
+            userId: user.id,
+            stripeCustomerId: customerId ?? undefined,
+            stripeSubId: subscriptionId ?? undefined,
+            status: "active",
+            plan,
           },
         });
-        break;
+        console.log(`🟢 Subscription activée pour ${user.email}`);
+      } else {
+        console.warn("⚠️ Aucun utilisateur trouvé pour cette session Stripe.");
       }
+    }
 
-      case "checkout.session.completed": {
-        // Le payload peut ne pas contenir tout; on tente de récupérer email/subscription si absent
-        const cs = event.data.object as Stripe.Checkout.Session;
-        let customerId = (cs.customer as string) ?? null;
-        let subscriptionId = (cs.subscription as string) ?? null;
-        const metadataPlan = (cs.metadata?.plan as string) ?? undefined;
-        const metaEmail = (cs.metadata?.email as string) ?? undefined;
-        const emailFromSession = (cs.customer_details?.email as string) ?? metaEmail;
+    // ================
+    // 2️⃣ Création / mise à jour d'une subscription
+    // ================
+    if (
+      event.type === "customer.subscription.created" ||
+      event.type === "customer.subscription.updated"
+    ) {
+      const sub = event.data.object as Stripe.Subscription;
+      const customerId = sub.customer as string;
+      const plan =
+        typeof sub.items?.data?.[0]?.price?.nickname === "string"
+          ? sub.items.data[0].price.nickname!.toLowerCase()
+          : (sub.items?.data?.[0]?.price?.metadata?.plan as string) ?? "unknown";
 
-        // Si la session n'a pas retourné l'id de subscription, récupérer la session complète (expand subscription)
-        if (!subscriptionId) {
-          try {
-            const fetched = await stripe.checkout.sessions.retrieve(cs.id as string, {
-              expand: ["subscription", "customer"],
-            });
-            subscriptionId = (fetched.subscription as Stripe.Subscription | null)?.id ?? subscriptionId;
-            // customer peut être un objet ou string selon l'API; normaliser
-            if (typeof fetched.customer === "string") {
-              customerId = fetched.customer;
-            } else if (fetched.customer && typeof fetched.customer === "object") {
-              customerId = (fetched.customer as any).id ?? customerId;
-            }
-          } catch (e) {
-            console.warn("Unable to expand checkout.session:", e);
-          }
-        }
+      const email = (sub.metadata?.email as string) || undefined;
+      const userId = (sub.metadata?.userId as string) || undefined;
+      const periodEnd =
+        (sub as any).current_period_end
+          ? new Date((sub as any).current_period_end * 1000)
+          : null;
 
-        // Tentative de matching utilisateur DB via email si disponible
-        let user = null;
-        if (emailFromSession) {
-          user = await prisma.user.findUnique({ where: { email: emailFromSession } }).catch(() => null);
-        }
+      console.log("🔄 Subscription Stripe mise à jour pour:", email, userId);
 
-        const plan = metadataPlan ?? "unknown";
+      let user = null;
+      if (userId) user = await prisma.user.findUnique({ where: { id: userId } });
+      else if (email) user = await prisma.user.findUnique({ where: { email } });
 
-        if (user) {
-          // Upsert par userId (fiable si l'utilisateur existe dans la base)
-          await prisma.subscription.upsert({
-            where: { userId: user.id },
-            create: {
-              userId: user.id,
-              stripeCustomerId: customerId ?? undefined,
-              stripeSubId: subscriptionId ?? undefined,
-              status: "active",
-              plan,
-              periodEnd: null,
-            },
-            update: {
-              stripeCustomerId: customerId ?? undefined,
-              stripeSubId: subscriptionId ?? undefined,
-              status: "active",
-              plan,
-            },
-          });
-          console.log(`✅ Subscription activée (upsert) pour user ${user.email}`);
-        } else {
-          // Fallback : updateMany by stripe ids (ancien comportement) si on ne trouve pas d'user
-          if (!customerId && !subscriptionId) {
-            console.warn("Aucun customerId ni subscriptionId disponible pour le checkout.session.completed");
-            break;
-          }
-          await prisma.subscription.updateMany({
-            where: {
-              OR: [
-                customerId ? { stripeCustomerId: customerId } : undefined,
-                subscriptionId ? { stripeSubId: subscriptionId } : undefined,
-              ].filter(Boolean) as any[],
-            },
-            data: {
-              stripeCustomerId: customerId ?? undefined,
-              stripeSubId: subscriptionId ?? undefined,
-              status: "active",
-              plan,
-            },
-          });
-          console.log(`✅ Subscription activée pour customer ${customerId ?? subscriptionId}`);
-        }
-
-        break;
-      }
-
-      case "customer.subscription.created":
-      case "customer.subscription.updated": {
-        const sub = event.data.object as Stripe.Subscription;
-        const customerId = sub.customer as string;
-        const plan =
-          typeof sub.items?.data?.[0]?.price?.nickname === "string"
-            ? sub.items.data[0].price.nickname!.toLowerCase()
-            : (sub.items?.data?.[0]?.price?.metadata?.plan as string) ?? "unknown";
-
-        const periodEnd =
-          (sub as any).current_period?.end ?? (sub as any).current_period_end ?? null;
-
-        // Tenter de retrouver l'email/user via les metadata (si présents)
-        const subMetaEmail = (sub.metadata?.email as string) ?? undefined;
-        let user = undefined;
-        if (subMetaEmail) {
-          user = await prisma.user.findUnique({ where: { email: subMetaEmail } }).catch(() => undefined);
-        }
-
-        if (user) {
-          await prisma.subscription.upsert({
-            where: { userId: user.id },
-            create: {
-              userId: user.id,
-              stripeCustomerId: customerId,
-              stripeSubId: sub.id,
-              status: sub.status === "trialing" || sub.status === "active" ? "active" : sub.status,
-              plan,
-              periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-            },
-            update: {
-              stripeCustomerId: customerId,
-              stripeSubId: sub.id,
-              status: sub.status === "trialing" || sub.status === "active" ? "active" : sub.status,
-              plan,
-              periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-            },
-          });
-          console.log(`🔄 Subscription mise à jour (upsert) pour ${user.email}`);
-        } else {
-          // Fallback to updateMany if we don't have a linked user
-          await prisma.subscription.updateMany({
-            where: {
-              OR: [
-                { stripeCustomerId: customerId },
-                { stripeSubId: sub.id },
-              ],
-            },
-            data: {
-              stripeCustomerId: customerId,
-              stripeSubId: sub.id,
-              status: sub.status === "trialing" || sub.status === "active" ? "active" : sub.status,
-              plan,
-              periodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
-            },
-          });
-          console.log(`🔄 Subscription mise à jour pour customer ${customerId}`);
-        }
-
-        break;
-      }
-
-      case "customer.subscription.deleted": {
-        const sub = event.data.object as Stripe.Subscription;
-        const customerId = sub.customer as string;
-
-        await prisma.subscription.updateMany({
-          where: {
-            OR: [
-              { stripeCustomerId: customerId },
-              { stripeSubId: sub.id },
-            ],
+      if (user) {
+        await prisma.subscription.upsert({
+          where: { userId: user.id },
+          update: {
+            stripeCustomerId: customerId,
+            stripeSubId: sub.id,
+            status: sub.status === "active" ? "active" : sub.status,
+            plan,
+            periodEnd,
           },
-          data: { status: "canceled" },
+          create: {
+            userId: user.id,
+            stripeCustomerId: customerId,
+            stripeSubId: sub.id,
+            status: sub.status === "active" ? "active" : sub.status,
+            plan,
+            periodEnd,
+          },
         });
-
-        console.log(`🛑 Subscription annulée pour ${customerId}`);
-        break;
+        console.log(`🟢 Subscription sauvegardée / mise à jour pour ${user.email}`);
+      } else {
+        console.warn("⚠️ Aucun utilisateur trouvé pour cette subscription Stripe.");
       }
+    }
 
-      default:
-        console.log(`ℹ️ Event ignoré: ${event.type}`);
-        break;
+    // ================
+    // 3️⃣ Suppression d'une subscription
+    // ================
+    if (event.type === "customer.subscription.deleted") {
+      const sub = event.data.object as Stripe.Subscription;
+      const customerId = sub.customer as string;
+
+      await prisma.subscription.updateMany({
+        where: {
+          OR: [
+            { stripeCustomerId: customerId },
+            { stripeSubId: sub.id },
+          ],
+        },
+        data: { status: "canceled" },
+      });
+
+      console.log(`🛑 Subscription annulée pour ${customerId}`);
     }
 
     return NextResponse.json({ received: true }, { status: 200 });

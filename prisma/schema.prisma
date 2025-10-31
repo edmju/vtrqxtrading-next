@@ -18,18 +18,18 @@ model User {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   subscription     Subscription?
-  alerts           Alert[]        // <-- ✅ relation ajoutée ici
+  alerts           Alert[]
 }
 
 model Subscription {
   id                 String   @id @default(cuid())
-  userId             String?  // ❗ Peut être null si l’abonné n’existe pas encore chez toi
+  userId             String?  @unique           // ✅ correction ici
   user               User?    @relation(fields: [userId], references: [id])
-  stripeId           String   @unique            // ID de l’abonnement Stripe (sub_xxx)
-  priceId            String?                     // ID du plan (price_xxx)
+  stripeId           String   @unique
+  priceId            String?
   status             String   @default("inactive")
-  plan               String?                     // Nom du plan (optionnel)
-  userEmail          String?                     // Email client Stripe
+  plan               String?
+  userEmail          String?
   currentPeriodStart DateTime?
   currentPeriodEnd   DateTime?
   stripeCustomerId   String?  @unique

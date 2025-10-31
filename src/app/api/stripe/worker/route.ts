@@ -1,102 +1,67 @@
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { prisma } from "@/lib/prisma"; // adapte le chemin si besoin
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
+
 export async function POST(req: Request) {
+  // --- Sécurité : vérifie le header venant du GitHub Action cron
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-import { NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
-import Stripe from "stripe";
-import { prisma } from "@/lib/prisma";
+  try {
+    console.log("🔄 Stripe Worker lancé...");
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const maxDuration = 60;
-
-const redis = Redis.fromEnv();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
-});
-
-// ⚙️ Même logique que ton ancien webhook (on traite la file calmement)
-async function handleStripeEvent(event: Stripe.Event) {
-  console.log("⚙️ Traitement Stripe event:", event.type);
-
-  if (event.type === "checkout.session.completed") {
-    const cs = event.data.object as Stripe.Checkout.Session;
-    const subscriptionId = cs.subscription as string | null;
-    const customerId = cs.customer as string | null;
-    const email = cs.customer_details?.email ?? cs.metadata?.email;
-    const plan = cs.metadata?.plan ?? "unknown";
-    const userId = cs.metadata?.userId ?? null;
-
-    if (!email && !userId) return;
-
-    const user =
-      userId
-        ? await prisma.user.findUnique({ where: { id: userId } })
-        : await prisma.user.findUnique({ where: { email } });
-
-    if (user) {
-      await prisma.subscription.upsert({
-        where: { userId: user.id },
-        update: {
-          stripeCustomerId: customerId ?? undefined,
-          stripeSubId: subscriptionId ?? undefined,
-          status: "active",
-          plan,
-        },
-        create: {
-          userId: user.id,
-          stripeCustomerId: customerId ?? undefined,
-          stripeSubId: subscriptionId ?? undefined,
-          status: "active",
-          plan,
-        },
-      });
-      console.log(`🟢 Subscription activée pour ${user.email}`);
-    }
-  }
-
-  if (event.type === "customer.subscription.deleted") {
-    const sub = event.data.object as Stripe.Subscription;
-    await prisma.subscription.updateMany({
-      where: {
-        OR: [
-          { stripeSubId: sub.id },
-          { stripeCustomerId: sub.customer as string },
-        ],
-      },
-      data: { status: "canceled" },
+    // Récupère les abonnements Stripe récents
+    const subscriptions = await stripe.subscriptions.list({
+      limit: 10,
+      expand: ["data.customer", "data.items"],
     });
-    console.log(`🛑 Subscription annulée ${sub.id}`);
-  }
-}
 
-export async function GET() {
-  const eventsRaw = await redis.lrange("stripe_webhook_queue", 0, -1);
-  if (!eventsRaw.length) {
-    return NextResponse.json({ processed: 0 });
-  }
+    for (const sub of subscriptions.data) {
+      // Vérifie si déjà en base
+      const existing = await prisma.subscription.findUnique({
+        where: { stripeId: sub.id },
+      });
 
-  let processed = 0;
-  for (const raw of eventsRaw) {
-    try {
-      const parsed = JSON.parse(raw);
-      const event = stripe.webhooks.constructEvent(
-        parsed.body,
-        parsed.signature,
-        process.env.STRIPE_WEBHOOK_SECRET!
-      );
-      await handleStripeEvent(event);
-      processed++;
-    } catch (err) {
-      console.error("⚠️ Erreur traitement Stripe event:", err);
+      // Si non, on le crée
+      if (!existing) {
+        await prisma.subscription.create({
+          data: {
+            stripeId: sub.id,
+            status: sub.status,
+            priceId: sub.items.data[0]?.price.id || null,
+            currentPeriodStart: new Date(sub.current_period_start * 1000),
+            currentPeriodEnd: new Date(sub.current_period_end * 1000),
+            userEmail:
+              (sub.customer as any)?.email ??
+              (sub.customer as any)?.name ??
+              "unknown",
+          },
+        });
+      } else {
+        // Sinon, on met à jour le statut ou la date
+        await prisma.subscription.update({
+          where: { stripeId: sub.id },
+          data: {
+            status: sub.status,
+            currentPeriodEnd: new Date(sub.current_period_end * 1000),
+          },
+        });
+      }
     }
+
+    console.log("✅ Subscriptions Stripe synchronisées avec Neon");
+    return NextResponse.json({
+      message: "Worker OK",
+      count: subscriptions.data.length,
+    });
+  } catch (error: any) {
+    console.error("❌ Erreur Worker:", error);
+    return new Response("Erreur serveur", { status: 500 });
   }
-
-  await redis.del("stripe_webhook_queue");
-  return NextResponse.json({ processed });
-}
-
 }

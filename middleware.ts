@@ -22,15 +22,18 @@ function isPublic(path: string) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ laissez passer Stripe webhooks (aucune redirection/contrôle d'auth)
-  if (pathname.startsWith("/api/stripe/webhook-buffer") || pathname.startsWith("/api/stripe/webhook")) {
+  // ✅ laissez passer Stripe webhooks sans redirection ni auth
+  if (
+    pathname.startsWith("/api/stripe/webhook-buffer") ||
+    pathname.startsWith("/api/stripe/webhook")
+  ) {
     return NextResponse.next();
   }
 
   // ✅ ressources publiques
   if (isPublic(pathname)) return NextResponse.next();
 
-  // 🔐 session NextAuth
+  // 🔐 NextAuth
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   // 🚫 non connecté

@@ -2,15 +2,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-// Pages publiques web (hors API)
+// chemins publics (pages seulement)
 const PUBLIC_PATHS = [
   "/profile",
   "/subscription",
   "/request-reset",
   "/reset",
   "/favicon.ico",
+  "/_next",
   "/assets",
-  "/_next"
 ];
 
 function isPublic(path: string) {
@@ -20,14 +20,15 @@ function isPublic(path: string) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // 🚫 Ne JAMAIS intercepter l’API : on laisse passer tout /api/*
+  // 🚫 JAMAMAIS sur /api/** (toutes API doivent être libres)
   if (pathname.startsWith("/api/")) return NextResponse.next();
 
-  // ✅ Laisse passer les pages publiques
+  // 🚫 Pas de garde sur les assets internes
   if (isPublic(pathname)) return NextResponse.next();
 
-  // 🔐 Auth NextAuth
+  // Auth
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
   if (!token?.email) {
     const url = req.nextUrl.clone();
     url.pathname = "/profile";
@@ -46,7 +47,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// ⚠️ Le matcher exclut tout /api/* pour éviter toute redirection 3xx dessus
+// Le matcher applique le middleware seulement sur le “site”, pas sur API
 export const config = {
-  matcher: ["/((?!api/|_next|favicon.ico|assets).*)"]
+  matcher: ["/((?!api|_next|favicon.ico|assets).*)"],
 };

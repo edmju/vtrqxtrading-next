@@ -3,16 +3,16 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const PUBLIC_PATHS = [
-  "/profile",
-  "/subscription",
-  "/request-reset",
-  "/reset",
-  "/api/auth",
-  "/api/stripe/webhook",
   "/api/stripe/webhook-buffer",
+  "/api/stripe/worker",
+  "/api/auth",
   "/favicon.ico",
   "/_next",
   "/assets",
+  "/profile",
+  "/subscription",
+  "/request-reset",
+  "/reset"
 ];
 
 function isPublic(path: string) {
@@ -22,21 +22,11 @@ function isPublic(path: string) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ laissez passer Stripe webhooks sans redirection ni auth
-  if (
-    pathname.startsWith("/api/stripe/webhook-buffer") ||
-    pathname.startsWith("/api/stripe/webhook")
-  ) {
-    return NextResponse.next();
-  }
-
-  // ✅ ressources publiques
+  // ⚠️ Ne jamais intercepter Stripe Webhook
   if (isPublic(pathname)) return NextResponse.next();
 
-  // 🔐 NextAuth
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // 🚫 non connecté
   if (!token?.email) {
     const url = req.nextUrl.clone();
     url.pathname = "/profile";
@@ -44,7 +34,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // ⚠️ connecté mais pas abonné
   const hasActiveSub = (token as any).hasActiveSub === true;
   if (!hasActiveSub) {
     const url = req.nextUrl.clone();
@@ -57,7 +46,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|api/auth|api/stripe/webhook|api/stripe/webhook-buffer|favicon.ico|assets).*)",
-  ],
+  matcher: ["/((?!api/stripe/webhook-buffer|api/auth|_next|favicon.ico|assets).*)"]
 };

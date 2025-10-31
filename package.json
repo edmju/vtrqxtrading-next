@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "update:data": "ts-node src/lib/fetchData.ts",
     "cron:update:data": "node -e \"setInterval(() => require('child_process').exec('npm run update:data'), 3600000)\"",

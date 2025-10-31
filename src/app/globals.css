@@ -2,28 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  height: 100%;
-  background-color: #000;
-  color-scheme: dark;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
+body {
+  background: radial-gradient(circle at top left, #0A0A0A 60%, #050505 100%);
+  color: #E6E6E6;
   font-family: 'Inter', sans-serif;
 }
 
-/* Animation pour la notification */
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-10px); }
-  10%, 90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
-}
-.animate-fadeInOut {
-  animation: fadeInOut 3s ease-in-out forwards;
+.glass {
+  background: rgba(20, 20, 20, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }
 
-/* Scroll doux et invisible */
-*::-webkit-scrollbar {
+.glow-text {
+  text-shadow: 0 0 10px rgba(255, 214, 0, 0.6);
+}
+
+.gradient-title {
+  background: linear-gradient(90deg, #FFD600, #00E5FF, #7F00FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+button.cta {
+  background: linear-gradient(90deg, #FFD600, #FFEA80);
+  color: #000;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255,214,0,0.4);
+  transition: all 0.2s ease;
+}
+
+button.cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255,214,0,0.6);
+}
+
+::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -31,4 +47,3 @@ html, body {
 main {
   margin-top: 5rem;
 }
-

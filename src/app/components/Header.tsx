@@ -2,18 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, MouseEvent } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-interface CustomSession {
-  user?: {
-    email?: string;
-    hasActiveSub?: boolean;
-  };
-}
-
 export default function Header() {
-  const { data: session } = useSession() as { data: CustomSession | null };
+  const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const [notice, setNotice] = useState<string | null>(null);
@@ -24,9 +17,9 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, [notice]);
 
-  const handleProtectedClick = (e: MouseEvent<HTMLAnchorElement>) => {
+  const handleProtectedClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
     const hasSession = !!session?.user?.email;
-    const hasSub = !!session?.user?.hasActiveSub;
+    const hasSub = (session as any)?.user?.hasActiveSub === true;
     if (!hasSession) {
       e.preventDefault();
       setNotice("Vous devez vous connecter pour accéder à cette page.");
@@ -46,9 +39,9 @@ export default function Header() {
       onClick={p.protected ? handleProtectedClick : undefined}
       className={`px-3 text-sm font-medium tracking-wide ${
         pathname === p.href
-          ? "text-yellow-300 underline underline-offset-4"
-          : "text-yellow-400 hover:text-yellow-200"
-      } transition-all duration-200`}
+          ? "text-neon-yellow underline underline-offset-4"
+          : "text-text-primary hover:text-neon-cyan"
+      } transition-all duration-300`}
     >
       {p.label}
     </Link>
@@ -56,13 +49,13 @@ export default function Header() {
 
   return (
     <>
-      <header className="w-full border-b border-yellow-700/20 bg-black/70 backdrop-blur-md fixed top-0 left-0 z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-6">
-          <Link href="/" className="text-yellow-400 font-extrabold tracking-widest text-xl">
+      <header className="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-yellow-700/20 shadow-yellow">
+        <div className="max-w-6xl mx-auto flex items-center justify-between h-16 px-6">
+          <Link href="/" className="text-neon-yellow font-extrabold tracking-widest text-xl glow-text font-orbitron">
             VTRQX
           </Link>
 
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-4 font-inter">
             <LinkItem href="/dashboard" label="Dashboard" protected />
             <LinkItem href="/screener" label="Screener" protected />
             <LinkItem href="/alerts" label="Alerts" protected />
@@ -73,7 +66,7 @@ export default function Header() {
 
           <div className="text-xs text-gray-400 min-w-[160px] text-right">
             {session?.user?.email ? (
-              <span className="text-yellow-300">{session.user.email}</span>
+              <span className="text-neon-cyan">{session.user.email}</span>
             ) : (
               <span className="text-gray-500 italic">Non connecté</span>
             )}
@@ -82,7 +75,7 @@ export default function Header() {
       </header>
 
       {notice && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-4 py-2 rounded-lg shadow-lg z-50 animate-pulse">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-neon-yellow text-black px-4 py-2 rounded-lg shadow-yellow z-50 animate-pulse">
           {notice}
         </div>
       )}

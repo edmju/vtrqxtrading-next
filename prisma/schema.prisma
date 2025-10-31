@@ -22,15 +22,19 @@ model User {
 }
 
 model Subscription {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  user             User     @relation(fields: [userId], references: [id])
-  stripeCustomerId String?  @unique
-  stripeSubId      String?  @unique
-  status           String   @default("inactive")
-  plan             String   @default("none")
-  periodEnd        DateTime?
-  createdAt        DateTime @default(now())
+  id                 String   @id @default(cuid())
+  userId             String?  // ❗ Peut être null si l’abonné n’existe pas encore chez toi
+  user               User?    @relation(fields: [userId], references: [id])
+  stripeId           String   @unique            // ID de l’abonnement Stripe (sub_xxx)
+  priceId            String?                     // ID du plan (price_xxx)
+  status             String   @default("inactive")
+  plan               String?                     // Nom du plan (optionnel)
+  userEmail          String?                     // Email client Stripe
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  stripeCustomerId   String?  @unique
+  stripeSubId        String?  @unique
+  createdAt          DateTime @default(now())
 }
 
 model Alert {

@@ -1,15 +1,11 @@
 {
   "functions": {
-    "api/stripe/webhook-buffer.ts": {
+    "api/stripe/webhook/route.ts": {
       "runtime": "nodejs18.x",
       "maxDuration": 60
     }
   },
   "crons": [
-    {
-      "path": "/api/ingest",
-      "schedule": "0 0 * * *"
-    },
     {
       "path": "/api/stripe/worker",
       "schedule": "*/2 * * * *"

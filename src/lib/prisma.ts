@@ -1,14 +1,27 @@
 import { PrismaClient } from "@prisma/client";
 
+let prisma: PrismaClient;
+
 declare global {
-  // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
+  var __prisma: PrismaClient | undefined;
 }
 
-export const prisma =
-  global.prisma ??
-  new PrismaClient({
-    log: ["warn", "error"],
+if (!global.__prisma) {
+  global.__prisma = new PrismaClient({
+    log: ["error", "warn"],
   });
+}
 
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+prisma = global.__prisma;
+
+export async function ensureSchema() {
+  try {
+    await prisma.subscription.count();
+  } catch (err) {
+    console.error("⚠️ Prisma drift detected, running migration sync...");
+    const { execSync } = await import("child_process");
+    execSync("npx prisma migrate deploy", { stdio: "inherit" });
+  }
+}
+
+export default prisma;

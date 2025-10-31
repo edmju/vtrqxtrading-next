@@ -5,12 +5,11 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-09-30.clover",
 });
 
 function normalizedOrigin() {
   const raw = process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
-  // Évite les redirections (www -> non-www) pour garder des URLs stables
   try {
     const u = new URL(raw);
     const host = u.hostname.replace(/^www\./i, "");
@@ -25,10 +24,12 @@ export async function POST(req: Request) {
     const { priceId } = await req.json();
 
     if (!priceId || typeof priceId !== "string") {
-      return NextResponse.json({ error: "priceId manquant ou invalide" }, { status: 400 });
+      return NextResponse.json(
+        { error: "priceId manquant ou invalide" },
+        { status: 400 }
+      );
     }
 
-    // ⚠️ On exige une session pour attacher email/userId aux métadonnées
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email as string | undefined;
     const userId = (session?.user as any)?.id as string | undefined;
@@ -37,7 +38,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // Si l'utilisateur a déjà un customer Stripe, on le réutilise
     let existingCustomerId: string | undefined = undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
@@ -47,9 +47,7 @@ export async function POST(req: Request) {
       if (existingSub?.stripeCustomerId) {
         existingCustomerId = existingSub.stripeCustomerId;
       }
-    } catch {
-      // pas bloquant
-    }
+    } catch {}
 
     const origin = normalizedOrigin();
 
@@ -60,26 +58,24 @@ export async function POST(req: Request) {
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
 
-      // Si on connaît déjà le customer Stripe, on le force pour relier correctement
       ...(existingCustomerId
         ? { customer: existingCustomerId }
         : { customer_email: userEmail }),
 
-      // Identifiant applicatif utile côté Stripe/Logs
       client_reference_id: userId,
 
-      // Métadonnées utilisées par le webhook pour faire le lien Neon <-> Stripe
+      // ✅ Métadonnées pour synchroniser avec Neon
       metadata: {
-        plan: String(priceId).toLowerCase(), // ✅ correction .toLowerCase()
-        email: userEmail,
         userId: String(userId),
+        email: userEmail,
+        plan: String(priceId).toLowerCase(),
       },
 
-      // Assure que l'objet Subscription Stripe porte aussi nos métadonnées
+      // ✅ Assure que Stripe Subscription transporte aussi les metadata
       subscription_data: {
         metadata: {
-          email: userEmail,
           userId: String(userId),
+          email: userEmail,
           plan: String(priceId).toLowerCase(),
         },
       },

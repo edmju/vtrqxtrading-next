@@ -39,7 +39,11 @@ const handler = NextAuth({
       await ensureSchema();
       const dbUser = await prisma.user.findUnique({
         where: { email: String(token.email) },
-        include: { subscription: true },
+        include: {
+          subscription: {
+            select: { status: true }, // ✅ correction ici
+          },
+        },
       });
 
       token.hasActiveSub = dbUser?.subscription?.status === "active";

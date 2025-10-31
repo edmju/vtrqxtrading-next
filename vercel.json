@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/stripe/webhook/route.ts": {
+    "api/stripe/webhook": {
       "runtime": "nodejs18.x",
       "maxDuration": 60
     }

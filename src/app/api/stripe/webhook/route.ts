@@ -2,29 +2,25 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 
-// ✅ Empêche l'exécution en Edge (sinon 405/404 bizarres)
+// ✅ Forcer le runtime Node (évite les erreurs 405/404 sur Vercel)
 export const runtime = "nodejs";
-// ✅ Force le mode dynamique (évite le “prérendu” et les surprises)
+// ✅ Forcer la génération dynamique
 export const dynamic = "force-dynamic";
-// (optionnel) limite d’exécution
+// ✅ Durée maximale d’exécution
 export const maxDuration = 60;
 
-// Petit GET de santé pour tester que l’endpoint existe bien en prod
+// Petit GET de santé pour test (optionnel)
 export async function GET() {
   return NextResponse.json({ ok: true, endpoint: "/api/stripe/webhook" });
 }
 
 export async function POST(req: Request) {
-  // IMPORTANT: on lit le corps brut (App Router → req.text())
   const sig = req.headers.get("stripe-signature");
-  if (!sig) {
-    // Pour un test manuel avec curl sans signature, on renvoie 400 (normal)
-    return new NextResponse("Missing Stripe signature", { status: 400 });
-  }
+  if (!sig) return new NextResponse("Missing Stripe signature", { status: 400 });
 
   const raw = await req.text();
-
   let event: Stripe.Event;
+
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: "2025-09-30.clover",
@@ -45,24 +41,39 @@ export async function POST(req: Request) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice;
 
-        // On récupère metadata depuis la première ligne (classique)
-        const line = invoice.lines?.data?.[0];
-        const metadata = line?.metadata ?? {};
-        const userId = (metadata as any)?.userId as string | undefined;
-        const plan = ((metadata as any)?.plan as string) ?? "enterprise";
+        // On tente d'abord depuis la ligne d'items
+        let userId =
+          invoice.lines?.data?.[0]?.metadata?.userId as string | undefined;
+        let plan =
+          (invoice.lines?.data?.[0]?.metadata?.plan as string) ?? "enterprise";
+
+        // Si userId absent → on va le chercher dans la subscription (plus fiable)
+        if (!userId && invoice.subscription) {
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+            apiVersion: "2025-09-30.clover",
+          });
+          const subscription = await stripe.subscriptions.retrieve(
+            invoice.subscription as string
+          );
+          userId = subscription.metadata?.userId;
+          plan = subscription.metadata?.plan ?? plan;
+        }
 
         const stripeSubId = invoice.subscription as string | null;
         const stripeCustomerId = invoice.customer as string | null;
 
-        // fin de période d'abonnement depuis la ligne
-        const periodEndSec = line?.period?.end ?? undefined;
+        const periodEndSec =
+          invoice.lines?.data?.[0]?.period?.end ??
+          (invoice.status_transitions?.paid_at ?? undefined);
         const periodEnd =
           periodEndSec !== undefined
             ? new Date(periodEndSec * 1000)
             : undefined;
 
         if (!userId) {
-          console.warn("⚠️ invoice.payment_succeeded sans userId dans metadata");
+          console.warn(
+            "⚠️ invoice.payment_succeeded sans userId dans metadata ou subscription"
+          );
           break;
         }
 
@@ -93,7 +104,6 @@ export async function POST(req: Request) {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = sub.customer as string;
 
-        // Si tu stockes le customerId dans Subscription, on désactive via ce champ
         await prisma.subscription.updateMany({
           where: { stripeCustomerId: customerId },
           data: { status: "canceled" },
@@ -103,11 +113,9 @@ export async function POST(req: Request) {
         break;
       }
 
-      default: {
-        // autres events possibles à ignorer proprement
+      default:
         // console.log(`ℹ️ Unhandled event: ${event.type}`);
         break;
-      }
     }
 
     return NextResponse.json({ received: true });

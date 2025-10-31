@@ -2,39 +2,49 @@ import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-09-30.clover",
 });
 
+// ✅ GET pour vérifier facilement que la route existe (évite 405)
+export async function GET() {
+  return NextResponse.json({ ok: true }, { status: 200 });
+}
+
 export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature");
-  const body = await req.text();
+  if (!sig) {
+    return new NextResponse("Missing Stripe-Signature", { status: 400 });
+  }
 
+  const rawBody = await req.text();
+
+  let event: Stripe.Event;
   try {
-    const event = stripe.webhooks.constructEvent(
-      body,
-      sig!,
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
+  } catch (err: any) {
+    console.error("❌ Webhook signature error:", err.message);
+    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+  }
 
+  try {
     switch (event.type) {
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
 
-        // ⚙️ métadonnées envoyées par ton checkout (email, userId, plan)
-        const email =
-          cs.customer_details?.email ??
-          (cs.metadata?.email || undefined);
         const userId = (cs.metadata?.userId as string) || undefined;
-
-        // IDs Stripe
+        const plan = (cs.metadata?.plan as string) || undefined;
         const stripeCustomerId = (cs.customer as string) || undefined;
         const stripeSubId = (cs.subscription as string) || undefined;
 
-        // plan (price_xxx)
-        const plan = (cs.metadata?.plan as string) || undefined;
-
-        // Période (si subscription attachée)
         let periodEnd: Date | undefined = undefined;
         if (stripeSubId) {
           const sub = await stripe.subscriptions.retrieve(stripeSubId);
@@ -45,7 +55,7 @@ export async function POST(req: Request) {
 
         if (userId) {
           await prisma.subscription.upsert({
-            where: { userId }, // ton schéma place un unique sur userId
+            where: { userId },
             update: {
               stripeCustomerId,
               stripeSubId,
@@ -62,9 +72,9 @@ export async function POST(req: Request) {
               periodEnd,
             },
           });
-          console.log(`✅ checkout.completed → Subscription activée pour userId=${userId}`);
+          console.log(`✅ checkout.completed → Subscription activée (userId=${userId})`);
         } else {
-          console.log("ℹ️ checkout.completed reçu sans userId metadata, rien inséré.");
+          console.log("ℹ️ checkout.completed sans userId metadata → insertion ignorée");
         }
         break;
       }
@@ -72,19 +82,9 @@ export async function POST(req: Request) {
       case "invoice.payment_succeeded": {
         const inv = event.data.object as Stripe.Invoice;
 
-        // ⚙️ on récupère les métadonnées au bon endroit :
-        // - ligne d'item de l'invoice (lines.data[0].metadata)
-        // - parent.subscription_details.metadata
-        // selon l’API version, les deux existent (tu m’as montré les deux)
         const line = inv.lines?.data?.[0];
         const metaLine = (line?.metadata ?? {}) as Record<string, string>;
         const metaParent = (inv.parent as any)?.subscription_details?.metadata ?? {};
-
-        const email =
-          inv.customer_email ??
-          metaLine.email ??
-          metaParent.email ??
-          undefined;
 
         const userId =
           (metaLine.userId as string) ??
@@ -96,18 +96,16 @@ export async function POST(req: Request) {
 
         const stripeCustomerId = (inv.customer as string) || undefined;
 
-        // On retrouve la subscription ID
         const subId =
           (line?.parent as any)?.subscription_item_details?.subscription ||
           (inv.parent as any)?.subscription_details?.subscription ||
           undefined;
 
-        // dates de période
         const periodEnd = inv.period_end ? new Date(inv.period_end * 1000) : undefined;
 
         if (userId) {
           await prisma.subscription.upsert({
-            where: { userId }, // unique(userId)
+            where: { userId },
             update: {
               stripeCustomerId,
               stripeSubId: subId,
@@ -124,23 +122,20 @@ export async function POST(req: Request) {
               periodEnd,
             },
           });
-          console.log(`✅ invoice.payment_succeeded → Subscription activée pour userId=${userId}`);
+          console.log(`✅ invoice.payment_succeeded → Subscription activée (userId=${userId})`);
         } else {
-          console.log("ℹ️ invoice.payment_succeeded reçu sans userId metadata, rien inséré.");
+          console.log("ℹ️ invoice.payment_succeeded sans userId metadata → insertion ignorée");
         }
         break;
       }
 
-      default: {
+      default:
         console.log(`⚙️ Événement non géré : ${event.type}`);
-      }
     }
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (err: any) {
-    console.error("❌ Erreur Webhook Stripe :", err.message);
-    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    console.error("❌ Webhook handler error:", err);
+    return new NextResponse("Server error", { status: 500 });
   }
 }
-
-// (App Router: pas de bodyParser config nécessaire ici, on lit req.text() ci-dessus)

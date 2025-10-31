@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/reset",
   "/api/auth",
   "/api/stripe/webhook",
+  "/api/stripe/webhook-buffer",
   "/favicon.ico",
   "/_next",
   "/assets",
@@ -19,15 +20,20 @@ function isPublic(path: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
-  // Ressources publiques
+  // ✅ autoriser les webhooks Stripe sans auth
+  if (pathname.startsWith("/api/stripe/webhook-buffer")) {
+    return NextResponse.next();
+  }
+
+  // ✅ autoriser les ressources publiques
   if (isPublic(pathname)) return NextResponse.next();
 
-  // Récupère le JWT NextAuth
+  // 🔐 récupère le JWT NextAuth
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // Pas connecté → /profile avec notice
+  // 🚫 non connecté
   if (!token?.email) {
     const url = req.nextUrl.clone();
     url.pathname = "/profile";
@@ -35,7 +41,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Connecté mais pas abonné → seules /profile et /subscription autorisées
+  // ⚠️ connecté mais pas abonné
   const hasActiveSub = (token as any).hasActiveSub === true;
   if (!hasActiveSub) {
     const url = req.nextUrl.clone();
@@ -49,7 +55,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // protège tout sauf les assets _next, api d’auth Stripe webhook et nos pages publiques
-    "/((?!_next|api/auth|api/stripe/webhook|favicon.ico|assets).*)",
+    "/((?!_next|api/auth|api/stripe/webhook|api/stripe/webhook-buffer|favicon.ico|assets).*)",
   ],
 };

@@ -2,21 +2,30 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 
-// ✅ Forcer le runtime Node (évite les erreurs 405/404 sur Vercel)
+// ✅ Désactiver le body parser pour Stripe (sinon signature invalide)
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+// ✅ Empêche l'exécution en Edge
 export const runtime = "nodejs";
-// ✅ Forcer la génération dynamique
+// ✅ Force le mode dynamique (évite le prérendu)
 export const dynamic = "force-dynamic";
-// ✅ Durée maximale d’exécution
+// (optionnel) limite d’exécution
 export const maxDuration = 60;
 
-// Petit GET de santé pour test (optionnel)
+// ✅ Test GET
 export async function GET() {
   return NextResponse.json({ ok: true, endpoint: "/api/stripe/webhook" });
 }
 
 export async function POST(req: Request) {
   const sig = req.headers.get("stripe-signature");
-  if (!sig) return new NextResponse("Missing Stripe signature", { status: 400 });
+  if (!sig) {
+    return new NextResponse("Missing Stripe signature", { status: 400 });
+  }
 
   const raw = await req.text();
   let event: Stripe.Event;
@@ -37,21 +46,20 @@ export async function POST(req: Request) {
   }
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-09-30.clover",
+    });
+
     switch (event.type) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice;
 
-        // On tente d'abord depuis la ligne d'items
-        let userId =
-          invoice.lines?.data?.[0]?.metadata?.userId as string | undefined;
-        let plan =
-          (invoice.lines?.data?.[0]?.metadata?.plan as string) ?? "enterprise";
+        // On tente d'abord sur la ligne d'items
+        let userId = invoice.lines?.data?.[0]?.metadata?.userId as string | undefined;
+        let plan = invoice.lines?.data?.[0]?.metadata?.plan ?? "enterprise";
 
-        // Si userId absent → on va le chercher dans la subscription (plus fiable)
+        // Sinon, on récupère depuis la subscription Stripe
         if (!userId && invoice.subscription) {
-          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-            apiVersion: "2025-09-30.clover",
-          });
           const subscription = await stripe.subscriptions.retrieve(
             invoice.subscription as string
           );
@@ -64,16 +72,14 @@ export async function POST(req: Request) {
 
         const periodEndSec =
           invoice.lines?.data?.[0]?.period?.end ??
-          (invoice.status_transitions?.paid_at ?? undefined);
+          invoice.status_transitions?.paid_at ??
+          undefined;
+
         const periodEnd =
-          periodEndSec !== undefined
-            ? new Date(periodEndSec * 1000)
-            : undefined;
+          periodEndSec !== undefined ? new Date(periodEndSec * 1000) : undefined;
 
         if (!userId) {
-          console.warn(
-            "⚠️ invoice.payment_succeeded sans userId dans metadata ou subscription"
-          );
+          console.warn("⚠️ invoice.payment_succeeded sans userId dans metadata ou subscription");
           break;
         }
 
@@ -96,7 +102,7 @@ export async function POST(req: Request) {
           },
         });
 
-        console.log(`✅ Subscription updated for user ${userId}`);
+        console.log(`✅ Subscription enregistrée pour userId=${userId}`);
         break;
       }
 
@@ -109,12 +115,11 @@ export async function POST(req: Request) {
           data: { status: "canceled" },
         });
 
-        console.log(`✅ Subscription canceled for customer ${customerId}`);
+        console.log(`✅ Subscription annulée pour customer=${customerId}`);
         break;
       }
 
       default:
-        // console.log(`ℹ️ Unhandled event: ${event.type}`);
         break;
     }
 

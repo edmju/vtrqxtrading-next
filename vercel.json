@@ -1,10 +1,11 @@
 {
   "functions": {
-    "api/stripe/worker.ts": {
-      "runtime": "nodejs20.x",
+    "api/stripe/webhook-buffer.ts": {
+      "runtime": "nodejs18.x"
       "maxDuration": 60
     }
-  },
+  }
+},
   "crons": [
     {
       "path": "/api/ingest",

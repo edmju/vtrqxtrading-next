@@ -1,33 +1,46 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
+import Stripe from "stripe";
+import { NextResponse } from "next/server";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-09-30.clover",
+});
 
-// ⚙️ Connexion à Upstash Redis (clé déjà présente dans Vercel)
-const redis = Redis.fromEnv();
+export async function POST(req: Request) {
+  const sig = req.headers.get("stripe-signature");
+  const body = await req.text();
 
-// ✅ Ce handler reçoit directement l’appel Stripe et stocke le body brut
-export async function POST(req: NextRequest) {
   try {
-    const rawBody = await req.text(); // le corps JSON brut envoyé par Stripe
-    const signature = req.headers.get("stripe-signature");
-
-    // On stocke la requête dans une file Redis
-    await redis.lpush(
-      "stripe_webhook_queue",
-      JSON.stringify({
-        body: rawBody,
-        signature,
-        receivedAt: new Date().toISOString(),
-      })
+    const event = stripe.webhooks.constructEvent(
+      body,
+      sig!,
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
 
-    console.log("📥 Événement Stripe mis en file pour traitement ultérieur.");
-    return NextResponse.json({ ok: true }, { status: 200 });
-  } catch (err) {
-    console.error("❌ Erreur webhook-buffer:", err);
-    return NextResponse.json({ error: "Failed to queue event" }, { status: 500 });
+    switch (event.type) {
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        console.log("✅ Paiement réussi :", invoice.customer_email, invoice.amount_paid);
+        break;
+      }
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log("💳 Checkout complété :", session.id);
+        break;
+      }
+      default:
+        console.log(`⚙️ Événement non géré : ${event.type}`);
+    }
+
+    return NextResponse.json({ received: true }, { status: 200 });
+  } catch (err: any) {
+    console.error("❌ Erreur Webhook Stripe :", err.message);
+    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 }
+
+// ⚠️ Empêche Next de parser le corps avant Stripe
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

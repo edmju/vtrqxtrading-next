@@ -2,48 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background: radial-gradient(circle at top left, #0A0A0A 60%, #050505 100%);
-  color: #E6E6E6;
+html, body {
+  height: 100%;
+  background: radial-gradient(circle at 20% 30%, #0A0A0A, #000);
+  color: #EAEAEA;
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
 }
 
 .glass {
-  background: rgba(20, 20, 20, 0.4);
-  backdrop-filter: blur(12px);
+  background: rgba(15, 15, 15, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
 }
 
-.glow-text {
-  text-shadow: 0 0 10px rgba(255, 214, 0, 0.6);
-}
-
-.gradient-title {
-  background: linear-gradient(90deg, #FFD600, #00E5FF, #7F00FF);
+.gradient-text {
+  background: linear-gradient(270deg, #FFD600, #00E5FF, #8A2BE2);
+  background-size: 600% 600%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: gradient 6s ease infinite;
 }
 
-button.cta {
-  background: linear-gradient(90deg, #FFD600, #FFEA80);
+.cta {
+  background: linear-gradient(90deg, #FFD600, #00E5FF);
+  font-weight: 700;
   color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(255,214,0,0.4);
-  transition: all 0.2s ease;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,229,255,0.4);
+  transition: all 0.25s ease;
 }
-
-button.cta:hover {
+.cta:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(255,214,0,0.6);
+  box-shadow: 0 0 30px rgba(255,214,0,0.7);
 }
 
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-
-main {
-  margin-top: 5rem;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

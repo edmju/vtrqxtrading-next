@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "api/stripe/webhook": {
+      "runtime": "nodejs18.x",
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/stripe/worker",
+      "schedule": "*/2 * * * *"
+    }
+  ]
+}

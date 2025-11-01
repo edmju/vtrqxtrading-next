@@ -26,9 +26,6 @@ export async function POST(req: Request) {
 
     if (!priceId || typeof priceId !== "string") {
       return NextResponse.json({ error: "priceId manquant ou invalide" }, { status: 400 });
-
-
-
     }
 
     // ⚠️ On exige une session pour attacher email/userId aux métadonnées
@@ -76,8 +73,6 @@ export async function POST(req: Request) {
         plan: String(priceId).toLowerCase(), // ✅ correction .toLowerCase()
         email: userEmail,
         userId: String(userId),
-
-
       },
 
       // Assure que l'objet Subscription Stripe porte aussi nos métadonnées
@@ -85,7 +80,6 @@ export async function POST(req: Request) {
         metadata: {
           email: userEmail,
           userId: String(userId),
-
           plan: String(priceId).toLowerCase(),
         },
       },

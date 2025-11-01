@@ -1,3 +1,4 @@
+// src/app/subscribe/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -32,16 +33,13 @@ export default function SubscribePage() {
       setLoading(priceId);
       setError(null);
 
-      console.log("➡️ POST vers Stripe checkout", priceId);
-
-      // ✅ Utilise ton domaine production pour Stripe
-      const res = await fetch("https://vtrqxtrading.xyz/api/stripe/checkout", {
+      // Utilise un chemin relatif et inclut les cookies pour éviter la perte de session
+      const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ priceId }),
       });
-
-      console.log("Réponse brute:", res);
 
       if (!res.ok) {
         const text = await res.text();
@@ -50,9 +48,8 @@ export default function SubscribePage() {
       }
 
       const data = await res.json();
-
       if (data.url) {
-        window.location.href = data.url; // ✅ Redirection vers Stripe Checkout
+        window.location.href = data.url;
       } else {
         throw new Error("URL Stripe non reçue");
       }

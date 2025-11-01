@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getToken } from "next-auth/jwt";
 import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -22,7 +21,6 @@ function normalizedOrigin() {
 export async function POST(req: Request) {
   try {
     const { priceId } = await req.json();
-
     if (!priceId || typeof priceId !== "string") {
       return NextResponse.json(
         { error: "priceId manquant ou invalide" },
@@ -30,24 +28,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const session = await getServerSession(authOptions);
-    const userEmail = session?.user?.email as string | undefined;
-    const userId = (session?.user as any)?.id as string | undefined;
+    // ✅ On utilise getToken au lieu de getServerSession
+    const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
+    const userEmail = token?.email?.toString().toLowerCase();
+    const userId = token?.sub as string | undefined;
 
     if (!userEmail || !userId) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    let existingCustomerId: string | undefined = undefined;
-    try {
-      const existingSub = await prisma.subscription.findUnique({
-        where: { userId },
-        select: { stripeCustomerId: true },
-      });
-      if (existingSub?.stripeCustomerId) {
-        existingCustomerId = existingSub.stripeCustomerId;
-      }
-    } catch {}
+    // Vérifie si un client Stripe existe déjà
+    let existingCustomerId: string | undefined;
+    const existingSub = await prisma.subscription.findUnique({
+      where: { userId },
+      select: { stripeCustomerId: true },
+    });
+    if (existingSub?.stripeCustomerId) {
+      existingCustomerId = existingSub.stripeCustomerId;
+    }
 
     const origin = normalizedOrigin();
 
@@ -57,24 +55,18 @@ export async function POST(req: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
-
       ...(existingCustomerId
         ? { customer: existingCustomerId }
         : { customer_email: userEmail }),
-
       client_reference_id: userId,
-
-      // ✅ Métadonnées pour synchroniser avec Neon
       metadata: {
-        userId: String(userId),
+        userId: userId,
         email: userEmail,
         plan: String(priceId).toLowerCase(),
       },
-
-      // ✅ Assure que Stripe Subscription transporte aussi les metadata
       subscription_data: {
         metadata: {
-          userId: String(userId),
+          userId: userId,
           email: userEmail,
           plan: String(priceId).toLowerCase(),
         },

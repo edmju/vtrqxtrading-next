@@ -4,14 +4,13 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    // 1) Lire le body JSON en toute sécurité
     const body = await req.json().catch(() => null);
     if (!body || typeof body !== "object") {
-      return NextResponse.json({ error: "Corps invalide" }, { status: 400 });
+      return NextResponse.json({ error: "Requête invalide" }, { status: 400 });
     }
 
-    const email = String(body.email || "").trim().toLowerCase();
-    const password = String(body.password || "");
+    const email = (body.email || "").toString().trim().toLowerCase();
+    const password = (body.password || "").toString();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -20,34 +19,37 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2) Unicité de l'email
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
+    // Vérifie si un utilisateur existe déjà
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
       return NextResponse.json(
-        { error: "Cet utilisateur existe déjà" },
+        { error: "Utilisateur déjà existant" },
         { status: 409 }
       );
     }
 
-    // 3) Hash + création
+    // Hash du mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        hashedPassword,
+    // Crée un utilisateur et récupère seulement les infos nécessaires
+    const newUser = await prisma.user.create({
+      data: { email, hashedPassword },
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
       },
-      select: { id: true, email: true, createdAt: true },
     });
 
+    // Retour clair et sûr
     return NextResponse.json(
-      { message: "Inscription réussie", user },
+      { message: "Inscription réussie", user: newUser },
       { status: 201 }
     );
-  } catch (err) {
-    console.error("Erreur register:", err);
+  } catch (error) {
+    console.error("Erreur register:", error);
     return NextResponse.json(
-      { error: "Erreur interne serveur" },
+      { error: "Erreur interne du serveur" },
       { status: 500 }
     );
   }

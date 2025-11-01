@@ -4,24 +4,23 @@ import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 
-// ✅ Host dynamique (www ou non) pour conserver les cookies
+// ✅ Host dynamique (www ou non) pour correspondre exactement au cookie
 function requestOrigin() {
   const h = headers();
   const proto = h.get("x-forwarded-proto") ?? "https";
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "vtrqxtrading.xyz";
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "www.vtrqxtrading.xyz";
   return `${proto}://${host}`;
 }
 
 export async function POST(req: Request) {
   try {
     const { priceId } = await req.json();
-
     if (!priceId || typeof priceId !== "string") {
       return NextResponse.json(
         { error: "priceId manquant ou invalide" },
@@ -29,14 +28,29 @@ export async function POST(req: Request) {
       );
     }
 
-    const session = await getServerSession(authOptions);
+    // ✅ Tentative 1 — session standard
+    let session = await getServerSession(authOptions);
+
+    // ✅ Tentative 2 — fallback via cookie manuelle (Edge Runtime bug fix)
+    if (!session?.user?.email) {
+      const cookie = cookies().get("__Secure-next-auth.session-token");
+      if (cookie?.value) {
+        const token = JSON.parse(
+          Buffer.from(cookie.value.split(".")[1] ?? "", "base64").toString() || "{}"
+        );
+        session = { user: { email: token?.email }, expires: "" } as any;
+      }
+    }
+
     const userEmail = session?.user?.email as string | undefined;
     const userId = (session?.user as any)?.id as string | undefined;
 
-    if (!userEmail || !userId) {
+    if (!userEmail) {
+      console.error("Session non reçue côté serveur");
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
+    // Vérifie si un customer Stripe existe déjà
     let existingCustomerId: string | undefined = undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
@@ -46,7 +60,9 @@ export async function POST(req: Request) {
       if (existingSub?.stripeCustomerId) {
         existingCustomerId = existingSub.stripeCustomerId;
       }
-    } catch {}
+    } catch (err) {
+      console.warn("Erreur récupération StripeCustomerId:", err);
+    }
 
     const origin = requestOrigin();
 
@@ -62,19 +78,9 @@ export async function POST(req: Request) {
         : { customer_email: userEmail }),
 
       client_reference_id: userId,
-
-      metadata: {
-        plan: String(priceId).toLowerCase(),
-        email: userEmail,
-        userId: String(userId),
-      },
-
+      metadata: { plan: priceId.toLowerCase(), email: userEmail, userId },
       subscription_data: {
-        metadata: {
-          email: userEmail,
-          userId: String(userId),
-          plan: String(priceId).toLowerCase(),
-        },
+        metadata: { email: userEmail, userId, plan: priceId.toLowerCase() },
       },
     });
 

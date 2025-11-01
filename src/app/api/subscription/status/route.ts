@@ -1,44 +1,50 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ active: false }, { status: 200 });
+
+    if (!session || !session.user?.email) {
+      return NextResponse.json(
+        { error: "Non connecté." },
+        { status: 401 }
+      );
     }
 
-    // Récupère l'utilisateur
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
+      include: { subscription: true },
     });
+
     if (!user) {
-      return NextResponse.json({ active: false }, { status: 200 });
+      return NextResponse.json(
+        { error: "Utilisateur introuvable." },
+        { status: 404 }
+      );
     }
 
-    // Récupère un abonnement actif
-    const sub = await prisma.subscription.findFirst({
-      where: { userId: user.id, status: "active" },
-      select: { plan: true, status: true, periodEnd: true },
+    const subscription = user.subscription;
+
+    if (!subscription) {
+      return NextResponse.json({ active: false });
+    }
+
+    const isActive = subscription.status === "active";
+
+    return NextResponse.json({
+      active: isActive,
+      plan: subscription.plan,
+      status: subscription.status,
+      periodEnd: subscription.periodEnd,
     });
-
-    if (!sub) {
-      return NextResponse.json({ active: false }, { status: 200 });
-    }
-
+  } catch (error) {
+    console.error("Erreur route /subscription/status :", error);
     return NextResponse.json(
-      {
-        active: true,
-        plan: sub.plan,
-        status: sub.status,
-        periodEnd: sub.periodEnd,
-      },
-      { status: 200 }
+      { error: "Erreur serveur interne." },
+      { status: 500 }
     );
-  } catch (e) {
-    console.error("status error:", e);
-    return NextResponse.json({ active: false }, { status: 200 });
   }
 }

@@ -4,9 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(req: Request) {
   try {
-    const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
-    const email = token?.email?.toString().toLowerCase();
+    const token = await getToken({
+      req: req as any,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
 
+    const email = token?.email?.toString().toLowerCase();
     if (!email) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
@@ -14,11 +17,21 @@ export async function GET(req: Request) {
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
-        subscription: true,
+        subscription: {
+          select: {
+            status: true,
+            currentPeriodEnd: true,
+            plan: true,
+            priceId: true,
+            stripeId: true,
+            stripeCustomerId: true,
+            stripeSubId: true,
+          },
+        },
       },
     });
 
-    if (!user?.subscription) {
+    if (!user || !user.subscription) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
 
@@ -31,14 +44,18 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         active,
-        plan: sub.plan,
+        plan: sub.plan ?? null,
         status: sub.status,
-        periodEnd: sub.currentPeriodEnd,
+        periodEnd: sub.currentPeriodEnd ?? null,
+        priceId: sub.priceId ?? null,
+        stripeId: sub.stripeId ?? null,
+        stripeCustomerId: sub.stripeCustomerId ?? null,
+        stripeSubId: sub.stripeSubId ?? null,
       },
       { status: 200 }
     );
   } catch (err) {
-    console.error("status error:", err);
+    console.error("subscription/status error:", err);
     return NextResponse.json({ active: false }, { status: 200 });
   }
 }

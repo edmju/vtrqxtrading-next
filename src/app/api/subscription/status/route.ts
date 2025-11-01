@@ -1,19 +1,18 @@
-import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/prisma";
-
 export async function GET(req: Request) {
   try {
+    // ⚠️ On lit le token directement (évite les soucis de session sérialisée)
     const token = await getToken({
       req: req as any,
       secret: process.env.NEXTAUTH_SECRET,
     });
 
     const email = token?.email?.toString().toLowerCase();
+
     if (!email) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
 
+    // User + subscription (selon ton schema PRISMA fourni)
     const user = await prisma.user.findUnique({
       where: { email },
       include: {
@@ -35,12 +34,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
 
-    const sub = user.subscription;
-    const now = new Date();
-    const active =
-      sub.status === "active" &&
-      (!!sub.currentPeriodEnd ? sub.currentPeriodEnd > now : true);
-
+@@ -46,18 +31,14 @@ export async function GET(req: Request) {
     return NextResponse.json(
       {
         active,

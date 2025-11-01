@@ -1,64 +1,80 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
-import { compare } from "bcryptjs";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
-export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+import { prisma } from "@/lib/prisma";
+
+
+export const authOptions: NextAuthOptions = {
+  // Important sur Vercel avec domaine custom
+  trustHost: true,
+
+  session: { strategy: "jwt" },
+
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
-      name: "Credentials",
+    Credentials({
+      name: "credentials",
+
+
+
+
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password)
-          throw new Error("Email ou mot de passe manquant");
+        if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials.email.toLowerCase() },
+          include: { subscription: true },
         });
+        if (!user) return null;
 
-        if (!user) throw new Error("Utilisateur introuvable");
+        const ok = await bcrypt.compare(credentials.password, user.hashedPassword);
+        if (!ok) return null;
 
-        const isValid = await compare(credentials.password, user.password!);
-        if (!isValid) throw new Error("Mot de passe incorrect");
-
-        // ✅ Ne renvoyer que les champs nécessaires
+        // NextAuth ne peut renvoyer que des champs “user-like”
         return {
           id: user.id,
           email: user.email,
-          name: user.name ?? "",
-          hasActiveSub: user.hasActiveSub ?? false,
-        };
+        } as any;
       },
     }),
   ],
-  session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,
+
+
+
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.hasActiveSub = user.hasActiveSub ?? false;
+      try {
+        // Quand on vient de se logger, `user` est défini → hydrate le token
+        const email = (user?.email ?? token.email)?.toString().toLowerCase();
+        if (email) {
+          const dbUser = await prisma.user.findUnique({
+            where: { email },
+            include: { subscription: true },
+          });
+
+          token.id = dbUser?.id;
+          token.hasActiveSub =
+            dbUser?.subscription?.status === "active" &&
+            (!!dbUser.subscription.currentPeriodEnd
+              ? new Date(dbUser.subscription.currentPeriodEnd) > new Date()
+              : true);
+        }
+      } catch {
+        // ne casse pas la session si la DB est KO
       }
       return token;
     },
+
     async session({ session, token }) {
-      if (token?.id) {
-        session.user.id = token.id as string;
-        session.hasActiveSub = token.hasActiveSub ?? false;
-      }
+      // Ne jamais supposer que session.user existe
+      session.user = session.user ?? ({} as any);
+      (session.user as any).id = token.id as string | undefined;
+      (session as any).hasActiveSub = !!token.hasActiveSub;
       return session;
     },
   },

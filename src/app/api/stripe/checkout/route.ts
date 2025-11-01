@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/src/lib/prisma";
+import { prisma } from "@/lib/prisma"; // ✅ chemin corrigé ici
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover",
@@ -11,23 +11,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export async function POST(req: Request) {
   try {
-    // 1) Auth obligatoire
+    // 1️⃣ Auth obligatoire
     const session = await getServerSession(authOptions);
     const email = session?.user?.email;
     if (!email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // 2) Body { priceId }
+    // 2️⃣ Récupération du plan
     const { priceId } = (await req.json()) as { priceId?: string };
     if (!priceId) {
       return NextResponse.json({ error: "priceId manquant" }, { status: 400 });
     }
 
-    // 3) Récup user + éventuelle subscription existante (pour réutiliser le customer Stripe)
+    // 3️⃣ Récupère l’utilisateur avec éventuelle subscription
     const user = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, email: true, subscription: { select: { stripeCustomerId: true } } },
+      select: {
+        id: true,
+        email: true,
+        subscription: {
+          select: { stripeCustomerId: true },
+        },
+      },
     });
     if (!user) {
       return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
@@ -35,13 +41,10 @@ export async function POST(req: Request) {
 
     const existingCustomerId = user.subscription?.stripeCustomerId ?? undefined;
 
-    // 4) Crée la Checkout Session
-    //    ⚠️ On N’ÉCRIT RIEN EN BDD ICI (votre schéma impose `stripeId` non-nullable,
-    //    donc on crée/maj la Subscription uniquement via le webhook avec le vrai `sub_...`)
+    // 4️⃣ Crée la session Stripe Checkout
     const sessionStripe = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      // si on a déjà un customer Stripe, on le réutilise, sinon on laisse Stripe en créer un avec l'email
       ...(existingCustomerId
         ? { customer: existingCustomerId }
         : { customer_email: user.email }),
@@ -63,12 +66,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: sessionStripe.url }, { status: 200 });
   } catch (err: any) {
     console.error("Erreur Stripe checkout:", err);
-    const message =
-      typeof err?.message === "string" ? err.message : "Erreur serveur";
+    const message = typeof err?.message === "string" ? err.message : "Erreur serveur";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 export function GET() {
-  return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
+  return NextResponse.json({ error: "Méthode non autorisée" }, { status: 405 });
 }

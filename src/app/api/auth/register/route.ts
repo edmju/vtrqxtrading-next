@@ -4,8 +4,14 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { email, password } = body;
+    // 1) Lire le body JSON en toute sécurité
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return NextResponse.json({ error: "Corps invalide" }, { status: 400 });
+    }
+
+    const email = String(body.email || "").trim().toLowerCase();
+    const password = String(body.password || "");
 
     if (!email || !password) {
       return NextResponse.json(
@@ -14,37 +20,32 @@ export async function POST(req: Request) {
       );
     }
 
-    // Vérifie si l'utilisateur existe déjà
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
+    // 2) Unicité de l'email
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
       return NextResponse.json(
         { error: "Cet utilisateur existe déjà" },
         { status: 409 }
       );
     }
 
-    // Hash du mot de passe
+    // 3) Hash + création
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Création de l'utilisateur
-    const newUser = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email,
         hashedPassword,
       },
+      select: { id: true, email: true, createdAt: true },
     });
 
-    console.log("✅ Utilisateur créé :", newUser.email);
-
     return NextResponse.json(
-      { message: "Inscription réussie", user: newUser },
+      { message: "Inscription réussie", user },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Erreur register:", error);
+  } catch (err) {
+    console.error("Erreur register:", err);
     return NextResponse.json(
       { error: "Erreur interne serveur" },
       { status: 500 }

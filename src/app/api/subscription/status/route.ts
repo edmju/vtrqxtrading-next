@@ -1,44 +1,40 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+
+    // Si pas de session: on répond 200 avec active:false (évite les 401 bruyants côté UI)
     if (!session?.user?.email) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
 
-    // Récupère l'utilisateur
+    const email = session.user.email.toLowerCase();
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email },
+      include: { subscription: true },
     });
 
-    if (!user) {
-      return NextResponse.json({ active: false }, { status: 200 });
-    }
+    const sub = user?.subscription || null;
 
-    // Récupère un abonnement actif
-    const sub = await prisma.subscription.findFirst({
-      where: { userId: user.id, status: "active" },
-      select: { plan: true, status: true, periodEnd: true },
-    });
+    const active =
+      sub?.status === "active" &&
+      (!!sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd) > new Date() : true);
 
-    if (!sub) {
-      return NextResponse.json({ active: false }, { status: 200 });
-    }
     return NextResponse.json(
       {
-        active: true,
-        plan: sub.plan,
-        status: sub.status,
-        periodEnd: sub.periodEnd,
+        active,
+        plan: sub?.plan ?? sub?.priceId ?? null,
+        status: sub?.status ?? null,
+        periodEnd: sub?.currentPeriodEnd ?? null,
       },
       { status: 200 }
     );
-  } catch (e) {
-    console.error("status error:", e);
+  } catch (err) {
+    console.error("status error:", err);
     return NextResponse.json({ active: false }, { status: 200 });
   }
 }

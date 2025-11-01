@@ -25,12 +25,19 @@ export const authOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
+
         if (!user) throw new Error("Utilisateur introuvable");
 
         const isValid = await compare(credentials.password, user.password!);
         if (!isValid) throw new Error("Mot de passe incorrect");
 
-        return user;
+        // ✅ Ne renvoyer que les champs nécessaires
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name ?? "",
+          hasActiveSub: user.hasActiveSub ?? false,
+        };
       },
     }),
   ],
@@ -40,24 +47,17 @@ export const authOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      // 🟢 Attache toujours l’ID utilisateur au token
       if (user) {
         token.id = user.id;
         token.email = user.email;
-      } else if (!token.id && token.email) {
-        // 🟡 Fallback si JWT déjà existant
-        const existingUser = await prisma.user.findUnique({
-          where: { email: token.email as string },
-        });
-        if (existingUser) token.id = existingUser.id;
+        token.hasActiveSub = user.hasActiveSub ?? false;
       }
       return token;
     },
-
     async session({ session, token }) {
-      // 🟢 Propage l’ID vers session.user
       if (token?.id) {
         session.user.id = token.id as string;
+        session.hasActiveSub = token.hasActiveSub ?? false;
       }
       return session;
     },

@@ -10,8 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 
-// Construit l’origin depuis la requête pour conserver EXACTEMENT le même host
-// (www ou apex), afin que les cookies NextAuth correspondent.
+// ✅ Host dynamique (www ou non) pour conserver les cookies
 function requestOrigin() {
   const h = headers();
   const proto = h.get("x-forwarded-proto") ?? "https";
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Session obligatoire pour attacher email/userId aux métadonnées
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email as string | undefined;
     const userId = (session?.user as any)?.id as string | undefined;
@@ -39,7 +37,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // Réutilise le customer Stripe si présent
     let existingCustomerId: string | undefined = undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
@@ -49,9 +46,7 @@ export async function POST(req: Request) {
       if (existingSub?.stripeCustomerId) {
         existingCustomerId = existingSub.stripeCustomerId;
       }
-    } catch {
-      // non bloquant
-    }
+    } catch {}
 
     const origin = requestOrigin();
 
@@ -68,7 +63,6 @@ export async function POST(req: Request) {
 
       client_reference_id: userId,
 
-      // Métadonnées lues par le webhook
       metadata: {
         plan: String(priceId).toLowerCase(),
         email: userEmail,

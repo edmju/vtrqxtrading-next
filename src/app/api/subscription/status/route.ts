@@ -8,10 +8,7 @@ export async function GET() {
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user?.email) {
-      return NextResponse.json(
-        { error: "Non connecté." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Non connecté." }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -20,10 +17,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Utilisateur introuvable." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Utilisateur introuvable." }, { status: 404 });
     }
 
     const subscription = user.subscription;
@@ -38,13 +32,11 @@ export async function GET() {
       active: isActive,
       plan: subscription.plan,
       status: subscription.status,
-      periodEnd: subscription.periodEnd,
+      currentPeriodEnd: subscription.currentPeriodEnd,
+      stripeId: subscription.stripeId,
     });
   } catch (error) {
-    console.error("Erreur route /subscription/status :", error);
-    return NextResponse.json(
-      { error: "Erreur serveur interne." },
-      { status: 500 }
-    );
+    console.error("Erreur /api/subscription/status :", error);
+    return NextResponse.json({ error: "Erreur serveur interne." }, { status: 500 });
   }
 }

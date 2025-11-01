@@ -14,6 +14,7 @@ export async function GET() {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
+
     if (!user) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
@@ -27,7 +28,6 @@ export async function GET() {
     if (!sub) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
-
     return NextResponse.json(
       {
         active: true,

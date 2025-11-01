@@ -1,12 +1,21 @@
+// src/app/api/stripe/portal/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-06-20",
 });
+
+function requestOrigin() {
+  const h = headers();
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "vtrqxtrading.xyz";
+  return `${proto}://${host}`;
+}
 
 export async function GET() {
   try {
@@ -33,8 +42,7 @@ export async function GET() {
       );
     }
 
-    const origin =
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const origin = requestOrigin();
 
     const portal = await stripe.billingPortal.sessions.create({
       customer: sub.stripeCustomerId,

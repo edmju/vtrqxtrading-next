@@ -1,13 +1,13 @@
 import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import prisma, { ensureSchema } from "@/lib/prisma";
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/lib/prisma";
+import { compare } from "bcryptjs";
 
-const handler = NextAuth({
-  session: { strategy: "jwt" },
+export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    Credentials({
-      name: "Credentials",
+    CredentialsProvider({
+      name: "credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
@@ -15,49 +15,49 @@ const handler = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        await ensureSchema();
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          include: { subscription: true },
         });
 
         if (!user) return null;
 
-        const valid = await bcrypt.compare(credentials.password, user.hashedPassword);
-        if (!valid) return null;
+        const isValid = await compare(credentials.password, user.password);
+        if (!isValid) return null;
 
-        return { id: user.id, email: user.email };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          hasActiveSub: user.subscription?.status === "active" || false,
+        };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.email = user.email;
+        token.hasActiveSub = user.hasActiveSub;
+      } else {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          include: { subscription: true },
+        });
+        token.hasActiveSub = dbUser?.subscription?.status === "active" || false;
       }
-
-      await ensureSchema();
-      const dbUser = await prisma.user.findUnique({
-        where: { email: String(token.email) },
-        include: {
-          subscription: {
-            select: { status: true }, // ✅ correction ici
-          },
-        },
-      });
-
-      token.hasActiveSub = dbUser?.subscription?.status === "active";
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
+      if (token) {
         session.user.hasActiveSub = token.hasActiveSub;
       }
       return session;
     },
   },
-  pages: { signIn: "/login" },
-});
+  pages: {
+    signIn: "/login",
+  },
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

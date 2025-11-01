@@ -1,13 +1,16 @@
+// src/app/subscription/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 
-type SubInfo = {
-  active: boolean;
-  plan?: string;
-  status?: string;
-  periodEnd?: string;
-} | null;
+type SubInfo =
+  | {
+      active: boolean;
+      plan?: string;
+      status?: string;
+      periodEnd?: string;
+    }
+  | null;
 
 const PLAN_TO_PRICEID: Record<string, string | undefined> = {
   basic: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC,
@@ -22,11 +25,12 @@ export default function SubscriptionPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState<string | null>(null);
 
-  // Récupère la session utilisateur + statut d'abonnement
   useEffect(() => {
     async function fetchData() {
       try {
-        const sessionRes = await fetch("/api/auth/session");
+        const sessionRes = await fetch("/api/auth/session", {
+          credentials: "include",
+        });
         const session = await sessionRes.json();
 
         if (!session?.user?.email) {
@@ -37,7 +41,9 @@ export default function SubscriptionPage() {
 
         setUserEmail(session.user.email);
 
-        const subRes = await fetch("/api/subscription/status");
+        const subRes = await fetch("/api/subscription/status", {
+          credentials: "include",
+        });
         const subData = await subRes.json();
 
         setSubscription(subData);
@@ -51,7 +57,6 @@ export default function SubscriptionPage() {
     fetchData();
   }, []);
 
-  // Ouvre la page Stripe Checkout (POST obligatoire)
   const handleSubscribe = async (plan: "basic" | "pro" | "enterprise") => {
     try {
       const priceId = PLAN_TO_PRICEID[plan];
@@ -65,6 +70,7 @@ export default function SubscriptionPage() {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ priceId }),
       });
 
@@ -88,10 +94,9 @@ export default function SubscriptionPage() {
     }
   };
 
-  // Ouvre le portail Stripe si abonné
   const handleManage = async () => {
     try {
-      const res = await fetch("/api/stripe/portal");
+      const res = await fetch("/api/stripe/portal", { credentials: "include" });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
@@ -131,7 +136,6 @@ export default function SubscriptionPage() {
         </p>
       )}
 
-      {/* Si abonnement actif */}
       {subscription?.active ? (
         <div className="text-center">
           <p className="text-green-400 text-lg mb-6">
@@ -148,7 +152,6 @@ export default function SubscriptionPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-4xl">
-            {/* BASIC */}
             <div className="bg-neutral-900 border border-yellow-700 rounded-xl p-6">
               <h2 className="text-xl font-bold text-yellow-400 mb-2">Basic</h2>
               <p className="text-gray-400 mb-4">29 € / mois</p>
@@ -161,7 +164,6 @@ export default function SubscriptionPage() {
               </button>
             </div>
 
-            {/* PRO */}
             <div className="bg-neutral-900 border border-yellow-700 rounded-xl p-6">
               <h2 className="text-xl font-bold text-yellow-400 mb-2">Pro</h2>
               <p className="text-gray-400 mb-4">59 € / mois</p>
@@ -174,7 +176,6 @@ export default function SubscriptionPage() {
               </button>
             </div>
 
-            {/* ENTERPRISE */}
             <div className="bg-neutral-900 border border-yellow-700 rounded-xl p-6">
               <h2 className="text-xl font-bold text-yellow-400 mb-2">Enterprise</h2>
               <p className="text-gray-400 mb-4">99 € / mois</p>

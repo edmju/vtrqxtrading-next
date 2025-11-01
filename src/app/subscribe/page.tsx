@@ -33,7 +33,7 @@ export default function SubscribePage() {
       setLoading(priceId);
       setError(null);
 
-      // Utilise un chemin relatif et inclut les cookies pour éviter la perte de session
+      // ✅ Cookies inclus, chemin relatif
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

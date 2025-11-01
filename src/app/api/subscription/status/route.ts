@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -14,9 +13,7 @@ export async function GET() {
     // Récupère l'utilisateur
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-
     });
-
     if (!user) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
@@ -30,6 +27,7 @@ export async function GET() {
     if (!sub) {
       return NextResponse.json({ active: false }, { status: 200 });
     }
+
     return NextResponse.json(
       {
         active: true,

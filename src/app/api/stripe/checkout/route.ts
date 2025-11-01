@@ -1,23 +1,22 @@
+// src/app/api/stripe/checkout/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-06-20",
 });
 
-function normalizedOrigin() {
-  const raw = process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
-  // Évite les redirections (www -> non-www) pour garder des URLs stables
-  try {
-    const u = new URL(raw);
-    const host = u.hostname.replace(/^www\./i, "");
-    return `${u.protocol}//${host}`;
-  } catch {
-    return "https://vtrqxtrading.xyz";
-  }
+// Construit l’origin depuis la requête pour conserver EXACTEMENT le même host
+// (www ou apex), afin que les cookies NextAuth correspondent.
+function requestOrigin() {
+  const h = headers();
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "vtrqxtrading.xyz";
+  return `${proto}://${host}`;
 }
 
 export async function POST(req: Request) {
@@ -25,10 +24,13 @@ export async function POST(req: Request) {
     const { priceId } = await req.json();
 
     if (!priceId || typeof priceId !== "string") {
-      return NextResponse.json({ error: "priceId manquant ou invalide" }, { status: 400 });
+      return NextResponse.json(
+        { error: "priceId manquant ou invalide" },
+        { status: 400 }
+      );
     }
 
-    // ⚠️ On exige une session pour attacher email/userId aux métadonnées
+    // Session obligatoire pour attacher email/userId aux métadonnées
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email as string | undefined;
     const userId = (session?.user as any)?.id as string | undefined;
@@ -37,7 +39,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // Si l'utilisateur a déjà un customer Stripe, on le réutilise
+    // Réutilise le customer Stripe si présent
     let existingCustomerId: string | undefined = undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
@@ -48,10 +50,10 @@ export async function POST(req: Request) {
         existingCustomerId = existingSub.stripeCustomerId;
       }
     } catch {
-      // pas bloquant
+      // non bloquant
     }
 
-    const origin = normalizedOrigin();
+    const origin = requestOrigin();
 
     const sessionStripe = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -60,22 +62,19 @@ export async function POST(req: Request) {
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
 
-      // Si on connaît déjà le customer Stripe, on le force pour relier correctement
       ...(existingCustomerId
         ? { customer: existingCustomerId }
         : { customer_email: userEmail }),
 
-      // Identifiant applicatif utile côté Stripe/Logs
       client_reference_id: userId,
 
-      // Métadonnées utilisées par le webhook pour faire le lien Neon <-> Stripe
+      // Métadonnées lues par le webhook
       metadata: {
-        plan: String(priceId).toLowerCase(), // ✅ correction .toLowerCase()
+        plan: String(priceId).toLowerCase(),
         email: userEmail,
         userId: String(userId),
       },
 
-      // Assure que l'objet Subscription Stripe porte aussi nos métadonnées
       subscription_data: {
         metadata: {
           email: userEmail,

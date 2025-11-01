@@ -1,88 +1,74 @@
+// src/app/api/stripe/checkout/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { prisma } from "@/src/lib/prisma";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-09-30.clover",
 });
 
-function normalizedOrigin() {
-  const raw = process.env.NEXT_PUBLIC_APP_URL || "https://vtrqxtrading.xyz";
-  try {
-    const u = new URL(raw);
-    const host = u.hostname.replace(/^www\./i, "");
-    return `${u.protocol}//${host}`;
-  } catch {
-    return "https://vtrqxtrading.xyz";
-  }
-}
-
 export async function POST(req: Request) {
   try {
-    const { priceId } = await req.json();
-    if (!priceId || typeof priceId !== "string") {
-      return NextResponse.json(
-        { error: "priceId manquant ou invalide" },
-        { status: 400 }
-      );
+    // 1) Auth obligatoire
+    const session = await getServerSession(authOptions);
+    const email = session?.user?.email;
+    if (!email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ On utilise getToken au lieu de getServerSession
-    const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
-    const userEmail = token?.email?.toString().toLowerCase();
-    const userId = token?.sub as string | undefined;
-
-    if (!userEmail || !userId) {
-      return NextResponse.json({ error: "Non connecté" }, { status: 401 });
+    // 2) Body { priceId }
+    const { priceId } = (await req.json()) as { priceId?: string };
+    if (!priceId) {
+      return NextResponse.json({ error: "priceId manquant" }, { status: 400 });
     }
 
-    // Vérifie si un client Stripe existe déjà
-    let existingCustomerId: string | undefined;
-    const existingSub = await prisma.subscription.findUnique({
-      where: { userId },
-      select: { stripeCustomerId: true },
+    // 3) Récup user + éventuelle subscription existante (pour réutiliser le customer Stripe)
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, email: true, subscription: { select: { stripeCustomerId: true } } },
     });
-    if (existingSub?.stripeCustomerId) {
-      existingCustomerId = existingSub.stripeCustomerId;
+    if (!user) {
+      return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
     }
 
-    const origin = normalizedOrigin();
+    const existingCustomerId = user.subscription?.stripeCustomerId ?? undefined;
 
+    // 4) Crée la Checkout Session
+    //    ⚠️ On N’ÉCRIT RIEN EN BDD ICI (votre schéma impose `stripeId` non-nullable,
+    //    donc on crée/maj la Subscription uniquement via le webhook avec le vrai `sub_...`)
     const sessionStripe = await stripe.checkout.sessions.create({
       mode: "subscription",
-      payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/subscription?success=1`,
-      cancel_url: `${origin}/subscription?canceled=1`,
+      // si on a déjà un customer Stripe, on le réutilise, sinon on laisse Stripe en créer un avec l'email
       ...(existingCustomerId
         ? { customer: existingCustomerId }
-        : { customer_email: userEmail }),
-      client_reference_id: userId,
+        : { customer_email: user.email }),
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription?status=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription?status=cancel`,
+      allow_promotion_codes: true,
       metadata: {
-        userId: userId,
-        email: userEmail,
-        plan: String(priceId).toLowerCase(),
+        userId: user.id,
+        email: user.email,
       },
       subscription_data: {
         metadata: {
-          userId: userId,
-          email: userEmail,
-          plan: String(priceId).toLowerCase(),
+          userId: user.id,
+          email: user.email,
         },
       },
     });
 
     return NextResponse.json({ url: sessionStripe.url }, { status: 200 });
-  } catch (error: any) {
-    console.error("Erreur Stripe checkout:", error);
-    return NextResponse.json(
-      { error: error?.message ?? "Erreur interne Stripe" },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error("Erreur Stripe checkout:", err);
+    const message =
+      typeof err?.message === "string" ? err.message : "Erreur serveur";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-export async function GET() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+export function GET() {
+  return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 }

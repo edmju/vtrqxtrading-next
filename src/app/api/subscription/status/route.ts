@@ -1,42 +1,63 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import prisma from "@/lib/prisma";
+import { getToken } from "next-auth/jwt";
+import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    // ⚠️ On lit le token directement (évite les soucis de session sérialisée)
+    const token = await getToken({
+      req: req as any,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
 
-    if (!session || !session.user?.email) {
-      return NextResponse.json({ error: "Non connecté." }, { status: 401 });
+    const email = token?.email?.toString().toLowerCase();
+    if (!email) {
+      return NextResponse.json({ active: false }, { status: 200 });
     }
 
+    // User + subscription (selon ton schema PRISMA fourni)
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: { subscription: true },
+      where: { email },
+      include: {
+        subscription: {
+          select: {
+            status: true,
+            currentPeriodEnd: true,
+            plan: true,
+            priceId: true,
+            stripeId: true,
+            stripeCustomerId: true,
+            stripeSubId: true,
+          },
+        },
+      },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "Utilisateur introuvable." }, { status: 404 });
+    if (!user || !user.subscription) {
+      return NextResponse.json({ active: false }, { status: 200 });
     }
 
-    const subscription = user.subscription;
+    const sub = user.subscription;
+    const now = new Date();
+    const active =
+      sub.status === "active" &&
+      (!!sub.currentPeriodEnd ? sub.currentPeriodEnd > now : true);
 
-    if (!subscription) {
-      return NextResponse.json({ active: false });
-    }
-
-    const isActive = subscription.status === "active";
-
-    return NextResponse.json({
-      active: isActive,
-      plan: subscription.plan,
-      status: subscription.status,
-      currentPeriodEnd: subscription.currentPeriodEnd,
-      stripeId: subscription.stripeId,
-    });
-  } catch (error) {
-    console.error("Erreur /api/subscription/status :", error);
-    return NextResponse.json({ error: "Erreur serveur interne." }, { status: 500 });
+    return NextResponse.json(
+      {
+        active,
+        plan: sub.plan ?? null,
+        status: sub.status,
+        periodEnd: sub.currentPeriodEnd ?? null,
+        priceId: sub.priceId ?? null,
+        stripeId: sub.stripeId ?? null,
+        stripeCustomerId: sub.stripeCustomerId ?? null,
+        stripeSubId: sub.stripeSubId ?? null,
+      },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("subscription/status error:", err);
+    return NextResponse.json({ active: false }, { status: 200 });
   }
 }

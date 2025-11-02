@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,17 +15,20 @@ export default function RegisterPage() {
     e.preventDefault();
     if (password !== confirm) return setError("Les mots de passe ne correspondent pas");
     setLoading(true);
-    const res = await fetch("/api/auth/register", {
+
+    // 🔧 Corrigé : bonne route d’API
+    const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+
     setLoading(false);
     if (res.ok) {
       await signIn("credentials", { email, password, redirect: false });
       router.push("/profile");
     } else {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       setError(data.message || "Erreur d’inscription");
     }
   };

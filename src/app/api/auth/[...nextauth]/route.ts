@@ -1,80 +1,76 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import { compare } from "bcryptjs";
 
-
-export const authOptions: NextAuthOptions = {
-  // Important sur Vercel avec domaine custom
-  trustHost: true,
-
-  session: { strategy: "jwt" },
-
+export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
-    Credentials({
-      name: "credentials",
-
-
-
-
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    CredentialsProvider({
+      name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        console.log("🔍 Tentative de connexion via Credentials:", credentials?.email);
+
+        if (!credentials?.email || !credentials?.password)
+          throw new Error("Email ou mot de passe manquant");
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase() },
-          include: { subscription: true },
+          where: { email: credentials.email },
         });
-        if (!user) return null;
 
-        const ok = await bcrypt.compare(credentials.password, user.hashedPassword);
-        if (!ok) return null;
+        if (!user) {
+          console.warn("❌ Utilisateur introuvable");
+          throw new Error("Utilisateur introuvable");
+        }
 
-        // NextAuth ne peut renvoyer que des champs “user-like”
+        const isValid = await compare(credentials.password, user.password!);
+        console.log("Mot de passe valide:", isValid);
+
+        if (!isValid) {
+          console.warn("❌ Mot de passe incorrect");
+          throw new Error("Mot de passe incorrect");
+        }
+
+        // ✅ NextAuth exige un objet strictement typé { id, name, email }
         return {
-          id: user.id,
+          id: String(user.id),
+          name: user.name || user.email.split("@")[0],
           email: user.email,
-        } as any;
+          hasActiveSub: user.hasActiveSub ?? false,
+        };
       },
     }),
   ],
 
-
-
+  session: { strategy: "jwt" },
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 
   callbacks: {
     async jwt({ token, user }) {
-      try {
-        // Quand on vient de se logger, `user` est défini → hydrate le token
-        const email = (user?.email ?? token.email)?.toString().toLowerCase();
-        if (email) {
-          const dbUser = await prisma.user.findUnique({
-            where: { email },
-            include: { subscription: true },
-          });
-
-          token.id = dbUser?.id;
-          token.hasActiveSub =
-            dbUser?.subscription?.status === "active" &&
-            (!!dbUser.subscription.currentPeriodEnd
-              ? new Date(dbUser.subscription.currentPeriodEnd) > new Date()
-              : true);
-        }
-      } catch {
-        // ne casse pas la session si la DB est KO
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.hasActiveSub = user.hasActiveSub ?? false;
       }
       return token;
     },
 
     async session({ session, token }) {
-      // Ne jamais supposer que session.user existe
-      session.user = session.user ?? ({} as any);
-      (session.user as any).id = token.id as string | undefined;
-      (session as any).hasActiveSub = !!token.hasActiveSub;
+      if (token) {
+        session.user.id = token.id;
+        session.hasActiveSub = token.hasActiveSub ?? false;
+      }
       return session;
     },
   },

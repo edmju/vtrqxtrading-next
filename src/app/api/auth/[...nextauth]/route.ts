@@ -1,12 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
 
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  // ❌ Retiré l'adapter ici, car le CredentialsProvider gère déjà Prisma
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -20,39 +19,36 @@ export const authOptions = {
         password: { label: "Mot de passe", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          console.log("🔍 Tentative de connexion:", credentials?.email);
+        console.log("🔍 Tentative de connexion:", credentials?.email);
 
-          if (!credentials?.email || !credentials?.password) {
-            console.error("⚠️ Champs manquants");
-            return null;
-          }
-
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
-          if (!user) {
-            console.warn("⚠️ Utilisateur introuvable");
-            return null;
-          }
-
-          const isValid = await compare(credentials.password, user.password!);
-          console.log("Mot de passe valide:", isValid);
-          if (!isValid) {
-            console.warn("⚠️ Mot de passe invalide");
-            return null;
-          }
-
-          // ✅ renvoyer uniquement les champs que NextAuth attend
-          return {
-            id: user.id.toString(),
-            email: user.email,
-            name: user.name ?? user.email.split("@")[0],
-          };
-        } catch (err) {
-          console.error("❌ Erreur authorize:", err);
+        if (!credentials?.email || !credentials?.password) {
+          console.error("⚠️ Champs manquants");
           return null;
         }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user) {
+          console.warn("⚠️ Utilisateur introuvable");
+          return null;
+        }
+
+        const isValid = await compare(credentials.password, user.password!);
+        console.log("Mot de passe valide:", isValid);
+
+        if (!isValid) {
+          console.warn("⚠️ Mot de passe incorrect");
+          return null;
+        }
+
+        // ✅ Retour formaté strict pour NextAuth
+        return {
+          id: user.id.toString(),
+          name: user.name ?? user.email.split("@")[0],
+          email: user.email,
+        };
       },
     }),
   ],

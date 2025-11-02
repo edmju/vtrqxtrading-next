@@ -1,8 +1,10 @@
+export const runtime = "nodejs";
+
 import NextAuth from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-// ✅ Handler NextAuth principal
-const handler = NextAuth(authOptions);
+// Re-export pour les usages getServerSession(authOptions) ailleurs
+export { authOptions } from "@/lib/auth";
 
-// ✅ Export requis par Next.js App Router
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

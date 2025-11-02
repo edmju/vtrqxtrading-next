@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
 
 export const authOptions = {
-  // ❌ Retiré l'adapter ici, car le CredentialsProvider gère déjà Prisma
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -35,7 +34,8 @@ export const authOptions = {
           return null;
         }
 
-        const isValid = await compare(credentials.password, user.password!);
+        // ✅ utiliser le bon champ depuis la BDD : hashedPassword
+        const isValid = await compare(credentials.password, user.hashedPassword!);
         console.log("Mot de passe valide:", isValid);
 
         if (!isValid) {
@@ -43,7 +43,7 @@ export const authOptions = {
           return null;
         }
 
-        // ✅ Retour formaté strict pour NextAuth
+        // ✅ Retour attendu par NextAuth
         return {
           id: user.id.toString(),
           name: user.name ?? user.email.split("@")[0],

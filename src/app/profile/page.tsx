@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -49,7 +49,8 @@ export default function ProfilePage() {
       return;
     }
 
-    const res = await fetch("/api/auth/register", {
+    // 🔧 Corrigé : bonne route d’API
+    const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

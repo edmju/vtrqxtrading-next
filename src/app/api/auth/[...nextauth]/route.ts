@@ -4,6 +4,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
 
+export const runtime = "nodejs";
+
 export const authOptions = {
   providers: [
     GoogleProvider({

@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // 🔧 Normalisation stricte pour éviter les faux négatifs
+        // Normalise pour éviter les faux négatifs
         const email = String(credentials.email).trim().toLowerCase();
 
         const user = await prisma.user.findUnique({ where: { email } });
@@ -58,7 +58,5 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  pages: {
-    signIn: "/profile",
-  },
+  pages: { signIn: "/profile" },
 };

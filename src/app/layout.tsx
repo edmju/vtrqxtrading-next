@@ -10,7 +10,6 @@ const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
 export const metadata: Metadata = {
   title: "VTRQX Trading — AI‑Powered Terminal",
   description: "Institutional‑grade data, AI insights, and trading tools.",
-  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

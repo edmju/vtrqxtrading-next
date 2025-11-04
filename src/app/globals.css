@@ -17,29 +17,21 @@ html, body {
   color: #E8ECF1;
 }
 
-.neon-ring {
-  position: relative;
-  background: var(--card);
-  border-radius: 18px;
-}
+/* familles Next/font */
+.font-orbitron { font-family: var(--font-orbitron), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+.font-jakarta  { font-family: var(--font-jakarta),  ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+.neon-ring { position: relative; background: var(--card); border-radius: 18px; }
 .neon-ring::before {
   content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 20px;
+  position: absolute; inset: -1px; border-radius: 20px;
   background:
     radial-gradient(circle at 10% -10%, rgba(255,213,74,0.35), transparent 40%),
     radial-gradient(circle at 110% 20%, rgba(34,211,238,0.35), transparent 40%);
-  filter: blur(18px);
-  z-index: -1;
+  filter: blur(18px); z-index: -1;
 }
 
-.glass {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
-  border: 1px solid rgba(255,255,255,0.06);
-  backdrop-filter: blur(6px);
-}
+.glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+  border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
 
-a, button {
-  -webkit-tap-highlight-color: transparent;
-}
+a, button { -webkit-tap-highlight-color: transparent; }

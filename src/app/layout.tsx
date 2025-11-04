@@ -1,28 +1,27 @@
-"use client";
+import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Orbitron } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import { SessionProvider } from "next-auth/react";
-import Head from "next/head";
+import Header from "@/components/site/Header";
+import Footer from "@/components/site/Footer";
+
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta" });
+const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
+
+export const metadata: Metadata = {
+  title: "VTRQX Trading — AI‑Powered Terminal",
+  description: "Institutional‑grade data, AI insights, and trading tools.",
+  icons: { icon: "/favicon.ico" },
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <Head>
-        <link rel="icon" href="/faviconREAL.png" type="image/png" />
-        <title>VTRQX Trading Next</title>
-      </Head>
-      <body className="bg-bg-dark text-text-main overflow-x-hidden relative">
-        <SessionProvider>
+    <html lang="en" className={`${jakarta.variable} ${orbitron.variable}`}>
+      <body>
+        <div className="min-h-screen flex flex-col">
           <Header />
-          {/* Le conteneur principal */}
-          <div className="min-h-screen pt-20 relative overflow-hidden">
-            {/* ✅ Fond animé placé derrière grâce à z-index */}
-            <div className="absolute inset-0 bg-gradient-to-br from-neon-purple/20 via-transparent to-neon-cyan/10 blur-3xl animate-gradient -z-10 pointer-events-none"></div>
-
-            {/* ✅ Contenu cliquable au-dessus */}
-            <div className="relative z-10">{children}</div>
-          </div>
-        </SessionProvider>
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
-
     if (!user) {
       return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
     }
@@ -38,9 +37,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Reset password error:", error);
-    return NextResponse.json(
-      { error: "Erreur serveur" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }

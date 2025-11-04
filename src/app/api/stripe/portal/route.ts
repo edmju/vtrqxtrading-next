@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -42,11 +42,9 @@ export async function GET() {
       );
     }
 
-    const origin = requestOrigin();
-
     const portal = await stripe.billingPortal.sessions.create({
       customer: sub.stripeCustomerId,
-      return_url: `${origin}/subscription`,
+      return_url: `${requestOrigin()}/subscription`,
     });
 
     return NextResponse.json({ url: portal.url }, { status: 200 });

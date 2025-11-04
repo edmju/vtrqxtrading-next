@@ -1,14 +1,22 @@
 "use client";
 import { useMemo } from "react";
 
-export default function Sparkline({ values, width = 240, height = 64 }: { values: number[]; width?: number; height?: number; }) {
+export default function Sparkline({
+  values,
+  width = 240,
+  height = 64,
+}: {
+  values: number[];
+  width?: number;
+  height?: number;
+}) {
   const path = useMemo(() => {
     if (!values.length) return "";
     const max = Math.max(...values);
     const min = Math.min(...values);
-    const scaleX = (i: number) => (i / (values.length - 1)) * width;
-    const scaleY = (v: number) => height - ((v - min) / Math.max(1, max - min)) * height;
-    return values.map((v, i) => `${i === 0 ? "M" : "L"} ${scaleX(i)} ${scaleY(v)}`).join(" ");
+    const sx = (i: number) => (i / (values.length - 1)) * width;
+    const sy = (v: number) => height - ((v - min) / Math.max(1, max - min)) * height;
+    return values.map((v, i) => `${i === 0 ? "M" : "L"} ${sx(i)} ${sy(v)}`).join(" ");
   }, [values, width, height]);
 
   return (

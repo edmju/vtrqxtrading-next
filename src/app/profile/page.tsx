@@ -1,11 +1,15 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  // ⚠️ ne pas destructurer directement pour éviter l’erreur si le hook est indéfini
+  const sessionHook = useSession();
+  const session = sessionHook?.data;
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -49,7 +53,6 @@ export default function ProfilePage() {
       return;
     }
 
-    // 🔧 Corrigé : bonne route d’API
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

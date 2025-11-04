@@ -2,52 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  height: 100%;
-  background: radial-gradient(circle at 20% 30%, #0A0A0A, #000);
-  color: #EAEAEA;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+:root {
+  --bg: #07090B;
+  --card: #0E1216;
+  --primary: #FFD54A;
+  --primary-soft: #FFE483;
+  --cyan: #22D3EE;
 }
 
-h1, h2, h3 {
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
+html, body {
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(255,213,74,0.12), transparent 60%),
+              radial-gradient(1200px 600px at 120% 20%, rgba(34,211,238,0.12), transparent 60%),
+              var(--bg);
+  color: #E8ECF1;
+}
+
+.neon-ring {
+  position: relative;
+  background: var(--card);
+  border-radius: 18px;
+}
+.neon-ring::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 10% -10%, rgba(255,213,74,0.35), transparent 40%),
+    radial-gradient(circle at 110% 20%, rgba(34,211,238,0.35), transparent 40%);
+  filter: blur(18px);
+  z-index: -1;
 }
 
 .glass {
-  background: rgba(15, 15, 15, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
 }
 
-.gradient-text {
-  background: linear-gradient(270deg, #FFD600, #00E5FF, #8A2BE2);
-  background-size: 600% 600%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient 6s ease infinite;
-}
-
-.cta {
-  background: linear-gradient(90deg, #FFD600, #00E5FF);
-  font-weight: 700;
-  color: #000;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,229,255,0.4);
-  transition: all 0.25s ease;
-}
-.cta:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(255,214,0,0.7);
-}
-
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }

@@ -3,14 +3,13 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { headers, cookies } from "next/headers";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-06-20",
 });
 
-// ✅ Host dynamique (www ou non) pour correspondre exactement au cookie
 function requestOrigin() {
   const h = headers();
   const proto = h.get("x-forwarded-proto") ?? "https";
@@ -22,16 +21,13 @@ export async function POST(req: Request) {
   try {
     const { priceId } = await req.json();
     if (!priceId || typeof priceId !== "string") {
-      return NextResponse.json(
-        { error: "priceId manquant ou invalide" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "priceId manquant ou invalide" }, { status: 400 });
     }
 
-    // ✅ Tentative 1 — session standard
+    // Tentative standard
     let session = await getServerSession(authOptions);
 
-    // ✅ Tentative 2 — fallback via cookie manuelle (Edge Runtime bug fix)
+    // Fallback cookie (certaines régions edge)
     if (!session?.user?.email) {
       const cookie = cookies().get("__Secure-next-auth.session-token");
       if (cookie?.value) {
@@ -46,12 +42,11 @@ export async function POST(req: Request) {
     const userId = (session?.user as any)?.id as string | undefined;
 
     if (!userEmail) {
-      console.error("Session non reçue côté serveur");
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // Vérifie si un customer Stripe existe déjà
-    let existingCustomerId: string | undefined = undefined;
+    // Customer existant ?
+    let existingCustomerId: string | undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
         where: { userId },
@@ -72,11 +67,7 @@ export async function POST(req: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/subscription?success=1`,
       cancel_url: `${origin}/subscription?canceled=1`,
-
-      ...(existingCustomerId
-        ? { customer: existingCustomerId }
-        : { customer_email: userEmail }),
-
+      ...(existingCustomerId ? { customer: existingCustomerId } : { customer_email: userEmail }),
       client_reference_id: userId,
       metadata: { plan: priceId.toLowerCase(), email: userEmail, userId },
       subscription_data: {

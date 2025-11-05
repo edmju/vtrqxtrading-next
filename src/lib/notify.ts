@@ -14,14 +14,14 @@ export async function sendEmailNotification(subject: string, text: string) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
+      user: process.env.MAIL_USER, // adresse Gmail d’envoi
+      pass: process.env.MAIL_PASS, // mot de passe d’application Gmail
     },
   });
 
   await transporter.sendMail({
-    from: `"VTRQX AI" <${process.env.MAIL_USER}>`,
-    to: process.env.MAIL_USER,
+    from: `"VTRQX AI" <${process.env.MAIL_USER}>`, // expéditeur
+    to: process.env.MAIL_TO || process.env.MAIL_USER, // destinataire
     subject,
     text,
   });

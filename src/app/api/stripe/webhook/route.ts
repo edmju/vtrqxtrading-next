@@ -11,6 +11,18 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-06-20",
 });
 
+function resolvePlanKey(v?: string | null) {
+  const x = (v || "").toLowerCase();
+  const starter = (process.env.STRIPE_PRICE_STARTER || "").toLowerCase();
+  const pro = (process.env.STRIPE_PRICE_PRO || "").toLowerCase();
+  const terminal = (process.env.STRIPE_PRICE_TERMINAL || "").toLowerCase();
+  if (!x) return null;
+  if (x === starter || x.includes("starter")) return "starter";
+  if (x === pro || x.includes("pro")) return "pro";
+  if (x === terminal || x.includes("terminal")) return "terminal";
+  return null;
+}
+
 export async function GET() {
   return NextResponse.json({ ok: true, endpoint: "/api/stripe/webhook" });
 }
@@ -35,28 +47,29 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
-      // ✅ Création/màj de l’abonnement : source de vérité Stripe → Neon
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
 
         const userId = (sub.metadata?.userId as string | undefined) ?? undefined;
-        const plan =
-          (sub.metadata?.plan as string | undefined) ??
-          sub.items.data[0]?.price?.id ??
-          undefined;
+
+        const priceId = sub.items.data[0]?.price?.id?.toLowerCase();
+        const keyFromMeta =
+          (sub.metadata?.plan as string | undefined)?.toLowerCase() ||
+          (sub.metadata?.planId as string | undefined)?.toLowerCase();
+
+        const plan = resolvePlanKey(keyFromMeta) || resolvePlanKey(priceId) || undefined;
 
         const periodStart = new Date(sub.current_period_start * 1000);
         const periodEnd = new Date(sub.current_period_end * 1000);
         const customerId = sub.customer as string;
 
-        // upsert par stripeId (unique) et on renseigne userId s’il est présent
         await prisma.subscription.upsert({
           where: { stripeId: sub.id },
           update: {
             userId: userId ?? undefined,
             status: sub.status,
-            priceId: sub.items.data[0]?.price?.id ?? undefined,
+            priceId: priceId ?? undefined,
             plan,
             currentPeriodStart: periodStart,
             currentPeriodEnd: periodEnd,
@@ -67,7 +80,7 @@ export async function POST(req: Request) {
             userId: userId ?? undefined,
             stripeId: sub.id,
             status: sub.status,
-            priceId: sub.items.data[0]?.price?.id ?? undefined,
+            priceId: priceId ?? undefined,
             plan,
             currentPeriodStart: periodStart,
             currentPeriodEnd: periodEnd,
@@ -79,7 +92,6 @@ export async function POST(req: Request) {
         break;
       }
 
-      // ✅ Checkout terminé : rattache l’abonnement au user
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
 
@@ -90,7 +102,10 @@ export async function POST(req: Request) {
 
         const subscriptionId = cs.subscription as string | null;
         const stripeCustomerId = cs.customer as string | null;
-        const plan = (cs.metadata?.plan as string | undefined) ?? undefined;
+
+        const mPlan = (cs.metadata?.plan as string | undefined)?.toLowerCase();
+        const mPlanId = (cs.metadata?.planId as string | undefined)?.toLowerCase();
+        const plan = resolvePlanKey(mPlan) || resolvePlanKey(mPlanId) || undefined;
 
         if (subscriptionId) {
           await prisma.subscription.upsert({
@@ -115,7 +130,6 @@ export async function POST(req: Request) {
         break;
       }
 
-      // ✅ Paiement → rafraîchit la date de fin de période
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = invoice.subscription as string | null;
@@ -134,7 +148,6 @@ export async function POST(req: Request) {
         break;
       }
 
-      // ✅ Résiliation
       case "customer.subscription.deleted": {
         const sub = event.data.object as Stripe.Subscription;
         await prisma.subscription.updateMany({
@@ -145,7 +158,6 @@ export async function POST(req: Request) {
       }
 
       default:
-        // autres events ignorés
         break;
     }
 

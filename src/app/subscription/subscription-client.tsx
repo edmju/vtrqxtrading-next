@@ -4,91 +4,102 @@ import { useMemo, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import GlassCard from "@/components/ui/GlassCard";
 import Button from "@/components/ui/Button";
+import { useLang } from "@/components/providers/LangProvider";
 
 type PlanKey = "starter" | "pro" | "terminal";
-
 type Prices = Partial<Record<PlanKey, string>>;
-
-const PLANS: { key: PlanKey; name: string; price: string; tagline: string }[] = [
-  { key: "starter",  name: "Starter",  price: "€19 /mo",  tagline: "Bases solides, essentials" },
-  { key: "pro",      name: "Pro",      price: "€49 /mo",  tagline: "Pro data & AI modules" },
-  { key: "terminal", name: "Terminal", price: "€99 /mo",  tagline: "Tout le terminal" },
-];
-
-const FEATURES = [
-  { key: "live_news", label: "Live Headlines temps réel" },
-  { key: "econ_calendar", label: "Calendrier économique enrichi" },
-  { key: "ai_sentiment", label: "AI Market Sentiment" },
-  { key: "ai_news", label: "AI News Analysis" },
-  { key: "ai_social", label: "AI Social Sentiment" },
-  { key: "seasonality", label: "Seasonality / Pattern Scan" },
-  { key: "cot", label: "COT (CFTC)" },
-  { key: "orderflow", label: "Orderflow & Footprint" },
-  { key: "volume_profile", label: "Volume Profile" },
-  { key: "company_fin", label: "Company Financials + Ratings" },
-  { key: "insiders", label: "Insider Positions" },
-  { key: "sec", label: "SEC Filings / IPO / Earnings" },
-  { key: "macro_timeline", label: "Macro Timeline (surprises vs consensus)" },
-  { key: "dotplots", label: "Dot Plots (Fed/ECB/BoE/BoJ/RBA/RBNZ/SNB/BoC/PBoC)" },
-  { key: "bank_reports", label: "Bank Reports (JPM, MS, GS, UBS, Citi, BofA…)" },
-  { key: "alerts", label: "Alertes temps réel personnalisables" },
-];
-
-const AVAIL: Record<string, Record<PlanKey, boolean>> = {
-  live_news:      { starter: true,  pro: true,  terminal: true  },
-  econ_calendar:  { starter: true,  pro: true,  terminal: true  },
-  ai_sentiment:   { starter: true,  pro: true,  terminal: true  },
-  ai_news:        { starter: false, pro: true,  terminal: true  },
-  ai_social:      { starter: false, pro: true,  terminal: true  },
-  seasonality:    { starter: false, pro: true,  terminal: true  },
-  cot:            { starter: false, pro: true,  terminal: true  },
-  orderflow:      { starter: false, pro: false, terminal: true  },
-  volume_profile: { starter: false, pro: false, terminal: true  },
-  company_fin:    { starter: false, pro: true,  terminal: true  },
-  insiders:       { starter: false, pro: true,  terminal: true  },
-  sec:            { starter: false, pro: true,  terminal: true  },
-  macro_timeline: { starter: false, pro: true,  terminal: true  },
-  dotplots:       { starter: false, pro: true,  terminal: true  },
-  bank_reports:   { starter: false, pro: true,  terminal: true  },
-  alerts:         { starter: true,  pro: true,  terminal: true  },
-};
+type Status = { active: boolean; plan: string | null };
 
 export default function SubscriptionClient() {
+  const { t, dict } = useLang();
   const [selected, setSelected] = useState<PlanKey>("pro");
   const [prices, setPrices] = useState<Prices>({});
   const [loadingPlan, setLoadingPlan] = useState<PlanKey | null>(null);
+  const [status, setStatus] = useState<Status>({ active: false, plan: null });
 
   const search = useSearchParams();
   const success = search.get("success") === "1";
   const canceled = search.get("canceled") === "1";
   const router = useRouter();
 
+  const PLANS = useMemo(() => ([
+    { key: "starter" as PlanKey, name: dict.subscription.plans.starter.name, price: dict.subscription.plans.starter.price, tagline: dict.subscription.plans.starter.tagline },
+    { key: "pro" as PlanKey, name: dict.subscription.plans.pro.name, price: dict.subscription.plans.pro.price, tagline: dict.subscription.plans.pro.tagline },
+    { key: "terminal" as PlanKey, name: dict.subscription.plans.terminal.name, price: dict.subscription.plans.terminal.price, tagline: dict.subscription.plans.terminal.tagline },
+  ]), [dict]);
+
+  const FEATURES = useMemo(() => ([
+    { key: "live_news", label: dict.subscription.table.live_news },
+    { key: "econ_calendar", label: dict.subscription.table.econ_calendar },
+    { key: "ai_sentiment", label: dict.subscription.table.ai_sentiment },
+    { key: "ai_news", label: dict.subscription.table.ai_news },
+    { key: "ai_social", label: dict.subscription.table.ai_social },
+    { key: "seasonality", label: dict.subscription.table.seasonality },
+    { key: "cot", label: dict.subscription.table.cot },
+    { key: "orderflow", label: dict.subscription.table.orderflow },
+    { key: "volume_profile", label: dict.subscription.table.volume_profile },
+    { key: "company_fin", label: dict.subscription.table.company_fin },
+    { key: "insiders", label: dict.subscription.table.insiders },
+    { key: "sec", label: dict.subscription.table.sec },
+    { key: "macro_timeline", label: dict.subscription.table.macro_timeline },
+    { key: "dotplots", label: dict.subscription.table.dotplots },
+    { key: "bank_reports", label: dict.subscription.table.bank_reports },
+    { key: "alerts", label: dict.subscription.table.alerts },
+  ]), [dict]);
+
+  const AVAIL: Record<string, Record<PlanKey, boolean>> = useMemo(() => ({
+    live_news:      { starter: true,  pro: true,  terminal: true  },
+    econ_calendar:  { starter: true,  pro: true,  terminal: true  },
+    ai_sentiment:   { starter: true,  pro: true,  terminal: true  },
+    ai_news:        { starter: false, pro: true,  terminal: true  },
+    ai_social:      { starter: false, pro: true,  terminal: true  },
+    seasonality:    { starter: false, pro: true,  terminal: true  },
+    cot:            { starter: false, pro: true,  terminal: true  },
+    orderflow:      { starter: false, pro: false, terminal: true  },
+    volume_profile: { starter: false, pro: false, terminal: true  },
+    company_fin:    { starter: false, pro: true,  terminal: true  },
+    insiders:       { starter: false, pro: true,  terminal: true  },
+    sec:            { starter: false, pro: true,  terminal: true  },
+    macro_timeline: { starter: false, pro: true,  terminal: true  },
+    dotplots:       { starter: false, pro: true,  terminal: true  },
+    bank_reports:   { starter: false, pro: true,  terminal: true  },
+    alerts:         { starter: true,  pro: true,  terminal: true  },
+  }), []);
+
   useEffect(() => {
     (async () => {
       try {
         const res = await fetch("/api/stripe/prices", { cache: "no-store" });
         const data = await res.json();
-        if (res.ok) {
-          setPrices({
-            starter: data.starter || "",
-            pro: data.pro || "",
-            terminal: data.terminal || "",
-          });
-        } else {
-          console.error("Prices error:", data?.error);
-        }
-      } catch (e) {
-        console.error("Prices fetch error:", e);
-      }
+        if (res.ok) setPrices({ starter: data.starter || "", pro: data.pro || "", terminal: data.terminal || "" });
+      } catch {}
+      try {
+        const r2 = await fetch("/api/subscription/status", { cache: "no-store" });
+        const d2 = await r2.json();
+        if (r2.ok) setStatus({ active: !!d2.active, plan: d2.plan ?? null });
+      } catch {}
     })();
   }, []);
 
-  const columns = useMemo(() => PLANS, []);
+  function isCurrent(plan: PlanKey) {
+    if (!status.active) return false;
+    const p = status.plan?.toLowerCase() || "";
+    const priceId = (prices[plan] || "").toLowerCase();
+    return !!p && (p === plan || (priceId && p === priceId));
+  }
+
+  async function openPortal() {
+    const res = await fetch("/api/stripe/portal");
+    const data = await res.json();
+    if (data?.url) window.location.href = data.url;
+  }
 
   async function startCheckout(plan: PlanKey) {
+    if (isCurrent(plan)) return openPortal();
+
     const priceId = prices[plan];
     if (!priceId) {
-      alert("Price ID manquant. Configure STRIPE_PRICE_* dans Vercel.");
+      alert("Price ID missing. Configure STRIPE_PRICE_* in Vercel.");
       return;
     }
     try {
@@ -106,10 +117,9 @@ export default function SubscriptionClient() {
 
       const data = await res.json();
       if (data?.url) window.location.href = data.url;
-      else alert(data?.error || "Erreur checkout.");
-    } catch (e) {
-      console.error("Checkout error:", e);
-      alert("Erreur interne Stripe.");
+      else alert(data?.error || "Checkout error.");
+    } catch {
+      alert("Stripe internal error.");
     } finally {
       setLoadingPlan(null);
     }
@@ -118,15 +128,21 @@ export default function SubscriptionClient() {
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 space-y-10">
       <header className="text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold">Choose your plan</h1>
-        <p className="text-white/70 mt-3">Upgrade anytime. You’ll remain on this page after checkout for clarity.</p>
-        {success && <p className="mt-3 text-cyan">✅ Subscription active — welcome!</p>}
-        {canceled && <p className="mt-3 text-red-400">❌ Checkout canceled.</p>}
+        <h1 className="text-4xl md:text-5xl font-extrabold">{t("subscription.title")}</h1>
+        <p className="text-white/70 mt-3">{t("subscription.subtitle")}</p>
+        {success && <p className="mt-3 text-cyan">✅ {t("subscription.success")}</p>}
+        {canceled && <p className="mt-3 text-red-400">❌ {t("subscription.canceled")}</p>}
       </header>
 
       <div className="grid md:grid-cols-3 gap-5">
-        {columns.map((p) => {
-          const disabled = !prices[p.key];
+        {PLANS.map((p) => {
+          const disabled = !prices[p.key] && !isCurrent(p.key);
+          const current = isCurrent(p.key);
+          const btnLabel = current
+            ? `${t("subscription.current")} — ${t("subscription.manage")}`
+            : loadingPlan === p.key ? "…" : `${t("subscription.start")} ${p.name}`;
+          const onClick = () => current ? openPortal() : startCheckout(p.key);
+
           return (
             <GlassCard key={p.key} className={`p-6 ${selected === p.key ? "ring-1 ring-primary/50" : ""}`}>
               <div className="flex items-baseline justify-between">
@@ -134,23 +150,17 @@ export default function SubscriptionClient() {
                 <div className="text-primary text-sm">{p.tagline}</div>
               </div>
               <div className="mt-2 text-3xl font-extrabold">{p.price}</div>
-              <Button
-                className="mt-4 w-full"
-                onClick={() => startCheckout(p.key)}
-                disabled={disabled || loadingPlan === p.key}
-              >
-                {loadingPlan === p.key
-                  ? "Starting…"
-                  : p.key === "starter" ? "Start Starter" : p.key === "pro" ? "Start Pro" : "Start Terminal"}
+              <Button className="mt-4 w-full" onClick={onClick} disabled={disabled}>
+                {btnLabel}
               </Button>
-              {!prices[p.key] && (
-                <p className="mt-2 text-xs text-white/50">Configure STRIPE_PRICE_{p.key.toUpperCase()} dans Vercel.</p>
+              {!prices[p.key] && !current && (
+                <p className="mt-2 text-xs text-white/50">Configure STRIPE_PRICE_{p.key.toUpperCase()} in Vercel.</p>
               )}
               <button
                 onClick={() => setSelected(p.key)}
                 className="mt-3 text-xs text-white/60 hover:text-primary underline"
               >
-                Compare features
+                {t("subscription.compare")}
               </button>
             </GlassCard>
           );
@@ -158,13 +168,13 @@ export default function SubscriptionClient() {
       </div>
 
       <GlassCard className="p-6">
-        <h3 className="text-lg font-semibold">Feature comparison</h3>
+        <h3 className="text-lg font-semibold">{t("subscription.compare")}</h3>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left text-white/70">
                 <th className="py-2 pr-4">Feature</th>
-                {columns.map((p) => (
+                {PLANS.map((p) => (
                   <th key={p.key} className="py-2 px-4">{p.name}</th>
                 ))}
               </tr>
@@ -173,11 +183,16 @@ export default function SubscriptionClient() {
               {FEATURES.map((f) => (
                 <tr key={f.key} className="border-t border-white/5">
                   <td className="py-2 pr-4">{f.label}</td>
-                  {columns.map((p) => {
+                  {PLANS.map((p) => {
                     const ok = AVAIL[f.key][p.key];
+                    const current = isCurrent(p.key);
                     return (
                       <td key={p.key} className="py-2 px-4">
-                        {ok ? <span className="text-cyan">✔</span> : <span className="text-white/30">—</span>}
+                        {ok ? (
+                          <span className={`font-semibold ${current ? "text-blue" : "text-cyan"}`}>✔</span>
+                        ) : (
+                          <span className="text-white/30">—</span>
+                        )}
                       </td>
                     );
                   })}
@@ -188,23 +203,24 @@ export default function SubscriptionClient() {
         </div>
       </GlassCard>
 
+      {/* CTA sticky */}
       <div className="fixed bottom-4 inset-x-0 px-5">
         <div className="mx-auto max-w-7xl">
           <GlassCard className="p-4 flex flex-col md:flex-row items-center justify-between gap-3">
             <div className="text-sm text-white/70">
-              Selected plan: <span className="text-primary font-semibold uppercase">{selected}</span>
+              {t("subscription.selected")}: <span className="text-primary font-semibold uppercase">{selected}</span>
             </div>
             <div className="flex items-center gap-3">
-              {columns.map((p) => (
-                <Button
-                  key={p.key}
-                  variant={selected === p.key ? "primary" : "ghost"}
-                  onClick={() => startCheckout(p.key)}
-                  disabled={!prices[p.key] || loadingPlan === p.key}
-                >
-                  {p.name}
-                </Button>
-              ))}
+              {PLANS.map((p) => {
+                const current = isCurrent(p.key);
+                const label = current ? t("subscription.manage") : p.name;
+                const onClick = () => current ? openPortal() : startCheckout(p.key);
+                return (
+                  <Button key={p.key} variant={selected === p.key ? "primary" : "ghost"} onClick={onClick}>
+                    {label}
+                  </Button>
+                );
+              })}
             </div>
           </GlassCard>
         </div>

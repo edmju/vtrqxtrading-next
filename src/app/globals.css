@@ -8,12 +8,15 @@
   --primary: #FFD54A;
   --primary-soft: #FFE483;
   --cyan: #22D3EE;
+  --blue: #3B82F6;
 }
 
 html, body {
-  background: radial-gradient(1200px 600px at 20% -10%, rgba(255,213,74,0.12), transparent 60%),
-              radial-gradient(1200px 600px at 120% 20%, rgba(34,211,238,0.12), transparent 60%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(255,213,74,0.12), transparent 60%),
+    radial-gradient(1200px 600px at 120% 20%, rgba(34,211,238,0.12), transparent 60%),
+    radial-gradient(900px 500px at 80% 120%, rgba(59,130,246,0.12), transparent 60%),
+    var(--bg);
   color: #E8ECF1;
 }
 
@@ -27,11 +30,15 @@ html, body {
   position: absolute; inset: -1px; border-radius: 20px;
   background:
     radial-gradient(circle at 10% -10%, rgba(255,213,74,0.35), transparent 40%),
-    radial-gradient(circle at 110% 20%, rgba(34,211,238,0.35), transparent 40%);
+    radial-gradient(circle at 110% 20%, rgba(34,211,238,0.35), transparent 40%),
+    radial-gradient(circle at -10% 110%, rgba(59,130,246,0.35), transparent 40%);
   filter: blur(18px); z-index: -1;
 }
 
-.glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
-  border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(6px); }
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+}
 
 a, button { -webkit-tap-highlight-color: transparent; }

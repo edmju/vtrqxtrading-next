@@ -17,6 +17,17 @@ function requestOrigin() {
   return `${proto}://${host}`;
 }
 
+function planKeyFromPrice(priceId: string) {
+  const id = (priceId || "").toLowerCase();
+  const starter = (process.env.STRIPE_PRICE_STARTER || "").toLowerCase();
+  const pro = (process.env.STRIPE_PRICE_PRO || "").toLowerCase();
+  const terminal = (process.env.STRIPE_PRICE_TERMINAL || "").toLowerCase();
+  if (id === starter) return "starter";
+  if (id === pro) return "pro";
+  if (id === terminal) return "terminal";
+  return id; // fallback
+}
+
 export async function POST(req: Request) {
   try {
     const { priceId } = await req.json();
@@ -24,10 +35,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "priceId manquant ou invalide" }, { status: 400 });
     }
 
-    // Tentative standard
     let session = await getServerSession(authOptions);
 
-    // Fallback cookie (certaines régions edge)
     if (!session?.user?.email) {
       const cookie = cookies().get("__Secure-next-auth.session-token");
       if (cookie?.value) {
@@ -45,7 +54,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Non connecté" }, { status: 401 });
     }
 
-    // Customer existant ?
     let existingCustomerId: string | undefined;
     try {
       const existingSub = await prisma.subscription.findUnique({
@@ -60,6 +68,8 @@ export async function POST(req: Request) {
     }
 
     const origin = requestOrigin();
+    const planKey = planKeyFromPrice(priceId);
+    const planId = priceId.toLowerCase();
 
     const sessionStripe = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -69,9 +79,9 @@ export async function POST(req: Request) {
       cancel_url: `${origin}/subscription?canceled=1`,
       ...(existingCustomerId ? { customer: existingCustomerId } : { customer_email: userEmail }),
       client_reference_id: userId,
-      metadata: { plan: priceId.toLowerCase(), email: userEmail, userId },
+      metadata: { plan: planKey, planId, email: userEmail, userId },
       subscription_data: {
-        metadata: { email: userEmail, userId, plan: priceId.toLowerCase() },
+        metadata: { plan: planKey, planId, email: userEmail, userId },
       },
     });
 

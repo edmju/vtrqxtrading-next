@@ -1,17 +1,13 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import GlassCard from "@/components/ui/GlassCard";
 import Button from "@/components/ui/Button";
 
 type PlanKey = "starter" | "pro" | "terminal";
 
-const PRICE_IDS: Record<PlanKey, string> = {
-  starter: "price_starter_replace_me",
-  pro: "price_pro_replace_me",
-  terminal: "price_terminal_replace_me",
-};
+type Prices = Partial<Record<PlanKey, string>>;
 
 const PLANS: { key: PlanKey; name: string; price: string; tagline: string }[] = [
   { key: "starter",  name: "Starter",  price: "€19 /mo",  tagline: "Bases solides, essentials" },
@@ -59,25 +55,64 @@ const AVAIL: Record<string, Record<PlanKey, boolean>> = {
 
 export default function SubscriptionClient() {
   const [selected, setSelected] = useState<PlanKey>("pro");
+  const [prices, setPrices] = useState<Prices>({});
+  const [loadingPlan, setLoadingPlan] = useState<PlanKey | null>(null);
+
   const search = useSearchParams();
   const success = search.get("success") === "1";
   const canceled = search.get("canceled") === "1";
+  const router = useRouter();
 
   useEffect(() => {
-    // bannière visible automatiquement, rien d’autre à faire
-  }, [success, canceled]);
+    (async () => {
+      try {
+        const res = await fetch("/api/stripe/prices", { cache: "no-store" });
+        const data = await res.json();
+        if (res.ok) {
+          setPrices({
+            starter: data.starter || "",
+            pro: data.pro || "",
+            terminal: data.terminal || "",
+          });
+        } else {
+          console.error("Prices error:", data?.error);
+        }
+      } catch (e) {
+        console.error("Prices fetch error:", e);
+      }
+    })();
+  }, []);
 
   const columns = useMemo(() => PLANS, []);
 
   async function startCheckout(plan: PlanKey) {
-    const priceId = PRICE_IDS[plan];
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId }),
-    });
-    const data = await res.json();
-    if (data?.url) window.location.href = data.url;
+    const priceId = prices[plan];
+    if (!priceId) {
+      alert("Price ID manquant. Configure STRIPE_PRICE_* dans Vercel.");
+      return;
+    }
+    try {
+      setLoadingPlan(plan);
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId }),
+      });
+
+      if (res.status === 401) {
+        router.push("/profile");
+        return;
+      }
+
+      const data = await res.json();
+      if (data?.url) window.location.href = data.url;
+      else alert(data?.error || "Erreur checkout.");
+    } catch (e) {
+      console.error("Checkout error:", e);
+      alert("Erreur interne Stripe.");
+    } finally {
+      setLoadingPlan(null);
+    }
   }
 
   return (
@@ -90,24 +125,36 @@ export default function SubscriptionClient() {
       </header>
 
       <div className="grid md:grid-cols-3 gap-5">
-        {columns.map((p) => (
-          <GlassCard key={p.key} className={`p-6 ${selected === p.key ? "ring-1 ring-primary/50" : ""}`}>
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-xl font-semibold">{p.name}</h2>
-              <div className="text-primary text-sm">{p.tagline}</div>
-            </div>
-            <div className="mt-2 text-3xl font-extrabold">{p.price}</div>
-            <Button className="mt-4 w-full" onClick={() => startCheckout(p.key)}>
-              {p.key === "starter" ? "Start Starter" : p.key === "pro" ? "Start Pro" : "Start Terminal"}
-            </Button>
-            <button
-              onClick={() => setSelected(p.key)}
-              className="mt-3 text-xs text-white/60 hover:text-primary underline"
-            >
-              Compare features
-            </button>
-          </GlassCard>
-        ))}
+        {columns.map((p) => {
+          const disabled = !prices[p.key];
+          return (
+            <GlassCard key={p.key} className={`p-6 ${selected === p.key ? "ring-1 ring-primary/50" : ""}`}>
+              <div className="flex items-baseline justify-between">
+                <h2 className="text-xl font-semibold">{p.name}</h2>
+                <div className="text-primary text-sm">{p.tagline}</div>
+              </div>
+              <div className="mt-2 text-3xl font-extrabold">{p.price}</div>
+              <Button
+                className="mt-4 w-full"
+                onClick={() => startCheckout(p.key)}
+                disabled={disabled || loadingPlan === p.key}
+              >
+                {loadingPlan === p.key
+                  ? "Starting…"
+                  : p.key === "starter" ? "Start Starter" : p.key === "pro" ? "Start Pro" : "Start Terminal"}
+              </Button>
+              {!prices[p.key] && (
+                <p className="mt-2 text-xs text-white/50">Configure STRIPE_PRICE_{p.key.toUpperCase()} dans Vercel.</p>
+              )}
+              <button
+                onClick={() => setSelected(p.key)}
+                className="mt-3 text-xs text-white/60 hover:text-primary underline"
+              >
+                Compare features
+              </button>
+            </GlassCard>
+          );
+        })}
       </div>
 
       <GlassCard className="p-6">
@@ -141,7 +188,6 @@ export default function SubscriptionClient() {
         </div>
       </GlassCard>
 
-      {/* CTA sticky */}
       <div className="fixed bottom-4 inset-x-0 px-5">
         <div className="mx-auto max-w-7xl">
           <GlassCard className="p-4 flex flex-col md:flex-row items-center justify-between gap-3">
@@ -150,7 +196,12 @@ export default function SubscriptionClient() {
             </div>
             <div className="flex items-center gap-3">
               {columns.map((p) => (
-                <Button key={p.key} variant={selected === p.key ? "primary" : "ghost"} onClick={() => startCheckout(p.key)}>
+                <Button
+                  key={p.key}
+                  variant={selected === p.key ? "primary" : "ghost"}
+                  onClick={() => startCheckout(p.key)}
+                  disabled={!prices[p.key] || loadingPlan === p.key}
+                >
                   {p.name}
                 </Button>
               ))}

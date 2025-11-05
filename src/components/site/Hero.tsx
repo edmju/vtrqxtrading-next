@@ -3,24 +3,27 @@ import Button from "@/components/ui/Button";
 import GlassCard from "@/components/ui/GlassCard";
 import Sparkline from "@/components/charts/Sparkline";
 import Link from "next/link";
+import { useLang } from "@/components/providers/LangProvider";
 
 const chart = [24,22,23,25,26,27,25,26,29,30,33,31,36,39,38,41,45,48,47,50];
 
 export default function Hero() {
+  const { t } = useLang();
+
   return (
     <section className="mt-8 md:mt-12">
       <div className="mx-auto max-w-7xl px-5 grid md:grid-cols-2 gap-8 items-stretch">
         {/* Texte */}
         <div className="flex flex-col justify-center">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-            <span className="block">AI‑POWERED</span>
-            <span className="block text-white/90">TRADING</span>
+            <span className="block">{t("hero.title1", "AI‑POWERED")}</span>
+            <span className="block text-white/90">{t("hero.title2", "TRADING")}</span>
           </h1>
           <p className="mt-4 text-white/70 max-w-xl">
-            Take your trading to the next level using institutional‑grade data and AI insights.
+            {t("hero.subtitle")}
           </p>
           <div className="mt-6 flex items-center gap-3">
-            <Link href="/profile"><Button>GET STARTED</Button></Link>
+            <Link href="/profile"><Button>{t("cta.get_started", "GET STARTED")}</Button></Link>
             <a href="/features" className="text-sm text-primary hover:underline">Explore features →</a>
           </div>
         </div>

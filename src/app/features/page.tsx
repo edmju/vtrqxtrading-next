@@ -1,7 +1,11 @@
 import GlassCard from "@/components/ui/GlassCard";
-import { useLang } from "@/components/providers/LangProvider";
+import { getI18n } from "@/lib/i18n/server";
 
-function Section({ title, subtitle, items }: { title: string; subtitle: string; items: { title: string; desc: string }[] }) {
+function Section({
+  title, subtitle, items
+}: {
+  title: string; subtitle: string; items: { title: string; desc: string }[];
+}) {
   return (
     <GlassCard className="p-6">
       <h2 className="text-lg font-semibold">{title}</h2>
@@ -19,55 +23,55 @@ function Section({ title, subtitle, items }: { title: string; subtitle: string; 
 }
 
 export default function FeaturesPage() {
-  // If this page is converted to client, we could use translations here. For now static copy (EN/FR brief).
+  const { t, dict } = getI18n();
+  const g = dict.featuresPage.groups;
+
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 space-y-8">
       <header className="text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold">All Features</h1>
-        <p className="text-white/70 mt-3">
-          Institutional‑grade modules across news, macro, positioning and AI analysis.
-        </p>
+        <h1 className="text-4xl md:text-5xl font-extrabold">{t("featuresPage.title")}</h1>
+        <p className="text-white/70 mt-3">{t("featuresPage.subtitle")}</p>
       </header>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <Section
-          title="Market Monitor"
-          subtitle="Stay ahead of catalysts and volatility."
+          title={g.market.title}
+          subtitle={g.market.subtitle}
           items={[
-            { title: "Live Headlines", desc: "Time‑sensitive news stream with smart filters." },
-            { title: "Economic Calendar+", desc: "Consensus, surprises, impact heat, instant context." },
-            { title: "Context per Asset", desc: "Why it moves: catalysts, themes, linked headlines." },
-            { title: "AI Market Sentiment", desc: "Bull/Bear with momentum and narrative strength." },
+            g.market.items.live,
+            g.market.items.calendar,
+            g.market.items.context,
+            g.market.items.sentiment,
           ]}
         />
         <Section
-          title="Institutional Data"
-          subtitle="What pros watch every day."
+          title={g.institutional.title}
+          subtitle={g.institutional.subtitle}
           items={[
-            { title: "COT (CFTC)", desc: "Net positioning by cohort with trends." },
-            { title: "Orderflow & Footprint", desc: "Tape‑reading, imbalance and absorption zones." },
-            { title: "Volume Profile", desc: "Value areas, HVNs/LVNs and fair value zones." },
-            { title: "Financials & Insiders", desc: "Company stats, ratings and insider flows." },
+            g.institutional.items.cot,
+            g.institutional.items.orderflow,
+            g.institutional.items.volprof,
+            g.institutional.items.fin,
           ]}
         />
         <Section
-          title="AI Modules"
-          subtitle="Compress information, expand clarity."
+          title={g.ai.title}
+          subtitle={g.ai.subtitle}
           items={[
-            { title: "AI News Analysis", desc: "Summaries, key bullets, relevance score." },
-            { title: "AI Social Sentiment", desc: "Signal from the crowd with noise suppression." },
-            { title: "Seasonality & Patterns", desc: "Historic tendency, regime‑aware." },
-            { title: "Smart Alerts", desc: "Rules + AI triggers on price, data or news." },
+            g.ai.items.aiNews,
+            g.ai.items.aiSocial,
+            g.ai.items.seasonal,
+            g.ai.items.alerts,
           ]}
         />
         <Section
-          title="Macro Terminals"
-          subtitle="Top‑down context that drives markets."
+          title={g.macro.title}
+          subtitle={g.macro.subtitle}
           items={[
-            { title: "Dot Plots (Fed, ECB, BoE…)", desc: "Track policy path projections across CBs." },
-            { title: "Macro Timeline", desc: "Releases vs consensus with AI ‘why it matters’." },
-            { title: "Positioning & Flows", desc: "Retail vs smart money, options gamma, OI." },
-            { title: "Bank Research", desc: "Highlights from JPM, MS, GS, UBS, Citi, BofA… with AI summaries." },
+            g.macro.items.dots,
+            g.macro.items.timeline,
+            g.macro.items.pos,
+            g.macro.items.banks,
           ]}
         />
       </div>

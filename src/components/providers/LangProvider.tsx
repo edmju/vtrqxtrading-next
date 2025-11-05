@@ -1,49 +1,39 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import en from "@/i18n/en";
+import fr from "@/i18n/fr";
 
 type Lang = "en" | "fr";
-type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (k: string, fallback?: string) => string };
+type Dict = typeof en;
+
+type Ctx = {
+  lang: Lang;
+  dict: Dict;
+  setLang: (l: Lang) => void;
+  t: (key: string, fallback?: string, params?: Record<string, string | number>) => string;
+};
 
 const LangContext = createContext<Ctx | null>(null);
 
-const STRINGS: Record<string, { en: string; fr: string }> = {
-  "nav.features": { en: "FEATURES", fr: "FONCTIONNALITÉS" },
-  "nav.pricing": { en: "PRICING", fr: "TARIFS" },
-  "nav.about": { en: "ABOUT", fr: "À PROPOS" },
-  "nav.signin": { en: "SIGN IN", fr: "CONNEXION" },
-  "nav.dashboard": { en: "DASHBOARD", fr: "TABLEAU DE BORD" },
-  "cta.get_started": { en: "GET STARTED", fr: "COMMENCER" },
-  "cta.open_terminal": { en: "OPEN TERMINAL", fr: "OUVRIR LE TERMINAL" },
-  "footer.terms": { en: "Terms", fr: "Conditions" },
-  "footer.privacy": { en: "Privacy", fr: "Confidentialité" },
-  "footer.contact": { en: "Contact", fr: "Contact" },
-  "footer.language": { en: "Language", fr: "Langue" },
-  "footer.en": { en: "English", fr: "Anglais" },
-  "footer.fr": { en: "French", fr: "Français" },
-  "features.title": { en: "All Features", fr: "Toutes les fonctionnalités" },
-  "features.subtitle": {
-    en: "Everything you need to trade with institutional‑grade clarity.",
-    fr: "Tout ce dont vous avez besoin pour trader avec une clarté de niveau institutionnel."
-  },
-  "subscription.title": { en: "Choose your plan", fr: "Choisissez votre offre" },
-  "subscription.subtitle": {
-    en: "Upgrade anytime. You’ll remain on this page after checkout for clarity.",
-    fr: "Changez d’offre à tout moment. Vous resterez sur cette page après le paiement."
-  },
-  "subscription.success": { en: "Subscription active — welcome!", fr: "Abonnement actif — bienvenue !" },
-  "subscription.canceled": { en: "Checkout canceled.", fr: "Paiement annulé." },
-  "subscription.compare": { en: "Compare features", fr: "Comparer les fonctionnalités" },
-  "subscription.selected": { en: "Selected plan", fr: "Offre sélectionnée" },
-};
+function get(obj: any, path: string) {
+  return path.split(".").reduce((acc, k) => (acc ? acc[k] : undefined), obj);
+}
+function fmt(str: string, params?: Record<string, string | number>) {
+  if (!str || !params) return str;
+  return Object.entries(params).reduce((s, [k, v]) => s.replaceAll(`{${k}}`, String(v)), str);
+}
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  const [dict, setDict] = useState<Dict>(en);
 
   useEffect(() => {
     const m = document.cookie.match(/(?:^|; )vtrqx_lang=([^;]+)/);
     const c = (m?.[1] as Lang | undefined) || "en";
-    setLangState(c === "fr" ? "fr" : "en");
+    const l = c === "fr" ? "fr" : "en";
+    setLangState(l);
+    setDict(l === "fr" ? fr : en);
   }, []);
 
   const setLang = (l: Lang) => {
@@ -51,9 +41,13 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     window.location.reload();
   };
 
-  const t = (k: string, fallback = "") => STRINGS[k]?.[lang] ?? fallback;
+  const t = (key: string, fallback = "", params?: Record<string, string | number>) => {
+    const s = get(dict, key);
+    if (typeof s === "string") return fmt(s, params);
+    return fallback || key;
+  };
 
-  const value = useMemo<Ctx>(() => ({ lang, setLang, t }), [lang]);
+  const value = useMemo<Ctx>(() => ({ lang, dict, setLang, t }), [lang, dict]);
 
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 }

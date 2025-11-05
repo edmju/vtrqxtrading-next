@@ -7,8 +7,8 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
 
 export const metadata: Metadata = {
-  title: "VTRQX Trading — AI‑Powered Terminal",
-  description: "Institutional‑grade data, AI insights, and trading tools.",
+  title: "VTRQX Trading — AI-Powered Terminal",
+  description: "Institutional-grade data, AI insights, and trading tools.",
   icons: {
     icon: [
       { url: "/favicon/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },

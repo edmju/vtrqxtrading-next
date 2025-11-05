@@ -4,21 +4,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { useSession } from "next-auth/react";
-
-const NAV = [
-  { href: "/features", label: "FEATURES" },
-  { href: "/subscription", label: "PRICING" },
-  { href: "/about", label: "ABOUT" },
-];
+import { useLang } from "@/components/providers/LangProvider";
 
 export default function Header() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { t } = useLang();
+
+  const NAV = [
+    { href: "/features", label: t("nav.features", "FEATURES") },
+    { href: "/subscription", label: t("nav.pricing", "PRICING") },
+    { href: "/about", label: t("nav.about", "ABOUT") },
+  ];
 
   const authHref = session ? "/dashboard" : "/profile";
-  const authLabel = session ? "DASHBOARD" : "SIGN IN";
+  const authLabel = session ? t("nav.dashboard", "DASHBOARD") : t("nav.signin", "SIGN IN");
   const ctaHref = session ? "/dashboard" : "/profile";
-  const ctaLabel = session ? "OPEN TERMINAL" : "GET STARTED";
+  const ctaLabel = session ? t("cta.open_terminal", "OPEN TERMINAL") : t("cta.get_started", "GET STARTED");
 
   return (
     <header className="sticky top-0 z-50">

@@ -17,10 +17,10 @@ export default function Header() {
     { href: "/about", label: t("nav.about", "ABOUT") },
   ];
 
-  const authHref = session ? "/dashboard" : "/profile";
-  const authLabel = session ? t("nav.dashboard", "DASHBOARD") : t("nav.signin", "SIGN IN");
   const ctaHref = session ? "/dashboard" : "/profile";
-  const ctaLabel = session ? t("cta.open_terminal", "OPEN TERMINAL") : t("cta.get_started", "GET STARTED");
+  const ctaLabel = session
+    ? t("cta.open_terminal", "OPEN TERMINAL")
+    : t("nav.signup", "SIGN UP");
 
   return (
     <header className="sticky top-0 z-50">
@@ -43,9 +43,16 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href={authHref} className="hidden sm:block text-sm text-white/80 hover:text-primary">
-              {authLabel}
+            {/* Icône profil */}
+            <Link href="/profile" aria-label="Profile" className="hidden sm:flex items-center">
+              <span className="p-2 rounded-lg glass hover:ring-1 hover:ring-primary/40 transition">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M4 20c1.5-3.5 4.8-5.5 8-5.5s6.5 2 8 5.5" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+              </span>
             </Link>
+
             <Link href={ctaHref}>
               <Button>{ctaLabel}</Button>
             </Link>

@@ -1,3 +1,4 @@
+// src/app/api/subscription/status/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -30,10 +31,25 @@ export async function GET() {
       include: { subscription: true },
     });
 
-    const sub = user?.subscription || null;
+    // 1) d'abord via la relation User.subscription
+    let sub = user?.subscription ?? null;
+
+    // 2) fallback: chercher par email si la relation n’a pas été peuplée
+    if (!sub) {
+      sub =
+        (await prisma.subscription.findFirst({
+          where: {
+            OR: [
+              { userId: user?.id ?? undefined },
+              { userEmail: email },
+            ],
+          },
+          orderBy: { createdAt: "desc" },
+        })) || null;
+    }
 
     const active =
-      sub?.status === "active" &&
+      (sub?.status === "active" || sub?.status === "trialing") &&
       (!!sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd) > new Date() : true);
 
     const planKey =
@@ -42,7 +58,7 @@ export async function GET() {
     return NextResponse.json(
       {
         active,
-        planKey,                               // <- clé normalisée
+        planKey,
         planId: (sub?.priceId || "").toLowerCase(),
         status: sub?.status ?? null,
         periodEnd: sub?.currentPeriodEnd ?? null,

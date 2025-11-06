@@ -17,7 +17,8 @@ export default function Header() {
     { href: "/about", label: t("nav.about", "ABOUT") },
   ];
 
-  const ctaHref = session ? "/dashboard" : "/profile";
+  // ⬇️ Redirection vers l'écran d'attente
+  const ctaHref = session ? "/boot" : "/profile";
   const ctaLabel = session
     ? t("cta.open_terminal", "OPEN TERMINAL")
     : t("nav.signup", "SIGN UP");
@@ -43,7 +44,6 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            {/* Icône profil */}
             <Link href="/profile" aria-label="Profile" className="hidden sm:flex items-center">
               <span className="p-2 rounded-lg glass hover:ring-1 hover:ring-primary/40 transition">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">

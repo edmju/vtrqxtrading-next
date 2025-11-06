@@ -1,3 +1,4 @@
+// src/app/api/stripe/webhook/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import prisma from "@/lib/prisma";
@@ -51,23 +52,35 @@ export async function POST(req: Request) {
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
 
-        const userId = (sub.metadata?.userId as string | undefined) ?? undefined;
-
+        const metaUserId = (sub.metadata?.userId as string | undefined) ?? undefined;
+        const metaEmail =
+          (sub.metadata?.email as string | undefined) ??
+          (sub.customer_email as string | undefined);
         const priceId = sub.items.data[0]?.price?.id?.toLowerCase();
         const keyFromMeta =
           (sub.metadata?.plan as string | undefined)?.toLowerCase() ||
           (sub.metadata?.planId as string | undefined)?.toLowerCase();
 
         const plan = resolvePlanKey(keyFromMeta) || resolvePlanKey(priceId) || undefined;
-
         const periodStart = new Date(sub.current_period_start * 1000);
         const periodEnd = new Date(sub.current_period_end * 1000);
         const customerId = sub.customer as string;
+
+        // Si pas d'userId en metadata, on tente de le retrouver via l'email
+        let userId = metaUserId;
+        if (!userId && metaEmail) {
+          const u = await prisma.user.findUnique({
+            where: { email: metaEmail.toLowerCase() },
+            select: { id: true },
+          });
+          if (u?.id) userId = u.id;
+        }
 
         await prisma.subscription.upsert({
           where: { stripeId: sub.id },
           update: {
             userId: userId ?? undefined,
+            userEmail: metaEmail?.toLowerCase(),
             status: sub.status,
             priceId: priceId ?? undefined,
             plan,
@@ -78,6 +91,7 @@ export async function POST(req: Request) {
           },
           create: {
             userId: userId ?? undefined,
+            userEmail: metaEmail?.toLowerCase(),
             stripeId: sub.id,
             status: sub.status,
             priceId: priceId ?? undefined,
@@ -95,30 +109,35 @@ export async function POST(req: Request) {
       case "checkout.session.completed": {
         const cs = event.data.object as Stripe.Checkout.Session;
 
-        const userId =
+        const metaUserId =
           (cs.client_reference_id as string | null) ??
           (cs.metadata?.userId as string | undefined) ??
           undefined;
-
-        const subscriptionId = cs.subscription as string | null;
-        const stripeCustomerId = cs.customer as string | null;
+        const stripeCustomerId = (cs.customer as string | null) ?? undefined;
+        const metaEmail =
+          (cs.customer_details?.email as string | undefined) ??
+          (cs.customer_email as string | undefined) ??
+          (cs.metadata?.email as string | undefined);
 
         const mPlan = (cs.metadata?.plan as string | undefined)?.toLowerCase();
         const mPlanId = (cs.metadata?.planId as string | undefined)?.toLowerCase();
         const plan = resolvePlanKey(mPlan) || resolvePlanKey(mPlanId) || undefined;
 
+        const subscriptionId = cs.subscription as string | null;
         if (subscriptionId) {
           await prisma.subscription.upsert({
             where: { stripeId: subscriptionId },
             update: {
-              userId: userId ?? undefined,
+              userId: metaUserId ?? undefined,
+              userEmail: metaEmail?.toLowerCase(),
               status: "active",
               plan,
               stripeCustomerId: stripeCustomerId ?? undefined,
               stripeSubId: subscriptionId,
             },
             create: {
-              userId: userId ?? undefined,
+              userId: metaUserId ?? undefined,
+              userEmail: metaEmail?.toLowerCase(),
               stripeId: subscriptionId,
               status: "active",
               plan,

@@ -1,48 +1,86 @@
 // src/app/api/subscription/status/route.ts
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
+import { cookies } from "next/headers";
 
+/** Transforme un identifiant quelconque (price id OU mot-clé) -> "starter" | "pro" | "terminal" | null */
 function resolvePlanKey(v?: string | null) {
-  const x = (v || "").toLowerCase();
+  const x = (v || "").toLowerCase().trim();
+  if (!x) return null;
+
   const starter = (process.env.STRIPE_PRICE_STARTER || "").toLowerCase();
   const pro = (process.env.STRIPE_PRICE_PRO || "").toLowerCase();
   const terminal = (process.env.STRIPE_PRICE_TERMINAL || "").toLowerCase();
 
-  if (!x) return null;
-  if (x === starter || x.includes("starter")) return "starter";
-  if (x === pro || x.includes("pro")) return "pro";
-  if (x === terminal || x.includes("terminal")) return "terminal";
+  // price ids exacts
+  if (x === starter) return "starter";
+  if (x === pro) return "pro";
+  if (x === terminal) return "terminal";
+
+  // libellés éventuels
+  if (x.includes("starter")) return "starter";
+  if (x.includes("pro")) return "pro";
+  if (x.includes("terminal")) return "terminal";
+
   return null;
+}
+
+/** Petit fallback si getServerSession échoue : on lit le cookie JWT, comme dans le checkout (même technique) */
+function getEmailFromCookieJWT(): string | null {
+  try {
+    const c =
+      cookies().get("__Secure-next-auth.session-token") ??
+      cookies().get("next-auth.session-token");
+    if (!c?.value) return null;
+    const payloadB64 = c.value.split(".")[1] ?? "";
+    const json = Buffer.from(payloadB64, "base64").toString() || "{}";
+    const token = JSON.parse(json);
+    const email = (token?.email || token?.user?.email || "").toString();
+    return email ? email.toLowerCase() : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ active: false }, { status: 200 });
+    // 1) session NextAuth standard
+    let email: string | null = null;
+    try {
+      const session = await getServerSession(authOptions);
+      email = session?.user?.email ? session.user.email.toLowerCase() : null;
+    } catch {
+      // ignore
     }
 
-    const email = session.user.email.toLowerCase();
+    // 2) fallback cookie JWT si besoin (technique déjà utilisée dans le checkout)
+    if (!email) email = getEmailFromCookieJWT();
 
+    if (!email) {
+      // non connecté → active=false
+      return NextResponse.json({ active: false, planKey: null }, { status: 200 });
+    }
+
+    // On récupère l’utilisateur + la relation
     const user = await prisma.user.findUnique({
       where: { email },
       include: { subscription: true },
     });
 
-    // 1) d'abord via la relation User.subscription
+    // D’abord la relation
     let sub = user?.subscription ?? null;
 
-    // 2) fallback: chercher par email si la relation n’a pas été peuplée
+    // Fallback robuste : par userId ou par userEmail, on prend la plus récente
     if (!sub) {
       sub =
         (await prisma.subscription.findFirst({
           where: {
-            OR: [
-              { userId: user?.id ?? undefined },
-              { userEmail: email },
-            ],
+            OR: [{ userId: user?.id ?? undefined }, { userEmail: email }],
           },
           orderBy: { createdAt: "desc" },
         })) || null;
@@ -52,6 +90,7 @@ export async function GET() {
       (sub?.status === "active" || sub?.status === "trialing") &&
       (!!sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd) > new Date() : true);
 
+    // Normalisation du plan : on accepte que la BDD ait "price_xxx" dans `plan` OU dans `priceId`
     const planKey =
       resolvePlanKey(sub?.plan) || resolvePlanKey(sub?.priceId) || null;
 
@@ -67,6 +106,6 @@ export async function GET() {
     );
   } catch (err) {
     console.error("status error:", err);
-    return NextResponse.json({ active: false }, { status: 200 });
+    return NextResponse.json({ active: false, planKey: null }, { status: 200 });
   }
 }

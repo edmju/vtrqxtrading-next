@@ -1,3 +1,4 @@
+// src/app/(site)/profile/page.tsx
 "use client";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,6 @@ export default function ProfilePage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // data profil
   const [plan, setPlan] = useState<PlanKey | null>(null);
   const [verified, setVerified] = useState<boolean>(false);
   const [code, setCode] = useState("");
@@ -44,7 +44,6 @@ export default function ProfilePage() {
     })();
   }, [session?.user?.email]);
 
-  // ------- auth handlers
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -52,7 +51,8 @@ export default function ProfilePage() {
     setLoading(false);
     if (res?.ok) {
       setNotice(t("profile.login_ok", "Logged in"));
-      setTimeout(() => router.push("/dashboard"), 400);
+      // ► redirection demandée : revenir sur PRICING pour voir Current/Manage
+      setTimeout(() => router.push("/subscription"), 300);
     } else setNotice(t("profile.login_err", "Login failed"));
   }
 
@@ -69,15 +69,18 @@ export default function ProfilePage() {
     if (res.ok) {
       setNotice(t("profile.created", "Account created. Check your email for the code."));
       try {
-        await fetch("/api/auth/send-code", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+        await fetch("/api/auth/send-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
       } catch {}
-      setTimeout(() => setMode("login"), 400);
+      setTimeout(() => setMode("login"), 300);
     } else {
       setNotice(t("profile.register_err", "Registration error"));
     }
   }
 
-  // ------- verification handlers
   async function sendCode() {
     const em = session?.user?.email;
     if (!em) return;
@@ -105,12 +108,11 @@ export default function ProfilePage() {
     }
   }
 
-  // ------- UI
   if (session) {
     return (
       <div className="flex items-center justify-center min-h-[70vh] px-5">
-        <GlassCard className="p-8 w-full max-w-xl">
-          <h1 className="text-2xl font-bold mb-2">{t("profile.welcome", "Welcome")} </h1>
+        <GlassCard className="p-8 w-full max-w-2xl">
+          <h1 className="text-3xl font-extrabold mb-2">{t("profile.welcome", "Welcome")}</h1>
           <p className="text-white/70 mb-6">{session.user?.email}</p>
 
           <div className="grid md:grid-cols-2 gap-5">
@@ -146,7 +148,9 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex items-center gap-3 mt-6">
-            <Button onClick={() => router.push("/dashboard")}>{t("cta.open_terminal", "OPEN TERMINAL")}</Button>
+            <Button onClick={() => router.push("/dashboard")}>
+              {t("cta.open_terminal", "OPEN TERMINAL")}
+            </Button>
             <button
               onClick={() => signOut()}
               className="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 rounded-md transition-transform hover:-translate-y-0.5"
@@ -154,13 +158,13 @@ export default function ProfilePage() {
               {t("profile.logout", "Logout")}
             </button>
           </div>
-        </GlassCard>
 
-        {notice && (
-          <div className="fixed bottom-6 right-6 bg-primary text-black px-5 py-2 rounded-lg shadow-glow">
-            {notice}
-          </div>
-        )}
+          {notice && (
+            <div className="fixed bottom-6 right-6 bg-primary text-black px-5 py-2 rounded-lg shadow-glow">
+              {notice}
+            </div>
+          )}
+        </GlassCard>
       </div>
     );
   }
@@ -207,22 +211,20 @@ export default function ProfilePage() {
 
         {mode === "login" ? (
           <p className="mt-4 text-gray-400 text-sm">
-            {t("profile.title_register", "No account")} ?{" "}
+            {t("profile.title_register", "No account")}{" "}
             <span onClick={() => setMode("register")} className="text-primary cursor-pointer hover:underline">
               {t("profile.create", "Create")}
             </span>
           </p>
         ) : (
           <p className="mt-4 text-gray-400 text-sm">
-            {t("profile.title_login", "Already have an account")} ?{" "}
+            {t("profile.title_login", "Already have an account")}{" "}
             <span onClick={() => setMode("login")} className="text-primary cursor-pointer hover:underline">
               {t("profile.login", "Sign in")}
             </span>
           </p>
         )}
       </GlassCard>
-
-      {notice && <div className="fixed bottom-6 right-6 bg-primary text-black px-5 py-2 rounded-lg shadow-glow">{notice}</div>}
     </div>
   );
 }

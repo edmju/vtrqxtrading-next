@@ -51,7 +51,7 @@ export default function ProfilePage() {
     setLoading(false);
     if (res?.ok) {
       setNotice(t("profile.login_ok", "Logged in"));
-      // ► redirection demandée : revenir sur PRICING pour voir Current/Manage
+      // Après connexion, aller sur Pricing pour voir "Current / Manage"
       setTimeout(() => router.push("/subscription"), 300);
     } else setNotice(t("profile.login_err", "Login failed"));
   }
@@ -148,7 +148,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex items-center gap-3 mt-6">
-            <Button onClick={() => router.push("/dashboard")}>
+            <Button onClick={() => router.push("/boot")}>
               {t("cta.open_terminal", "OPEN TERMINAL")}
             </Button>
             <button
@@ -225,6 +225,12 @@ export default function ProfilePage() {
           </p>
         )}
       </GlassCard>
+
+      {notice && (
+        <div className="fixed bottom-6 right-6 bg-primary text-black px-5 py-2 rounded-lg shadow-glow">
+          {notice}
+        </div>
+      )}
     </div>
   );
 }

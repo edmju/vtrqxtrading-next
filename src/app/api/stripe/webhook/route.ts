@@ -56,7 +56,8 @@ export async function POST(req: Request) {
         const metaEmail =
           (sub.metadata?.email as string | undefined) ??
           (sub.customer_email as string | undefined);
-        const priceId = sub.items.data[0]?.price?.id?.toLowerCase();
+
+        const priceId = sub.items.data[0]?.price?.id?.toLowerCase() ?? undefined;
         const keyFromMeta =
           (sub.metadata?.plan as string | undefined)?.toLowerCase() ||
           (sub.metadata?.planId as string | undefined)?.toLowerCase();
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
         const periodEnd = new Date(sub.current_period_end * 1000);
         const customerId = sub.customer as string;
 
-        // Si pas d'userId en metadata, on tente de le retrouver via l'email
+        // Rattrapage userId via email si besoin
         let userId = metaUserId;
         if (!userId && metaEmail) {
           const u = await prisma.user.findUnique({
@@ -82,8 +83,8 @@ export async function POST(req: Request) {
             userId: userId ?? undefined,
             userEmail: metaEmail?.toLowerCase(),
             status: sub.status,
-            priceId: priceId ?? undefined,
-            plan,
+            priceId,                 // ← toujours stocké
+            plan,                    // ← normalisé: "starter" | "pro" | "terminal"
             currentPeriodStart: periodStart,
             currentPeriodEnd: periodEnd,
             stripeCustomerId: customerId,
@@ -94,8 +95,8 @@ export async function POST(req: Request) {
             userEmail: metaEmail?.toLowerCase(),
             stripeId: sub.id,
             status: sub.status,
-            priceId: priceId ?? undefined,
-            plan,
+            priceId,                 // ← toujours stocké
+            plan,                    // ← normalisé
             currentPeriodStart: periodStart,
             currentPeriodEnd: periodEnd,
             stripeCustomerId: customerId,
@@ -131,7 +132,7 @@ export async function POST(req: Request) {
               userId: metaUserId ?? undefined,
               userEmail: metaEmail?.toLowerCase(),
               status: "active",
-              plan,
+              plan,                   // ← normalisé
               stripeCustomerId: stripeCustomerId ?? undefined,
               stripeSubId: subscriptionId,
             },
@@ -140,7 +141,7 @@ export async function POST(req: Request) {
               userEmail: metaEmail?.toLowerCase(),
               stripeId: subscriptionId,
               status: "active",
-              plan,
+              plan,                   // ← normalisé
               stripeCustomerId: stripeCustomerId ?? undefined,
               stripeSubId: subscriptionId,
             },

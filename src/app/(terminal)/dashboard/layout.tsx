@@ -1,13 +1,10 @@
-import type { ReactNode } from "react";
-import DashboardNav from "@/components/site/DashboardNav";
+import TopBar from "@/components/terminal/TopBar";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid md:grid-cols-[240px_1fr] gap-6">
-      <aside className="terminal-panel sticky top-24 h-fit p-4">
-        <DashboardNav />
-      </aside>
-      <section className="space-y-6">{children}</section>
+    <div>
+      <TopBar />
+      <div className="pt-16 max-w-[1400px] mx-auto px-4">{children}</div>
     </div>
   );
 }

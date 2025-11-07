@@ -1,10 +1,7 @@
 import { RawArticle } from "../types";
 
-/**
- * Parse RSS simple (sans dépendance).
- */
 function parseItems(xml: string): RawArticle[] {
-  const items = Array.from(xml.matchAll(/<item>[\s\S]*?<\/item>/g));
+  const items = Array.from(xml.matchAll(/<item>[\s\S]*?<\/item>/gi));
   const take = (tag: string, s: string) =>
     (s.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "i")) || [,""])[1]
       .replace(/<!\[CDATA\[|\]\]>/g, "")
@@ -40,14 +37,5 @@ async function fetchText(url: string): Promise<string | null> {
 export async function fetchReutersRss(): Promise<RawArticle[]> {
   const xml = await fetchText("https://www.reutersagency.com/feed/?best-topics=business&post_type=best");
   if (!xml) return [];
-  const rows = parseItems(xml).map(a => ({ ...a, source: "Reuters" }));
-  return rows;
-}
-
-/** Bloomberg: flux public (podcast/markets) — donne du marché frais */
-export async function fetchBloombergRss(): Promise<RawArticle[]> {
-  const xml = await fetchText("https://feeds.simplecast.com/54nAGcIl");
-  if (!xml) return [];
-  const rows = parseItems(xml).map(a => ({ ...a, source: "Bloomberg" }));
-  return rows;
+  return parseItems(xml).map(a => ({ ...a, source: "Reuters" }));
 }

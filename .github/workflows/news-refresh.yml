@@ -13,37 +13,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1) Node d'abord
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # 2) Installer pnpm (sinon 'pnpm: command not found')
+      # IMPORTANT: installer pnpm AVANT setup-node (car cache: 'pnpm' appelle pnpm)
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
           run_install: false
 
-      # 3) Cache du store pnpm (après installation de pnpm)
-      - name: Resolve pnpm store path
-        id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: 20
+          cache: 'pnpm'
 
-      # 4) Install deps (pas de frozen-lockfile car tu modifies package.json via GitHub Web)
+      - name: Verify pnpm
+        run: pnpm -v
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # 5) Pipeline: fetch + analyze => écrit public/data/news|ai/*.json
       - name: Generate news data
         run: pnpm run news:refresh
         env:
@@ -66,7 +54,6 @@ jobs:
           FTMO_SYMBOLS: ${{ vars.FTMO_SYMBOLS }}
           WATCHLIST_TICKERS: ${{ vars.WATCHLIST_TICKERS }}
 
-      # 6) Commit des fichiers générés
       - name: Commit data files
         run: |
           git config user.name "news-bot"

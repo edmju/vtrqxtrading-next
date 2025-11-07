@@ -12,12 +12,14 @@ export function normalizeDedup(articles: RawArticle[], max = 400): RawArticle[] 
     .map(a => ({
       ...a,
       title: a.title.trim(),
-      url: a.url.split("?")[0],
+      // IMPORTANT: ne plus enlever la query string (ça cassait les liens uniques)
+      url: a.url.trim(),
       source: (a.source || "unknown").trim(),
       lang: a.lang || "en",
       description: a.description ? stripHtml(String(a.description)) : ""
     }));
 
+  // Dédoublonnage par (host + title) — URL intacte pour l’ouverture du lien
   const seen = new Set<string>();
   const out: RawArticle[] = [];
 
@@ -25,16 +27,13 @@ export function normalizeDedup(articles: RawArticle[], max = 400): RawArticle[] 
     const host = (() => {
       try { return new URL(a.url).host.replace(/^www\./, ""); } catch { return "unknown"; }
     })();
-    const h = crypto.createHash("md5")
-      .update(`${host}:${a.title.toLowerCase()}`)
-      .digest("hex");
+    const h = crypto.createHash("md5").update(`${host}:${a.title.toLowerCase()}`).digest("hex");
     if (seen.has(h)) continue;
     seen.add(h);
     out.push({ ...a, id: h });
     if (out.length >= max) break;
   }
 
-  // tri récent → ancien
   return out.sort((x, y) => +new Date(y.publishedAt) - +new Date(x.publishedAt));
 }
 

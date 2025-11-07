@@ -1,0 +1,50 @@
+name: Daily News Refresh
+on:
+  schedule:
+    - cron: "15 4 * * *"   # chaque jour 04:15 UTC
+  workflow_dispatch: {}
+
+jobs:
+  build-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # important: pas de frozen lockfile pour éviter l'échec si package.json change
+      - run: pnpm install --no-frozen-lockfile
+
+      # pipeline: fetch + analyze => écrit public/data/news|ai/*.json
+      - run: pnpm run news:refresh
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_NEWS_MODEL: gpt-4o-mini
+          OPENAI_EMBEDDINGS_MODEL: text-embedding-3-small
+
+          NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+
+          NEWS_OUTPUT_DIR: public/data/news
+          NEWS_AI_OUTPUT_DIR: public/data/ai
+          NEWS_MAX_ARTICLES: 400
+          NEWS_TOP_THEMES: 3
+          NEWS_LANGS: fr,en
+          NEWS_TIMEZONE: Europe/Paris
+
+          FTMO_SYMBOLS: ${{ vars.FTMO_SYMBOLS }}
+          WATCHLIST_TICKERS: ${{ vars.WATCHLIST_TICKERS }}
+
+      - name: Commit data files
+        run: |
+          git config user.name "news-bot"
+          git config user.email "news-bot@users.noreply.github.com"
+          git add public/data/news/*.json public/data/ai/*.json || true
+          git commit -m "chore(news): refresh data $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes"
+          git push

@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2025-11-07T22:50:00.000Z",
+  "mainThemes": [
+    { "label": "Banques centrales & taux", "weight": 0.38 },
+    { "label": "Résultats tech IA", "weight": 0.34 },
+    { "label": "Énergie & matières premières", "weight": 0.28 }
+  ],
+  "actions": [
+    {
+      "symbol": "US500",
+      "direction": "BUY",
+      "conviction": 72,
+      "reason": "Momentum porté par la tech; breadth en amélioration."
+    },
+    {
+      "symbol": "NVDA",
+      "direction": "BUY",
+      "conviction": 78,
+      "reason": "Résultats au-dessus; guidance solide IA."
+    },
+    {
+      "symbol": "XAUUSD",
+      "direction": "BUY",
+      "conviction": 61,
+      "reason": "Support au-dessus de 2400$; couverture macro encore demandée."
+    },
+    {
+      "symbol": "EURUSD",
+      "direction": "SELL",
+      "conviction": 58,
+      "reason": "BCE neutre et différentiel de taux défavorable."
+    }
+  ]
+}

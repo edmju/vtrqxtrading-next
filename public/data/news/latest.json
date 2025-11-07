@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2025-11-07T22:50:00.000Z",
+  "total": 6,
+  "articles": [
+    {
+      "id": "seed-1",
+      "title": "Fed maintient ses taux; les marchés scrutent les dot plots",
+      "url": "https://example.com/fed-rates",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T18:00:00.000Z",
+      "description": "La Réserve fédérale laisse les taux inchangés; attention aux projections de décembre."
+    },
+    {
+      "id": "seed-2",
+      "title": "Résultats trimestriels de NVIDIA au-dessus des attentes",
+      "url": "https://example.com/nvda-earnings",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T17:30:00.000Z",
+      "description": "Le chiffre d’affaires IA progresse fortement; la marge brute dépasse les estimations."
+    },
+    {
+      "id": "seed-3",
+      "title": "Pétrole: le Brent repasse 85$ sur tensions d’offre",
+      "url": "https://example.com/oil-85",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T16:40:00.000Z",
+      "description": "Les coupes prolongées et un stock US en baisse soutiennent les prix."
+    },
+    {
+      "id": "seed-4",
+      "title": "EURUSD: la BCE adopte un ton plus neutre",
+      "url": "https://example.com/eurusd-ecb",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T15:10:00.000Z",
+      "description": "Les membres évoquent une pause prolongée, l’euro reste cantonné."
+    },
+    {
+      "id": "seed-5",
+      "title": "US500: extension haussière emmenée par la tech",
+      "url": "https://example.com/spx-rally",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T14:45:00.000Z",
+      "description": "La breadth s’améliore, les volumes restent élevés sur les méga-cap."
+    },
+    {
+      "id": "seed-6",
+      "title": "Or: XAUUSD se stabilise au-dessus de 2400$",
+      "url": "https://example.com/gold-2400",
+      "source": "Seed",
+      "publishedAt": "2025-11-07T14:20:00.000Z",
+      "description": "Demande de couverture intacte malgré l’appétit pour le risque."
+    }
+  ]
+}

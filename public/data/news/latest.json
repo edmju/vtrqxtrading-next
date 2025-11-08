@@ -1,5 +1,66 @@
 {
-  "generatedAt": "2025-11-08T10:54:03.982Z",
-  "total": 0,
-  "articles": []
+  "generatedAt": "2025-11-08T11:12:41.891Z",
+  "total": 6,
+  "articles": [
+    {
+      "url": "https://www.cnbc.com/2025/11/07/affirm-government-shutdown-shopping.html",
+      "title": "Affirm CEO says furloughed federal employees are starting to lose interest in shopping",
+      "publishedAt": "2025-11-07T21:06:33.000Z",
+      "description": "Affirm CEO Max Levchin said as the government shutdown drags on, there are signs of shifting shopping habits from federal workers.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "cb1902aa1344732d8ceef32831d1d460",
+      "score": 11
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/07/feds-miran-says-stablecoin-surge-could-help-push-interest-rates-lower.html",
+      "title": "Fed&apos;s Miran says stablecoin surge could help push interest rates lower",
+      "publishedAt": "2025-11-07T20:46:48.000Z",
+      "description": "The central banker said the Fed might need to lower its own policy rate to avoid unintentionally slowing the economy.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "87533d08bd6e925dfe22ba5b9a3cbff4",
+      "score": 6
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/07/how-trumps-tariffs-are-crushing-small-businesses.html",
+      "title": "How Trump’s tariffs are crushing small businesses while big retailers weather the costs",
+      "publishedAt": "2025-11-07T16:32:07.000Z",
+      "description": "While large retailers like Walmart and Amazon are mostly brushing off Trump's tariffs, small businesses are being crushed under the weight of them.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "838d40095243a750b44d62b5d42b66d0",
+      "score": 6
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/06/trump-ai-sacks-federal-bailout-openai-friar.html",
+      "title": "Trump AI czar Sacks says &apos;no federal bailout for AI&apos; after OpenAI CFO&apos;s comments",
+      "publishedAt": "2025-11-06T18:11:40.000Z",
+      "description": "Sacks' comments came after OpenAI CFO Sarah Friar mentioned a federal \"backstop\" during a conference.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "781e24d4eb0ebb22f81293e7b9140bc9",
+      "score": 6
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/07/heres-our-price-target-and-rating-on-qnity-our-newest-stock-to-ride-the-ai-chip-boom.html",
+      "title": "Here&apos;s our price target and rating on Qnity, our newest stock to ride the AI chip boom",
+      "publishedAt": "2025-11-07T21:02:50.000Z",
+      "description": "The former DuPont electronics business offers investors plenty to like.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "2e457916d618ecbeaaa1cd6d8a14008d",
+      "score": 5
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/07/trump-government-budget-cuts-cybersecurity-hacking-risks.html",
+      "title": "Trump budget cuts, agency gutting, leave Americans and economy at greater risk of being hacked, experts warn",
+      "publishedAt": "2025-11-07T15:55:46.000Z",
+      "description": "President Trump's government agency gutting and budget cuts leave the U.S. economy at greater risk of cyberattacks than a year ago, according to experts.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "375ffa919d859386a32d195556de77a6",
+      "score": 5
+    }
+  ]
 }

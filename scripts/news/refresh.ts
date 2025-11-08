@@ -16,26 +16,19 @@ const AI_DIR  = process.env.NEWS_AI_OUTPUT_DIR || "public/data/ai";
 function logCount(label: string, arr: RawArticle[]) {
   console.log(`[news] ${label}: ${arr.length}`);
 }
-function logSample(label: string, arr: RawArticle[], n = 5) {
-  const titles = arr.slice(0, n).map(a => `• ${a.title}`).join("\n");
-  console.log(`[news] sample ${label}:\n${titles || "(none)"}`);
-}
 
 async function stageFetch() {
   const langs = (process.env.NEWS_LANGS || "en").split(",").map(s => s.trim());
   const maxAll   = Number(process.env.NEWS_MAX_ARTICLES || 400);
-  const maxHot   = Number(process.env.NEWS_MAX_HOT || 60);
-  const minScore = Number(process.env.NEWS_HOT_SCORE_MIN || 2); // ⇦ par défaut 2
+  const maxHot   = Number(process.env.NEWS_MAX_HOT || 40);
+  const minScore = Number(process.env.NEWS_HOT_SCORE_MIN || 2);
 
-  // Providers selon clés dispo
   const tasks: Promise<RawArticle[]>[] = [];
   if (process.env.NEWSAPI_KEY)      tasks.push(fetchNewsapi(langs));
   if (process.env.FINNHUB_API_KEY)  tasks.push(fetchFinnhub());
   if (process.env.GUARDIAN_API_KEY) tasks.push(fetchGuardian());
   if (process.env.FMP_API_KEY)      tasks.push(fetchFmp());
-
-  // Agrégateur RSS public (toujours)
-  tasks.push(fetchAllRss());
+  tasks.push(fetchAllRss()); // multi-RSS public
 
   const results = await Promise.all(tasks);
   const [newsapi = [], finnhub = [], guardian = [], fmp = [], rss = []] = results;
@@ -47,17 +40,14 @@ async function stageFetch() {
   logCount("RSS (Reuters/CNBC/Yahoo/FT)", rss);
 
   const all: RawArticle[] = ([] as RawArticle[]).concat(newsapi, finnhub, guardian, fmp, rss);
-
   const dedup = normalizeDedup(all, maxAll);
   logCount("after dedup", dedup);
-  logSample("after dedup", dedup);
 
   const tickers = (process.env.FTMO_SYMBOLS || "")
     .split(",").map(s => s.trim()).filter(Boolean);
 
   const hotOnly = filterAndScoreHot(dedup, { tickers, max: maxHot, minScore });
   logCount("after hot filter", hotOnly);
-  logSample("hot", hotOnly);
 
   const tag = todayTag();
   const bundle: NewsBundle = {
@@ -84,17 +74,8 @@ async function stageAnalyze() {
   const ftmo = (process.env.FTMO_SYMBOLS || "").split(",").map(s => s.trim()).filter(Boolean);
   const watch = (process.env.WATCHLIST_TICKERS || "").split(",").map(s => s.trim()).filter(Boolean);
 
-  if (!bundle.articles?.length || !process.env.OPENAI_API_KEY) {
-    const empty = { generatedAt: new Date().toISOString(), mainThemes: [], actions: [] };
-    const tag = todayTag();
-    ensureDir(AI_DIR);
-    persistAI(empty, path.join(AI_DIR, `ai-${tag}.json`));
-    writeJSON(path.join(AI_DIR, "latest.json"), empty);
-    console.log("[news] AI analysis skipped (no articles or no OPENAI_API_KEY).");
-    return;
-  }
-
-  const out = await analyzeWithAI(bundle.articles, {
+  // Toujours produire un fichier IA: IA ou heuristique (gérée dans analyzeWithAI)
+  const out = await analyzeWithAI(bundle.articles || [], {
     topThemes: Number(process.env.NEWS_TOP_THEMES || 3),
     ftmoSymbols: ftmo,
     watchlist: watch
@@ -104,7 +85,7 @@ async function stageAnalyze() {
   ensureDir(AI_DIR);
   persistAI(out, path.join(AI_DIR, `ai-${tag}.json`));
   writeJSON(path.join(AI_DIR, "latest.json"), out);
-  console.log("[news] AI analysis saved.");
+  console.log("[news] AI (or heuristic) analysis saved.");
 }
 
 async function main() {

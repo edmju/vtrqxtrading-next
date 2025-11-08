@@ -1,78 +1,128 @@
-// Liste "énormissime" de mots/expressions qui rendent une news utile au trading.
-// (FR/EN, macro + micro, évite les sujets lifestyle/sport)
-// ⚠️ Ajoute/retire librement des termes selon tes marchés.
+/**
+ * Filtrage "hot" sans IA : score par mots/expressions clés.
+ * - Normalisation forte (minuscules, accents, ponctuation, apostrophes intelligentes)
+ * - Large couverture macro/micro FR/EN
+ * - Anti-bruit (médias/opinion/podcast/etc.)
+ */
 
-export const NEGATIVE_TERMS = [
-  "opinion", "editorial", "podcast", "newsletter", "blog",
-  "travel", "sports", "culture", "arts", "lifestyle",
-  "recipe", "people", "gossip", "fashion", "beauty",
-  "video:", "watch:", "photos", "gallery", "interview"
+export type KeywordGroup = { weight: number; terms: string[] };
+
+export const NEGATIVE_TERMS: string[] = [
+  // bruit / non-trading
+  "opinion","editorial","podcast","newsletter","blog","interview","profile",
+  "travel","sports","culture","arts","lifestyle","people","gossip","fashion","beauty",
+  "recipe","photos","gallery","video:","watch:","how to",
+  // NYT/The Daily etc.
+  "the daily podcast","daily podcast"
 ];
 
-export const HOT_TERMS = [
-  // Macro – banques centrales / politique monétaire
-  "rate hike", "rate cut", "rate cuts", "rate decision", "rate path",
-  "fed", "federal reserve", "powell", "dot plot", "fomc",
-  "ecb", "lagarde", "boj", "kuroda", "boe", "snB", "rba", "rbnz", "boc",
-  "quantitative tightening", "qt", "qe", "balance sheet",
-  "forward guidance", "policy shift", "pivot",
+// Macro – banques centrales / politique monétaire
+const G_POLICY: KeywordGroup = { weight: 6, terms: [
+  "rate hike","rate cut","rate decision","rate path","pivot","policy shift",
+  "federal reserve","fed","powell","fomc","dot plot",
+  "ecb","lagarde","boj","kuroda","boe","boc","rbnz","rba","snb",
+  "quantitative tightening","qt","qe","balance sheet"
+]};
 
-  // Macro – inflation / emploi / croissance
-  "inflation cools", "inflation eases", "inflation surges",
-  "disinflation", "stagflation",
-  "jobs decline", "jobless claims jump", "unemployment rises",
-  "wage growth", "labor market cools",
-  "recession risk", "soft landing", "hard landing",
-  "gdp surprise", "growth slows", "slowdown",
+// Macro – inflation / emploi / croissance / récession
+const G_DATA: KeywordGroup = { weight: 5, terms: [
+  "inflation","disinflation","deflation","cpi","ppi","pce",
+  "jobs","jobless","unemployment","labor market","payrolls","nfp",
+  "recession","slowdown","soft landing","hard landing","gdp","growth slows"
+]};
 
-  // Commerce / géopolitique / tarifs / sanctions
-  "tariffs", "new tariffs", "trade war", "export controls", "sanctions",
-  "embargo", "blacklist", "entity list", "license ban",
-  "geopolitical tension", "escalation", "ceasefire", "missile", "strike",
+// Commerce / sanctions / tarifs / géopolitique
+const G_TRADE: KeywordGroup = { weight: 6, terms: [
+  "tariff","tariffs","trade war","export control","export controls",
+  "sanction","sanctions","embargo","blacklist","entity list",
+  "license ban","visa restriction","geopolitical tension","escalation",
+  "ceasefire","strike","missile","border closure"
+]};
 
-  // Energie / OPEC
-  "opec", "opec+", "production cut", "output cut",
-  "supply disruption", "inventory draw", "stockpile drop",
-  "brent", "wti", "gas pipeline", "refinery outage",
+// Énergie / OPEC / offre
+const G_ENERGY: KeywordGroup = { weight: 5, terms: [
+  "opec","opec+","production cut","output cut","supply disruption","inventory draw",
+  "stockpile drop","brent","wti","refinery outage","gas pipeline"
+]};
 
-  // Entreprises – earnings / guidance / m&a / régulateur
-  "earnings beat", "earnings miss", "revenue beat", "guidance raised", "guidance cut",
-  "profit warning", "preliminary results",
-  "merger", "acquisition", "takeover", "buyout", "spinoff", "ipo", "secondary offering",
-  "antitrust", "doj", "ftc", "ec investigation", "eu probe",
-  "sec probe", "sec charges", "fine", "settlement", "lawsuit", "class action",
-  "downgrade", "upgrade", "credit watch", "rating cut",
-  "buyback", "share repurchase", "dividend hike", "dividend cut",
-  "bankruptcy", "chapter 11", "restructuring", "default",
+// Entreprises – earnings / guidance / m&a / régulateur / crédit
+const G_CORP: KeywordGroup = { weight: 7, terms: [
+  "earnings beat","earnings miss","revenue beat","guidance raised","guidance cut",
+  "profit warning","preliminary results","merger","acquisition","takeover","buyout",
+  "spinoff","ipo","secondary offering","antitrust","doj","ftc","ec investigation",
+  "eu probe","sec probe","sec charges","fine","settlement","lawsuit","class action",
+  "downgrade","upgrade","credit watch","rating cut","buyback","share repurchase",
+  "dividend hike","dividend cut","bankruptcy","chapter 11","restructuring","default"
+]};
 
-  // Tech/AI/Chips – export, interdictions, ruptures d’offre
-  "chip ban", "export ban", "ai chip", "gpu shortage",
-  "supply chain disruption", "plant shutdown",
-  "data breach", "hack", "ransomware",
+// Tech/AI/Chips – export, ruptures d’offre, cybersécu
+const G_TECH: KeywordGroup = { weight: 5, terms: [
+  "chip ban","export ban","ai chip","gpu shortage","supply chain disruption",
+  "plant shutdown","data breach","hack","ransomware","antitrust case"
+]};
 
-  // Devises / or / crypto (événements significatifs)
-  "usd surges", "usd slumps", "yen intervention", "fx intervention", "currency peg",
-  "gold jumps", "gold slips", "bitcoin jumps", "bitcoin plunges",
+// FX / Or / Crypto (événements significatifs)
+const G_MARKETS: KeywordGroup = { weight: 4, terms: [
+  "usd surges","usd slumps","yen intervention","fx intervention","currency peg",
+  "gold jumps","gold slips","bitcoin jumps","bitcoin plunges","stabilizes"
+]};
 
-  // FR (macro + micro)
-  "hausse des taux", "baisse des taux", "taux directeurs", "banque centrale",
-  "inflation en baisse", "inflation recule", "tensions géopolitiques",
-  "sanctions", "embargo", "réduction de production", "profit warning",
-  "relève ses prévisions", "abaisse ses prévisions", "OPA", "fusion", "amende",
-  "enquête antitrust", "plainte collective", "plan de restructuration",
-  "défaut de paiement", "rachat d'actions", "dividende",
+// Français
+const G_FR: KeywordGroup = { weight: 5, terms: [
+  "hausse des taux","baisse des taux","taux directeurs","banque centrale",
+  "inflation en baisse","inflation recule","tensions géopolitiques",
+  "sanctions","embargo","réduction de production","profit warning",
+  "relève ses prévisions","abaisse ses prévisions","opa","fusion","amende",
+  "enquête antitrust","plainte collective","plan de restructuration",
+  "défaut de paiement","rachat d'actions","dividende","révision de guidance"
+]};
+
+export const GROUPS: KeywordGroup[] = [
+  G_POLICY, G_TRADE, G_ENERGY, G_CORP, G_TECH, G_MARKETS, G_DATA, G_FR
 ];
 
-// Fabrication d’un RegExp robuste (case-insensitive)
-const escaped = HOT_TERMS.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-export const HOT_RE = new RegExp(`\\b(${escaped.join("|")})\\b`, "i");
+export function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    // apostrophes typographiques → simples
+    .replace(/[’‘´`]/g, "'")
+    // accents
+    .normalize("NFD").replace(/\p{Diacritic}/gu, "")
+    // ponctuation forte en espaces
+    .replace(/[^\p{Letter}\p{Number}\s%]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-const negEscaped = NEGATIVE_TERMS.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-export const NEG_RE = new RegExp(`\\b(${negEscaped.join("|")})\\b`, "i");
+export function hasNegative(s: string): boolean {
+  const text = normalize(s);
+  return NEGATIVE_TERMS.some(t => text.includes(normalize(t)));
+}
 
-// Filtre principal:  true si "hot", false sinon
-export function isHot(title: string, description: string = ""): boolean {
-  const text = `${title} ${description}`.toLowerCase();
-  if (NEG_RE.test(text)) return false;
-  return HOT_RE.test(text);
+export function scoreText(text: string, tickers: string[]): number {
+  if (!text) return 0;
+  const norm = normalize(text);
+  if (hasNegative(norm)) return 0;
+
+  let score = 0;
+
+  for (const g of GROUPS) {
+    for (const t of g.terms) {
+      if (norm.includes(normalize(t))) {
+        score += g.weight;
+        break;
+      }
+    }
+  }
+
+  // Bonus si mention d’un ticker surveillé
+  for (const tk of tickers) {
+    const n = normalize(tk);
+    if (n && norm.includes(n)) score += 2;
+  }
+
+  // Bonus signal % (chiffres + % dans le titre)
+  if (/\d+(\.\d+)?\s?%/.test(text)) score += 1;
+
+  return score;
 }

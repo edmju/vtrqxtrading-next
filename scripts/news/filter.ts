@@ -12,7 +12,7 @@ export function filterAndScoreHot(
   });
 
   const hot = scored
-    .filter(a => a.score !== undefined && a.score >= opts.minScore)
+    .filter(a => (a.score ?? 0) >= opts.minScore)
     .sort((a, b) => (b.score! - a.score!) || (+new Date(b.publishedAt) - +new Date(a.publishedAt)));
 
   return hot.slice(0, opts.max);

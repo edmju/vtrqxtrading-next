@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-08T11:12:41.891Z",
-  "total": 6,
+  "generatedAt": "2025-11-08T16:49:49.409Z",
+  "total": 5,
   "articles": [
     {
       "url": "https://www.cnbc.com/2025/11/07/affirm-government-shutdown-shopping.html",
@@ -33,14 +33,14 @@
       "score": 6
     },
     {
-      "url": "https://www.cnbc.com/2025/11/06/trump-ai-sacks-federal-bailout-openai-friar.html",
-      "title": "Trump AI czar Sacks says &apos;no federal bailout for AI&apos; after OpenAI CFO&apos;s comments",
-      "publishedAt": "2025-11-06T18:11:40.000Z",
-      "description": "Sacks' comments came after OpenAI CFO Sarah Friar mentioned a federal \"backstop\" during a conference.",
+      "url": "https://www.cnbc.com/2025/11/08/i-have-enough-cash-to-pay-off-my-student-loan-why-im-not.html",
+      "title": "I finally have enough cash to pay off my student loan in full—here&apos;s why I&apos;m not doing it",
+      "publishedAt": "2025-11-08T14:00:01.000Z",
+      "description": "Mathetmatically, paying off my debt now would cost me less money. But I don't want to put my wedding savings in jeopardy.",
       "source": "CNBC",
       "lang": "en",
-      "id": "781e24d4eb0ebb22f81293e7b9140bc9",
-      "score": 6
+      "id": "d73c0204ead518219719374d6d987598",
+      "score": 5
     },
     {
       "url": "https://www.cnbc.com/2025/11/07/heres-our-price-target-and-rating-on-qnity-our-newest-stock-to-ride-the-ai-chip-boom.html",
@@ -50,16 +50,6 @@
       "source": "CNBC",
       "lang": "en",
       "id": "2e457916d618ecbeaaa1cd6d8a14008d",
-      "score": 5
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/07/trump-government-budget-cuts-cybersecurity-hacking-risks.html",
-      "title": "Trump budget cuts, agency gutting, leave Americans and economy at greater risk of being hacked, experts warn",
-      "publishedAt": "2025-11-07T15:55:46.000Z",
-      "description": "President Trump's government agency gutting and budget cuts leave the U.S. economy at greater risk of cyberattacks than a year ago, according to experts.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "375ffa919d859386a32d195556de77a6",
       "score": 5
     }
   ]

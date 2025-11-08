@@ -1,5 +1,14 @@
 {
-  "generatedAt": "2025-11-08T11:12:41.896Z",
-  "mainThemes": [],
+  "generatedAt": "2025-11-08T16:49:49.412Z",
+  "mainThemes": [
+    {
+      "label": "Cybersécurité & ruptures",
+      "weight": 1
+    },
+    {
+      "label": "Tarifs & contrôles export",
+      "weight": 1
+    }
+  ],
   "actions": []
 }

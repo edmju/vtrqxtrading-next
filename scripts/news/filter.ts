@@ -1,11 +1,19 @@
 import { RawArticle } from "./types";
-import { isHot } from "./hotKeywords";
+import { scoreText } from "./hotKeywords";
 
-export function filterHot(articles: RawArticle[], max = 60): RawArticle[] {
-  // 1) ne garder que les items "hot"
-  const hot = articles.filter(a => isHot(a.title || "", a.description || ""));
+export function filterAndScoreHot(
+  articles: RawArticle[],
+  opts: { tickers: string[]; max: number; minScore: number }
+): RawArticle[] {
+  const scored = articles.map(a => {
+    const text = `${a.title || ""} ${a.description || ""}`;
+    const score = scoreText(text, opts.tickers);
+    return { ...a, score };
+  });
 
-  // 2) limiter la liste (paramétrable via env)
-  const limit = Number(process.env.NEWS_MAX_HOT || max);
-  return hot.slice(0, limit);
+  const hot = scored
+    .filter(a => a.score !== undefined && a.score >= opts.minScore)
+    .sort((a, b) => (b.score! - a.score!) || (+new Date(b.publishedAt) - +new Date(a.publishedAt)));
+
+  return hot.slice(0, opts.max);
 }

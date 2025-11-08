@@ -21,34 +21,25 @@ async function stageFetch() {
   const langs = (process.env.NEWS_LANGS || "en").split(",").map(s => s.trim());
   const maxAll = Number(process.env.NEWS_MAX_ARTICLES || 400);
   const maxHot = Number(process.env.NEWS_MAX_HOT || 60);
-  const minScore = Number(process.env.NEWS_HOT_SCORE_MIN || 4);
+  const minScore = Number(process.env.NEWS_HOT_SCORE_MIN || 3);
 
-  // Providers selon clés dispos
   const tasks: Promise<RawArticle[]>[] = [];
-  if (process.env.NEWSAPI_KEY)   tasks.push(fetchNewsapi(langs));
-  if (process.env.FINNHUB_API_KEY) tasks.push(fetchFinnhub());
+  if (process.env.NEWSAPI_KEY)      tasks.push(fetchNewsapi(langs));
+  if (process.env.FINNHUB_API_KEY)  tasks.push(fetchFinnhub());
   if (process.env.GUARDIAN_API_KEY) tasks.push(fetchGuardian());
-  if (process.env.FMP_API_KEY)     tasks.push(fetchFmp());
-  // RSS Reuters toujours
-  tasks.push(fetchReutersRss());
+  if (process.env.FMP_API_KEY)      tasks.push(fetchFmp());
+  tasks.push(fetchReutersRss()); // RSS public
 
   const results = await Promise.all(tasks);
   const all: RawArticle[] = results.flat();
-
   tally("raw total", all.length);
 
-  // Normalisation + dédoublonnage
   const dedup = normalizeDedup(all, maxAll);
   tally("after dedup", dedup.length);
 
-  // Tickers connus (bonus scoring)
-  const tickers =
-    (process.env.FTMO_SYMBOLS || "")
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean);
+  const tickers = (process.env.FTMO_SYMBOLS || "")
+    .split(",").map(s => s.trim()).filter(Boolean);
 
-  // Filtrage/scoring "hot"
   const hotOnly = filterAndScoreHot(dedup, { tickers, max: maxHot, minScore });
   tally("after hot filter", hotOnly.length);
 

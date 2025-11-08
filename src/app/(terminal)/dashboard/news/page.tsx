@@ -11,6 +11,7 @@ type Article = {
   source: string;
   publishedAt: string;
   description?: string;
+  score?: number;
 };
 type NewsBundle = {
   generatedAt: string;
@@ -56,7 +57,7 @@ export default async function NewsPage() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-      {/* Col 1: News (déjà filtrées 'hot') */}
+      {/* Col 1: News hot */}
       <section className="lg:col-span-1 space-y-3">
         <div className="rounded-xl p-4 bg-gradient-to-b from-sky-900/30 to-sky-600/10 ring-1 ring-sky-500/20">
           <h2 className="text-xl font-semibold text-sky-200">News</h2>
@@ -70,17 +71,15 @@ export default async function NewsPage() {
               <a href={a.url} target="_blank" rel="noreferrer" className="font-semibold hover:underline text-neutral-100">
                 {a.title}
               </a>
-              <div className="text-xs text-neutral-400 mt-1">
-                {a.source} — {new Date(a.publishedAt).toLocaleString()}
+              <div className="text-xs text-neutral-400 mt-1 flex items-center gap-2">
+                <span>{a.source}</span>
+                <span>— {new Date(a.publishedAt).toLocaleString()}</span>
+                {typeof a.score === "number" && <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 ring-1 ring-sky-600/30">score {a.score}</span>}
               </div>
-              {a.description ? (
-                <p className="text-sm text-neutral-300 mt-2 line-clamp-3">{a.description}</p>
-              ) : null}
+              {a.description ? <p className="text-sm text-neutral-300 mt-2 line-clamp-3">{a.description}</p> : null}
             </li>
           ))}
-          {news.articles.length === 0 && (
-            <li className="text-sm text-neutral-400">Aucune actualité “hot” pour l’instant.</li>
-          )}
+          {news.articles.length === 0 && <li className="text-sm text-neutral-400">Aucune actualité “hot” pour l’instant.</li>}
         </ul>
       </section>
 
@@ -88,9 +87,7 @@ export default async function NewsPage() {
       <section className="lg:col-span-1 space-y-3">
         <div className="rounded-xl p-4 bg-gradient-to-b from-violet-900/30 to-violet-600/10 ring-1 ring-violet-500/20">
           <h2 className="text-xl font-semibold text-violet-200">News principales</h2>
-          {ai.generatedAt && (
-            <p className="text-sm text-violet-300/70">IA: {new Date(ai.generatedAt).toLocaleString()}</p>
-          )}
+          {ai.generatedAt && <p className="text-sm text-violet-300/70">IA: {new Date(ai.generatedAt).toLocaleString()}</p>}
         </div>
         <ul className="space-y-2">
           {ai.mainThemes.map((t, i) => (
@@ -99,9 +96,7 @@ export default async function NewsPage() {
               <span className="text-xs text-neutral-400">{typeof t.weight === "number" ? Math.round(t.weight * 100) / 100 : ""}</span>
             </li>
           ))}
-          {ai.mainThemes.length === 0 && (
-            <li className="text-sm text-neutral-400 p-3">Aucun thème clé (hors datas) généré.</li>
-          )}
+          {ai.mainThemes.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucun thème clé (hors datas) généré.</li>}
         </ul>
       </section>
 
@@ -121,9 +116,7 @@ export default async function NewsPage() {
               <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
             </li>
           ))}
-          {ai.actions.length === 0 && (
-            <li className="text-sm text-neutral-400 p-3">Aucune action proposée aujourd’hui.</li>
-          )}
+          {ai.actions.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucune action proposée aujourd’hui.</li>}
         </ul>
       </section>
     </div>

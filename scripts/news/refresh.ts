@@ -6,7 +6,7 @@ import { fetchGuardian } from "./providers/guardian";
 import { fetchFmp } from "./providers/fmp";
 import { fetchReutersRss } from "./providers/rss";
 import { normalizeDedup, persistBundle } from "./normalize";
-import { filterHot } from "./filter";
+import { filterAndScoreHot } from "./filter";
 import { analyzeWithAI, persistAI } from "./analyze";
 import { NewsBundle, RawArticle } from "./types";
 
@@ -19,31 +19,38 @@ function tally(label: string, n: number) {
 
 async function stageFetch() {
   const langs = (process.env.NEWS_LANGS || "en").split(",").map(s => s.trim());
-  const max = Number(process.env.NEWS_MAX_ARTICLES || 400);
+  const maxAll = Number(process.env.NEWS_MAX_ARTICLES || 400);
+  const maxHot = Number(process.env.NEWS_MAX_HOT || 60);
+  const minScore = Number(process.env.NEWS_HOT_SCORE_MIN || 4);
 
+  // Providers selon clés dispos
   const tasks: Promise<RawArticle[]>[] = [];
-  if (process.env.NEWSAPI_KEY) tasks.push(fetchNewsapi(langs));
+  if (process.env.NEWSAPI_KEY)   tasks.push(fetchNewsapi(langs));
   if (process.env.FINNHUB_API_KEY) tasks.push(fetchFinnhub());
   if (process.env.GUARDIAN_API_KEY) tasks.push(fetchGuardian());
-  if (process.env.FMP_API_KEY) tasks.push(fetchFmp());
-  // RSS Reuters (sans clé) pour garantir un flux
+  if (process.env.FMP_API_KEY)     tasks.push(fetchFmp());
+  // RSS Reuters toujours
   tasks.push(fetchReutersRss());
 
   const results = await Promise.all(tasks);
-  const [newsapi = [], finnhub = [], guardian = [], fmp = [], reuters = []] = results;
+  const all: RawArticle[] = results.flat();
 
-  tally("NewsAPI", newsapi.length);
-  tally("Finnhub", finnhub.length);
-  tally("Guardian", guardian.length);
-  tally("FMP", fmp.length);
-  tally("Reuters (RSS)", reuters.length);
+  tally("raw total", all.length);
 
-  const all: RawArticle[] = ([] as RawArticle[]).concat(newsapi, finnhub, guardian, fmp, reuters);
-  const dedup = normalizeDedup(all, max);
+  // Normalisation + dédoublonnage
+  const dedup = normalizeDedup(all, maxAll);
+  tally("after dedup", dedup.length);
 
-  // 🔥 Filtrage par mots-clés
-  const hotOnly = filterHot(dedup, Number(process.env.NEWS_MAX_HOT || 60));
-  tally("After HOT filter", hotOnly.length);
+  // Tickers connus (bonus scoring)
+  const tickers =
+    (process.env.FTMO_SYMBOLS || "")
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
+
+  // Filtrage/scoring "hot"
+  const hotOnly = filterAndScoreHot(dedup, { tickers, max: maxHot, minScore });
+  tally("after hot filter", hotOnly.length);
 
   const tag = todayTag();
   const bundle: NewsBundle = {

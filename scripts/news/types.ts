@@ -7,6 +7,7 @@ export type RawArticle = {
   description?: string;
   tickers?: string[];
   lang?: string;
+  score?: number; // score "hot" (calculé côté filtre)
 };
 
 export type NewsBundle = {
@@ -21,7 +22,7 @@ export type AiOutputs = {
   actions: {
     symbol: string;
     direction: "BUY" | "SELL";
-    conviction: number;
+    conviction: number; // échelle /10
     reason: string;
   }[];
 };

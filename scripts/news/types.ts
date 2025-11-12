@@ -7,8 +7,8 @@ export type RawArticle = {
   description?: string;
   tickers?: string[];
   lang?: string;
-  score?: number;      // score hot (rule-based)
-  hits?: string[];     // mots/expressions détectés (preuves)
+  score?: number;
+  hits?: string[];
 };
 
 export type NewsBundle = {
@@ -20,14 +20,29 @@ export type NewsBundle = {
 export type AiAction = {
   symbol: string;
   direction: "BUY" | "SELL";
-  conviction: number;     // 0..10 (intention de trade)
-  confidence: number;     // 0..100 (fiabilité synthétisée)
-  reason: string;         // justification courte
-  evidenceIds?: string[]; // ids d’articles qui justifient l’action
+  conviction: number;     // 0..10
+  confidence: number;     // 0..100
+  reason: string;
+  evidenceIds?: string[]; // ids d’articles support
+};
+
+export type AiTheme = {
+  label: string;
+  weight: number;         // 0..1
+  summary?: string;       // ≤ ~30 mots
+  evidenceIds?: string[]; // ids d’articles pour ce thème
+};
+
+export type AiCluster = {
+  label: string;
+  weight: number;         // 0..1
+  summary: string;
+  articleIds: string[];
 };
 
 export type AiOutputs = {
   generatedAt: string;
-  mainThemes: { label: string; weight: number }[];
+  mainThemes: AiTheme[];
   actions: AiAction[];
+  clusters?: AiCluster[]; // pour l’UI “smart”
 };

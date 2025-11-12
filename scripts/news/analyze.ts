@@ -1,208 +1,94 @@
-import OpenAI from "openai";
-import { AiOutputs, RawArticle, AiAction } from "./types";
-import { writeJSON } from "../../src/lib/news/fs";
+// Analyse => thèmes + trades cohérents (logique dure, sans IA obligatoire)
+import { AiOutputs, AiAction, RawArticle } from "./types";
+import { runAllDetectors, Signal } from "./detectors";
 
-// -------------------- Utils --------------------
-function norm(s: string) {
-  return (s || "")
-    .toLowerCase()
-    .replace(/[’‘´`]/g, "'")
-    .normalize("NFD").replace(/\p{Diacritic}/gu, "")
-    .replace(/[^\p{Letter}\p{Number}\s%]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-function hoursSince(d: string) {
-  const diff = Date.now() - new Date(d).getTime();
-  return diff / 36e5;
-}
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
-}
-const SOURCE_WEIGHT: Record<string, number> = {
-  "Reuters": 1.0,
-  "Financial Times": 0.95,
-  "CNBC": 0.85,
-  "MarketWatch": 0.8,
-  "Yahoo Finance": 0.75,
-  "AP News": 0.7
-};
-
-// -------------------- Thèmes & règles --------------------
-const DATA_WORDS = ["cpi","ppi","pce","nfp","payrolls","gdp","pmi","ism","survey","calendar"];
-
-type ThemeRule = { label: string; weight: number; includes: string[]; excludes?: string[]; action?: (arts: RawArticle[], pool: string[]) => AiAction[] };
-const rules: ThemeRule[] = [
-  {
-    label: "Tarifs & contrôles export",
-    weight: 1,
-    includes: ["tariff","tariffs","export control","sanction","sanctions","embargo","blacklist","entity list","retaliation"],
-    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
-      keywords: ["tariff","tariffs","sanction","embargo","export control","retaliation"],
-      ideas: [
-        { candidates:["US500","NAS100"], dir:"SELL", reason:"Tensions commerciales: risque macro accru." },
-        { candidates:["XAUUSD"],        dir:"BUY",  reason:"Couverture face aux tensions commerciales." }
-      ]
-    })
-  },
-  {
-    label: "Pivot/Assouplissement monétaire",
-    weight: 1,
-    includes: ["rate cut","rate cuts","pivot","dovish","easing","qe"],
-    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
-      keywords: ["rate cut","rate cuts","pivot","dovish","easing"],
-      ideas: [
-        { candidates:["US500","NAS100","DE40"], dir:"BUY",  reason:"Biais dovish soutenant les actifs risqués." },
-        { candidates:["EURUSD","GBPUSD","AUDUSD"], dir:"BUY", reason:"Dollar susceptible de se détendre en scénario dovish." }
-      ]
-    })
-  },
-  {
-    label: "Durcissement monétaire",
-    weight: 1,
-    includes: ["rate hike","rate hikes","hawkish","tightening","qt","balance sheet reduction"],
-    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
-      keywords: ["rate hike","rate hikes","hawkish","tightening","qt"],
-      ideas: [
-        { candidates:["US500","NAS100"], dir:"SELL", reason:"Ton hawkish: pression sur valorisations." },
-        { candidates:["USDJPY","EURUSD"], dir:"BUY",  reason:"USD soutenu par durcissement monétaire." }
-      ]
-    })
-  },
-  {
-    label: "Énergie & offre",
-    weight: 1,
-    includes: ["opec","opec+","production cut","output cut","refinery outage","supply disruption","pipeline"],
-    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
-      keywords: ["opec","production cut","output cut","refinery outage","supply disruption","pipeline"],
-      ideas: [
-        { candidates:["USOIL","UKOIL"], dir:"BUY", reason:"Chocs d’offre sur le brut (OPEC/refinery/outages)." }
-      ]
-    })
-  },
-  {
-    label: "M&A / Antitrust / Litiges",
-    weight: 1,
-    includes: ["merger","acquisition","takeover","buyout","antitrust","lawsuit","class action","fine","settlement","ec investigation","doj","ftc","cfius"],
-  },
-  {
-    label: "Guidance & profits",
-    weight: 1,
-    includes: ["guidance raised","earnings beat","revenue beat","upgrade","guidance cut","profit warning","earnings miss","downgrade"],
-  },
-  {
-    label: "Cybersécurité & ruptures",
-    weight: 1,
-    includes: ["data breach","hack","ransomware","shutdown","plant shutdown","supply chain disruption"]
+function clamp(n: number, a: number, b: number) { return Math.max(a, Math.min(b, n)); }
+function confPct(s: number) { return Math.round(Math.max(25, Math.min(95, 25 + s*70))); }
+function pick(pool: string[], prefs: string[]) {
+  for (const p of prefs) {
+    const x = pool.find(s => s.toUpperCase() === p.toUpperCase());
+    if (x) return x;
   }
-];
-
-// ----------- calculs -----------
+  return pool[0] || "US500";
+}
 function defaultPool(ftmo: string[]) {
   const base = ["US500","NAS100","XAUUSD","EURUSD","USDJPY","USOIL","UKOIL","DE40","UK100"];
   return ftmo.length ? ftmo : base;
 }
+function reasonFrom(sig: Signal) {
+  const tag = `${sig.label}`;
+  const srcs = Array.from(new Set(sig.evidences.map(e => e.source))).slice(0,3).join("/");
+  return `${tag} • sources: ${srcs}`;
+}
 
-function signalStrength(articles: RawArticle[], keywords: string[]) {
-  const matched = articles.filter(a => {
-    const t = norm(`${a.title} ${a.description || ""}`);
-    return keywords.some(k => t.includes(norm(k)));
-  });
-  if (!matched.length) return { s: 0, evidences: [] as RawArticle[] };
+function mapSignalsToActions(sigs: Signal[], pool: string[], maxOut = 4): AiAction[] {
+  const minS = Number(process.env.NEWS_ACTION_MIN_STRENGTH || 0.35);
 
-  let srcW = 0, freshW = 0;
-  for (const a of matched) {
-    srcW   += (SOURCE_WEIGHT[a.source] ?? 0.6);
-    const h = hoursSince(a.publishedAt);
-    freshW += h <= 24 ? 1 : h <= 48 ? 0.5 : 0.25;
+  const out: AiAction[] = [];
+  const get = (k: string) => sigs.find(s => s.key === k)!;
+
+  const dov = get("dovish_us");
+  const haw = get("hawkish_us");
+  const trf = get("tariffs_us");
+  const eng = get("energy_supply");
+  const uWeak = get("usd_weak");
+  const uStr  = get("usd_strong");
+
+  if (dov.strength >= Math.max(haw.strength, minS)) {
+    const s = confPct(dov.strength);
+    out.push({ symbol: pick(pool, ["US500","NAS100","DE40"]), direction: "BUY",  conviction: clamp(Math.round(6 + (dov.strength-0.5)*6),1,10), confidence: s, reason: reasonFrom(dov) });
+    out.push({ symbol: pick(pool, ["EURUSD","GBPUSD","AUDUSD"]), direction: "BUY", conviction: clamp(Math.round(5 + (dov.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(dov) });
   }
-  const hitRatio = matched.length / Math.max(8, articles.length);
-  const srcAvg   = srcW / matched.length;           // 0..1.1
-  const freshAvg = freshW / matched.length;         // 0..1
-  const s = 0.5 * hitRatio + 0.3 * (srcAvg - 0.5) + 0.2 * freshAvg;
-  return { s: clamp(s, 0, 1), evidences: matched.slice(0, 5) };
-}
 
-function confPctFromStrength(s: number) {
-  return Math.round(clamp(25 + s * 70, 25, 95));
-}
-
-function pickSymbol(candidates: string[], pool: string[]) {
-  for (const c of candidates) {
-    const m = pool.find(p => p.toUpperCase() === c.toUpperCase());
-    if (m) return m;
+  if (haw.strength > dov.strength && haw.strength >= minS) {
+    const s = confPct(haw.strength);
+    out.push({ symbol: pick(pool, ["US500","NAS100"]), direction: "SELL", conviction: clamp(Math.round(7 + (haw.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(haw) });
+    out.push({ symbol: pick(pool, ["USDJPY","EURUSD"]), direction: pick(pool, ["USDJPY"]) ? "BUY" : "SELL", conviction: clamp(Math.round(5 + (haw.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(haw) });
   }
-  return pool[0];
-}
 
-function mkTradeFromSignal(
-  articles: RawArticle[],
-  pool: string[],
-  spec: { keywords: string[]; ideas: { candidates: string[]; dir: "BUY" | "SELL"; reason: string }[] }
-): AiAction[] {
-  const { s, evidences } = signalStrength(articles, spec.keywords);
-  const min = Number(process.env.NEWS_ACTION_MIN_STRENGTH || 0.30); // seuil logique
-  if (s < min) return [];
-  const confidence = confPctFromStrength(s);
-  const convictionBase = 5 + Math.round((s - 0.5) * 6);
-  return spec.ideas.map(it => ({
-    symbol: pickSymbol(it.candidates, pool),
-    direction: it.dir,
-    conviction: clamp(convictionBase, 1, 10),
-    confidence,
-    reason: `${it.reason} (evidence: ${evidences.map(e => e.source).join("/")}, s=${(s*100|0)}).`
-  }));
-}
-
-function computeThemes(articles: RawArticle[], topN: number) {
-  const cnt: Record<string, number> = {};
-  for (const r of rules) {
-    const { s } = signalStrength(articles, r.includes);
-    if (s > 0) cnt[r.label] = (cnt[r.label] || 0) + s;
+  if (trf.strength >= minS) {
+    const s = confPct(trf.strength);
+    out.push({ symbol: pick(pool, ["US500"]), direction: "SELL", conviction: clamp(Math.round(6 + (trf.strength-0.5)*6),1,10), confidence: s, reason: reasonFrom(trf) });
+    out.push({ symbol: pick(pool, ["XAUUSD"]), direction: "BUY",  conviction: clamp(Math.round(5 + (trf.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(trf) });
   }
-  return Object.entries(cnt)
-    .map(([label, w]) => ({ label, weight: Math.round(w * 100) / 100 }))
-    .sort((a,b) => b.weight - a.weight)
-    .slice(0, topN)
-    .filter(th => !DATA_WORDS.some(dw => norm(th.label).includes(dw)));
+
+  if (eng.strength >= minS) {
+    const s = confPct(eng.strength);
+    out.push({ symbol: pick(pool, ["USOIL","UKOIL"]), direction: "BUY", conviction: clamp(Math.round(6 + (eng.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(eng) });
+  }
+
+  if (uWeak.strength >= minS && (!dov || uWeak.strength > haw.strength)) {
+    const s = confPct(uWeak.strength);
+    out.push({ symbol: pick(pool, ["EURUSD","GBPUSD"]), direction: "BUY", conviction: clamp(Math.round(5 + (uWeak.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(uWeak) });
+  }
+  if (uStr.strength >= minS && (!dov || uStr.strength > uWeak.strength)) {
+    const s = confPct(uStr.strength);
+    out.push({ symbol: pick(pool, ["EURUSD"]), direction: "SELL", conviction: clamp(Math.round(5 + (uStr.strength-0.5)*5),1,10), confidence: s, reason: reasonFrom(uStr) });
+  }
+
+  // dédoublonnage → garder l'action la plus confiante par symbole
+  const best = new Map<string, AiAction>();
+  for (const a of out) {
+    const prev = best.get(a.symbol);
+    if (!prev || a.confidence > prev.confidence) best.set(a.symbol, a);
+  }
+  return Array.from(best.values()).sort((a,b)=>b.confidence-a.confidence).slice(0, maxOut);
 }
 
-// -------------------- OpenAI + Fallback --------------------
 export async function analyzeWithAI(
   articles: RawArticle[],
   opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] }
 ): Promise<AiOutputs> {
-  const pool = defaultPool(opts.ftmoSymbols);
+  const pool = (opts.ftmoSymbols && opts.ftmoSymbols.length) ? opts.ftmoSymbols : ["US500","NAS100","XAUUSD","EURUSD","USDJPY","USOIL","UKOIL","DE40","UK100"];
 
-  // Thèmes par règles (cohérents avec actions)
-  const themes = computeThemes(articles, Math.max(1, Number(opts.topThemes || 3)));
+  const sigs = runAllDetectors(articles);
+  const themes = sigs
+    .filter(s => s.strength > 0)
+    .sort((a,b)=>b.strength-a.strength)
+    .slice(0, Math.max(1, Number(opts.topThemes || 3)))
+    .map(s => ({ label: s.label, weight: Math.round(s.strength*100)/100 }));
 
-  // Actions 100% déterministes à partir des mêmes règles (cohérence)
-  let actions: AiAction[] = [];
-  for (const r of rules) {
-    if (!r.action) continue;
-    actions = actions.concat(r.action(articles, pool));
-  }
-
-  // Si OpenAI dispo, on peut raffiner la rédaction (facultatif, pas de changement de logique)
-  if (process.env.OPENAI_API_KEY && actions.length) {
-    try {
-      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-      const model = process.env.OPENAI_NEWS_MODEL || "gpt-4o-mini";
-      const prompt = `Rewrite briefly these trade rationales in French, concise, no fluff:\n${actions.map(a => `- ${a.symbol} ${a.direction}: ${a.reason}`).join("\n")}`;
-      const r = await client.chat.completions.create({
-        model, temperature: 0, messages: [{ role: "user", content: prompt }]
-      });
-      const text = r.choices[0]?.message?.content || "";
-      const lines = text.split("\n").filter(Boolean);
-      actions = actions.map((a, i) => ({ ...a, reason: lines[i]?.replace(/^-+\s?/, "") || a.reason }));
-    } catch {/* on garde les raisons initiales */}
-  }
-
-  // borne & tri par confiance
-  actions = actions
-    .sort((a,b) => b.confidence - a.confidence)
-    .slice(0, Number(process.env.NEWS_ACTIONS_MAX || 4));
+  const actions = mapSignalsToActions(sigs, pool, Number(process.env.NEWS_ACTIONS_MAX || 4));
 
   return {
     generatedAt: new Date().toISOString(),
@@ -212,5 +98,7 @@ export async function analyzeWithAI(
 }
 
 export function persistAI(out: any, outFile: string) {
-  writeJSON(outFile, out);
+  // conservé pour compat
+  const { writeFileSync } = await import("fs");
+  writeFileSync(outFile, JSON.stringify(out, null, 2));
 }

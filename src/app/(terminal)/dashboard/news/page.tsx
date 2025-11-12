@@ -12,16 +12,24 @@ type Article = {
   publishedAt: string;
   description?: string;
   score?: number;
+  hits?: string[];
 };
 type NewsBundle = {
   generatedAt: string;
   total: number;
   articles: Article[];
 };
+type AIAction = {
+  symbol: string;
+  direction: "BUY" | "SELL";
+  conviction: number;   // 0..10
+  confidence: number;   // 0..100
+  reason: string;
+};
 type AIOutput = {
   generatedAt: string;
   mainThemes: { label: string; weight: number }[];
-  actions: { symbol: string; direction: "BUY" | "SELL"; conviction: number; reason: string }[];
+  actions: AIAction[];
 };
 
 async function readJson<T>(rel: string, fallback: T): Promise<T> {
@@ -51,6 +59,12 @@ async function getData() {
 function badgeDir(d: "BUY" | "SELL") {
   return d === "BUY" ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-600/30" : "bg-rose-500/15 text-rose-300 ring-1 ring-rose-600/30";
 }
+function badgeConf(c: number) {
+  if (c >= 80) return "bg-green-500/20 text-green-300 ring-1 ring-green-600/40";
+  if (c >= 60) return "bg-lime-500/20 text-lime-300 ring-1 ring-lime-600/40";
+  if (c >= 40) return "bg-amber-500/20 text-amber-300 ring-1 ring-amber-600/40";
+  return "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
+}
 
 export default async function NewsPage() {
   const { news, ai } = await getData();
@@ -71,11 +85,18 @@ export default async function NewsPage() {
               <a href={a.url} target="_blank" rel="noreferrer" className="font-semibold hover:underline text-neutral-100">
                 {a.title}
               </a>
-              <div className="text-xs text-neutral-400 mt-1 flex items-center gap-2">
+              <div className="text-xs text-neutral-400 mt-1 flex flex-wrap items-center gap-2">
                 <span>{a.source}</span>
                 <span>— {new Date(a.publishedAt).toLocaleString()}</span>
                 {typeof a.score === "number" && <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 ring-1 ring-sky-600/30">score {a.score}</span>}
               </div>
+              {a.hits && a.hits.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {a.hits.slice(0, 6).map((h, idx) => (
+                    <span key={idx} className="text-xs px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 ring-1 ring-indigo-600/30">{h}</span>
+                  ))}
+                </div>
+              )}
               {a.description ? <p className="text-sm text-neutral-300 mt-2 line-clamp-3">{a.description}</p> : null}
             </li>
           ))}
@@ -83,7 +104,7 @@ export default async function NewsPage() {
         </ul>
       </section>
 
-      {/* Col 2: Thèmes IA (hors datas) */}
+      {/* Col 2: Thèmes */}
       <section className="lg:col-span-1 space-y-3">
         <div className="rounded-xl p-4 bg-gradient-to-b from-violet-900/30 to-violet-600/10 ring-1 ring-violet-500/20">
           <h2 className="text-xl font-semibold text-violet-200">News principales</h2>
@@ -100,7 +121,7 @@ export default async function NewsPage() {
         </ul>
       </section>
 
-      {/* Col 3: Actions proposées (/10) */}
+      {/* Col 3: Actions proposées */}
       <section className="lg:col-span-1 space-y-3">
         <div className="rounded-xl p-4 bg-gradient-to-b from-emerald-900/30 to-emerald-600/10 ring-1 ring-emerald-500/20">
           <h2 className="text-xl font-semibold text-emerald-200">Actions proposées</h2>
@@ -110,9 +131,9 @@ export default async function NewsPage() {
             <li key={i} className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
               <div className="flex items-center justify-between">
                 <div className={`px-2 py-1 rounded ${badgeDir(x.direction)}`}>{x.direction}</div>
-                <div className="text-sm text-neutral-300">Conviction: <span className="font-semibold">{x.conviction}/10</span></div>
+                <div className={`px-2 py-1 rounded text-sm ${badgeConf(x.confidence)}`}>Confiance {x.confidence}/100</div>
               </div>
-              <div className="mt-2 text-neutral-100 font-semibold">{x.symbol}</div>
+              <div className="mt-2 text-neutral-100 font-semibold">{x.symbol} <span className="text-neutral-400 font-normal">• Conviction {x.conviction}/10</span></div>
               <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
             </li>
           ))}

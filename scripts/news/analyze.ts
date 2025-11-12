@@ -12,161 +12,159 @@ function norm(s: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
-
 function hoursSince(d: string) {
   const diff = Date.now() - new Date(d).getTime();
   return diff / 36e5;
 }
-
 function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
 }
-
 const SOURCE_WEIGHT: Record<string, number> = {
   "Reuters": 1.0,
-  "Financial Times": 0.9,
+  "Financial Times": 0.95,
   "CNBC": 0.85,
-  "Yahoo Finance": 0.7
+  "MarketWatch": 0.8,
+  "Yahoo Finance": 0.75,
+  "AP News": 0.7
 };
 
-// -------------------- Heuristics --------------------
+// -------------------- Thèmes & règles --------------------
 const DATA_WORDS = ["cpi","ppi","pce","nfp","payrolls","gdp","pmi","ism","survey","calendar"];
 
-type ThemeRule = { label: string; weight: number; includes: string[]; excludes?: string[] };
-const THEME_RULES: ThemeRule[] = [
-  { label: "Tarifs & contrôles export", weight: 1, includes: ["tariff","tariffs","export control","sanction","sanctions","embargo","blacklist","entity list"] },
-  { label: "Pivot/Assouplissement monétaire", weight: 1, includes: ["rate cut","rate cuts","pivot","dovish","easing"] },
-  { label: "Durcissement monétaire", weight: 1, includes: ["rate hike","rate hikes","hawkish","tightening","qt"] },
-  { label: "Guidance & profits", weight: 1, includes: ["guidance raised","guidance cut","profit warning","earnings beat","earnings miss","revenue beat"] },
-  { label: "M&A / Antitrust / Litiges", weight: 1, includes: ["merger","acquisition","takeover","buyout","antitrust","lawsuit","class action","fine","settlement","ec investigation","doj","ftc","sec probe"] },
-  { label: "Énergie & offre", weight: 1, includes: ["opec","opec+","production cut","output cut","supply disruption","inventory draw","brent","wti","refinery outage","gas pipeline"] },
-  { label: "Cybersécurité & ruptures", weight: 1, includes: ["data breach","hack","ransomware","shutdown","plant shutdown","supply chain disruption"] }
+type ThemeRule = { label: string; weight: number; includes: string[]; excludes?: string[]; action?: (arts: RawArticle[], pool: string[]) => AiAction[] };
+const rules: ThemeRule[] = [
+  {
+    label: "Tarifs & contrôles export",
+    weight: 1,
+    includes: ["tariff","tariffs","export control","sanction","sanctions","embargo","blacklist","entity list","retaliation"],
+    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
+      keywords: ["tariff","tariffs","sanction","embargo","export control","retaliation"],
+      ideas: [
+        { candidates:["US500","NAS100"], dir:"SELL", reason:"Tensions commerciales: risque macro accru." },
+        { candidates:["XAUUSD"],        dir:"BUY",  reason:"Couverture face aux tensions commerciales." }
+      ]
+    })
+  },
+  {
+    label: "Pivot/Assouplissement monétaire",
+    weight: 1,
+    includes: ["rate cut","rate cuts","pivot","dovish","easing","qe"],
+    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
+      keywords: ["rate cut","rate cuts","pivot","dovish","easing"],
+      ideas: [
+        { candidates:["US500","NAS100","DE40"], dir:"BUY",  reason:"Biais dovish soutenant les actifs risqués." },
+        { candidates:["EURUSD","GBPUSD","AUDUSD"], dir:"BUY", reason:"Dollar susceptible de se détendre en scénario dovish." }
+      ]
+    })
+  },
+  {
+    label: "Durcissement monétaire",
+    weight: 1,
+    includes: ["rate hike","rate hikes","hawkish","tightening","qt","balance sheet reduction"],
+    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
+      keywords: ["rate hike","rate hikes","hawkish","tightening","qt"],
+      ideas: [
+        { candidates:["US500","NAS100"], dir:"SELL", reason:"Ton hawkish: pression sur valorisations." },
+        { candidates:["USDJPY","EURUSD"], dir:"BUY",  reason:"USD soutenu par durcissement monétaire." }
+      ]
+    })
+  },
+  {
+    label: "Énergie & offre",
+    weight: 1,
+    includes: ["opec","opec+","production cut","output cut","refinery outage","supply disruption","pipeline"],
+    action: (arts, pool) => mkTradeFromSignal(arts, pool, {
+      keywords: ["opec","production cut","output cut","refinery outage","supply disruption","pipeline"],
+      ideas: [
+        { candidates:["USOIL","UKOIL"], dir:"BUY", reason:"Chocs d’offre sur le brut (OPEC/refinery/outages)." }
+      ]
+    })
+  },
+  {
+    label: "M&A / Antitrust / Litiges",
+    weight: 1,
+    includes: ["merger","acquisition","takeover","buyout","antitrust","lawsuit","class action","fine","settlement","ec investigation","doj","ftc","cfius"],
+  },
+  {
+    label: "Guidance & profits",
+    weight: 1,
+    includes: ["guidance raised","earnings beat","revenue beat","upgrade","guidance cut","profit warning","earnings miss","downgrade"],
+  },
+  {
+    label: "Cybersécurité & ruptures",
+    weight: 1,
+    includes: ["data breach","hack","ransomware","shutdown","plant shutdown","supply chain disruption"]
+  }
 ];
 
-function makeHeuristicThemes(articles: RawArticle[], topN: number): { label: string; weight: number }[] {
-  const cnt: Record<string, number> = {};
-  for (const a of articles) {
-    const t = norm(`${a.title} ${a.description || ""}`);
-    for (const r of THEME_RULES) {
-      if (r.includes.some(k => t.includes(norm(k))) && !(r.excludes || []).some(e => t.includes(norm(e)))) {
-        cnt[r.label] = (cnt[r.label] || 0) + r.weight;
-      }
-    }
-  }
-  const themes = Object.entries(cnt)
-    .map(([label, w]) => ({ label, weight: Math.round(w * 100) / 100 }))
-    .sort((a, b) => b.weight - a.weight)
-    .slice(0, topN)
-    .filter(th => !DATA_WORDS.some(dw => norm(th.label).includes(dw)));
-  return themes;
-}
-
+// ----------- calculs -----------
 function defaultPool(ftmo: string[]) {
   const base = ["US500","NAS100","XAUUSD","EURUSD","USDJPY","USOIL","UKOIL","DE40","UK100"];
   return ftmo.length ? ftmo : base;
 }
 
+function signalStrength(articles: RawArticle[], keywords: string[]) {
+  const matched = articles.filter(a => {
+    const t = norm(`${a.title} ${a.description || ""}`);
+    return keywords.some(k => t.includes(norm(k)));
+  });
+  if (!matched.length) return { s: 0, evidences: [] as RawArticle[] };
+
+  let srcW = 0, freshW = 0;
+  for (const a of matched) {
+    srcW   += (SOURCE_WEIGHT[a.source] ?? 0.6);
+    const h = hoursSince(a.publishedAt);
+    freshW += h <= 24 ? 1 : h <= 48 ? 0.5 : 0.25;
+  }
+  const hitRatio = matched.length / Math.max(8, articles.length);
+  const srcAvg   = srcW / matched.length;           // 0..1.1
+  const freshAvg = freshW / matched.length;         // 0..1
+  const s = 0.5 * hitRatio + 0.3 * (srcAvg - 0.5) + 0.2 * freshAvg;
+  return { s: clamp(s, 0, 1), evidences: matched.slice(0, 5) };
+}
+
+function confPctFromStrength(s: number) {
+  return Math.round(clamp(25 + s * 70, 25, 95));
+}
+
 function pickSymbol(candidates: string[], pool: string[]) {
   for (const c of candidates) {
-    const hit = pool.find(s => s.toUpperCase() === c.toUpperCase());
-    if (hit) return hit;
+    const m = pool.find(p => p.toUpperCase() === c.toUpperCase());
+    if (m) return m;
   }
   return pool[0];
 }
 
-// Agrège les signaux à partir des titres/desc et renvoie un score 0..1
-function signalStrength(articles: RawArticle[], keywords: string[]) {
-  if (!articles.length) return 0;
-  let hits = 0;
-  let srcWeight = 0;
-  let rec = 0;
-  for (const a of articles) {
-    const t = norm(`${a.title} ${a.description || ""}`);
-    if (keywords.some(k => t.includes(norm(k)))) {
-      hits++;
-      srcWeight += SOURCE_WEIGHT[a.source] ?? 0.6;
-      const h = hoursSince(a.publishedAt);
-      rec += h <= 24 ? 1 : h <= 48 ? 0.5 : 0.25;
-    }
-  }
-  const hitRatio = hits / Math.max(6, articles.length);     // bornage
-  const srcAvg   = hits ? (srcWeight / hits) : 0.6;
-  const recAvg   = hits ? (rec / hits) : 0.3;
-  // pondération: 50% volume, 30% source, 20% fraicheur
-  const s = 0.5 * hitRatio + 0.3 * (srcAvg - 0.5) + 0.2 * (recAvg / 1.0);
-  return clamp(s, 0, 1);
-}
-
-function confPctFromStrength(s: number) {
-  // transforme un 0..1 en % lisible, évite les extrêmes
-  return Math.round(clamp(20 + s * 75, 20, 95));
-}
-
-function mkAction(
+function mkTradeFromSignal(
+  articles: RawArticle[],
   pool: string[],
-  candidates: string[],
-  direction: "BUY"|"SELL",
-  reason: string,
-  strength: number,
-  baseConviction = 6
-): AiAction {
-  const symbol = pickSymbol(candidates, pool);
-  const confidence = confPctFromStrength(strength);
-  const conviction = clamp(Math.round(baseConviction + (strength - 0.5) * 6), 1, 10);
-  return { symbol, direction, conviction, confidence, reason };
+  spec: { keywords: string[]; ideas: { candidates: string[]; dir: "BUY" | "SELL"; reason: string }[] }
+): AiAction[] {
+  const { s, evidences } = signalStrength(articles, spec.keywords);
+  const min = Number(process.env.NEWS_ACTION_MIN_STRENGTH || 0.30); // seuil logique
+  if (s < min) return [];
+  const confidence = confPctFromStrength(s);
+  const convictionBase = 5 + Math.round((s - 0.5) * 6);
+  return spec.ideas.map(it => ({
+    symbol: pickSymbol(it.candidates, pool),
+    direction: it.dir,
+    conviction: clamp(convictionBase, 1, 10),
+    confidence,
+    reason: `${it.reason} (evidence: ${evidences.map(e => e.source).join("/")}, s=${(s*100|0)}).`
+  }));
 }
 
-function heuristicActions(articles: RawArticle[], ftmo: string[], watch: string[], want = 4): AiAction[] {
-  const pool = defaultPool(ftmo);
-
-  const sTariffs = signalStrength(articles, ["tariff","tariffs","sanction","embargo","export control","export controls"]);
-  const sDovish  = signalStrength(articles, ["rate cut","rate cuts","pivot","dovish","easing"]);
-  const sHawkish = signalStrength(articles, ["rate hike","rate hikes","hawkish","tightening","qt"]);
-  const sEnergy  = signalStrength(articles, ["opec","opec+","production cut","output cut","refinery outage","supply disruption"]);
-  const sGuidUp  = signalStrength(articles, ["guidance raised","earnings beat","revenue beat","upgrade"]);
-  const sGuidDn  = signalStrength(articles, ["guidance cut","profit warning","earnings miss","downgrade"]);
-
-  const out: AiAction[] = [];
-
-  if (sTariffs > 0) {
-    out.push(mkAction(pool, ["US500","NAS100"], "SELL", "Tensions commerciales (tarifs/sanctions) : risque macro accru.", sTariffs, 7));
-    out.push(mkAction(pool, ["XAUUSD"], "BUY", "Recherche de couverture face aux tensions commerciales.", sTariffs, 6));
+function computeThemes(articles: RawArticle[], topN: number) {
+  const cnt: Record<string, number> = {};
+  for (const r of rules) {
+    const { s } = signalStrength(articles, r.includes);
+    if (s > 0) cnt[r.label] = (cnt[r.label] || 0) + s;
   }
-
-  if (sDovish > 0 && sDovish >= sHawkish) {
-    out.push(mkAction(pool, ["US500","NAS100","DE40"], "BUY", "Biais dovish/assouplissement monétaire.", sDovish, 7));
-    out.push(mkAction(pool, ["EURUSD","GBPUSD","AUDUSD"], "BUY", "Dollar susceptible de se détendre en scénario dovish.", sDovish, 5));
-  }
-
-  if (sHawkish > 0 && sHawkish > sDovish) {
-    out.push(mkAction(pool, ["US500","NAS100"], "SELL", "Durcissement monétaire/ton hawkish.", sHawkish, 7));
-    out.push(mkAction(pool, ["USDJPY","EURUSD"], "BUY", "USD soutenu en contexte hawkish.", sHawkish, 5));
-  }
-
-  if (sEnergy > 0) {
-    out.push(mkAction(pool, ["USOIL","UKOIL"], "BUY", "Chocs d’offre (OPEC/refinery/outages).", sEnergy, 6));
-  }
-
-  if (sGuidUp > 0 && sGuidUp > sGuidDn) {
-    out.push(mkAction(pool, ["NAS100","US500"], "BUY", "Tonalité micro positive (beats/upgrade).", sGuidUp, 6));
-  }
-  if (sGuidDn > 0 && sGuidDn > sGuidUp) {
-    out.push(mkAction(pool, ["NAS100","US500"], "SELL", "Tonalité micro négative (misses/downgrade).", sGuidDn, 6));
-  }
-
-  // filet de sécurité: toujours 2 idées min
-  if (out.length === 0) {
-    out.push(mkAction(pool, ["US500","NAS100"], "BUY", "Flux neutre → biais haussier modéré.", 0.35, 5));
-    out.push(mkAction(pool, ["XAUUSD"], "SELL", "Appétit pour le risque légèrement positif.", 0.30, 4));
-  }
-
-  // dédoublonner par symbole et garder les plus confiantes
-  const bestBySym = new Map<string, AiAction>();
-  for (const a of out) {
-    const prev = bestBySym.get(a.symbol);
-    if (!prev || a.confidence > prev.confidence) bestBySym.set(a.symbol, a);
-  }
-  return Array.from(bestBySym.values()).slice(0, want);
+  return Object.entries(cnt)
+    .map(([label, w]) => ({ label, weight: Math.round(w * 100) / 100 }))
+    .sort((a,b) => b.weight - a.weight)
+    .slice(0, topN)
+    .filter(th => !DATA_WORDS.some(dw => norm(th.label).includes(dw)));
 }
 
 // -------------------- OpenAI + Fallback --------------------
@@ -174,69 +172,43 @@ export async function analyzeWithAI(
   articles: RawArticle[],
   opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] }
 ): Promise<AiOutputs> {
-  const topThemes = Math.max(1, Number(opts.topThemes || 3));
   const pool = defaultPool(opts.ftmoSymbols);
 
-  const makeHeuristic = (): AiOutputs => ({
-    generatedAt: new Date().toISOString(),
-    mainThemes: makeHeuristicThemes(articles, topThemes),
-    actions: heuristicActions(articles, pool, opts.watchlist)
-  });
+  // Thèmes par règles (cohérents avec actions)
+  const themes = computeThemes(articles, Math.max(1, Number(opts.topThemes || 3)));
 
-  if (!process.env.OPENAI_API_KEY) {
-    return makeHeuristic();
+  // Actions 100% déterministes à partir des mêmes règles (cohérence)
+  let actions: AiAction[] = [];
+  for (const r of rules) {
+    if (!r.action) continue;
+    actions = actions.concat(r.action(articles, pool));
   }
 
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-  const model = process.env.OPENAI_NEWS_MODEL || "gpt-4o-mini";
-  const titles = articles.slice(0, 80).map(a => `- ${a.title}`).join("\n");
-
-  const sys =
-`You are a market analyst. From the list of headlines, extract ONLY structural market themes
-(policy shifts, regulation, M&A, sanctions, tariffs, litigation, guidance, supply shocks, leadership change, antitrust, export controls).
-EXCLUDE macro data releases (CPI, PPI, NFP, PMI, GDP prints), calendars or surveys from the themes.
-
-Then suggest up to 4 trading actions on these instruments: ${pool.join(", ")}.
-Each action must include a direction (BUY/SELL), a short reason, and a conviction on a 0..10 scale.
-Respond as a JSON object: { "mainThemes":[{"label":string,"weight":number}], "actions":[{"symbol":string,"direction":"BUY"|"SELL","conviction":number,"reason":string}] }`;
-
-  const user = `Headlines:\n${titles}\nWatchlist priority: ${opts.watchlist.join(", ")}`;
-
-  try {
-    const r = await client.chat.completions.create({
-      model,
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: sys },
-        { role: "user", content: user }
-      ]
-    });
-
-    let out: AiOutputs = makeHeuristic(); // valeur par défaut
+  // Si OpenAI dispo, on peut raffiner la rédaction (facultatif, pas de changement de logique)
+  if (process.env.OPENAI_API_KEY && actions.length) {
     try {
-      const parsed = JSON.parse(r.choices[0]?.message?.content || "{}");
-      out = {
-        generatedAt: new Date().toISOString(),
-        mainThemes: (parsed.mainThemes || []).slice(0, topThemes),
-        actions: (parsed.actions || []).slice(0, 4).map((a: any) => ({
-          symbol: String(a.symbol || "").toUpperCase(),
-          direction: (String(a.direction || "BUY").toUpperCase() === "SELL" ? "SELL" : "BUY") as "BUY" | "SELL",
-          conviction: clamp(Number(a.conviction ?? 6), 0, 10),
-          // confidence synthétisée depuis les signaux agrégés
-          confidence: confPctFromStrength(signalStrength(articles, [a.symbol || ""])),
-          reason: String(a.reason || "").slice(0, 240)
-        }))
-      };
-      // si IA renvoie rien → heuristique
-      if (!out.actions.length) out = makeHeuristic();
-    } catch {
-      out = makeHeuristic();
-    }
-    return out;
-  } catch {
-    return makeHeuristic();
+      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+      const model = process.env.OPENAI_NEWS_MODEL || "gpt-4o-mini";
+      const prompt = `Rewrite briefly these trade rationales in French, concise, no fluff:\n${actions.map(a => `- ${a.symbol} ${a.direction}: ${a.reason}`).join("\n")}`;
+      const r = await client.chat.completions.create({
+        model, temperature: 0, messages: [{ role: "user", content: prompt }]
+      });
+      const text = r.choices[0]?.message?.content || "";
+      const lines = text.split("\n").filter(Boolean);
+      actions = actions.map((a, i) => ({ ...a, reason: lines[i]?.replace(/^-+\s?/, "") || a.reason }));
+    } catch {/* on garde les raisons initiales */}
   }
+
+  // borne & tri par confiance
+  actions = actions
+    .sort((a,b) => b.confidence - a.confidence)
+    .slice(0, Number(process.env.NEWS_ACTIONS_MAX || 4));
+
+  return {
+    generatedAt: new Date().toISOString(),
+    mainThemes: themes,
+    actions
+  };
 }
 
 export function persistAI(out: any, outFile: string) {

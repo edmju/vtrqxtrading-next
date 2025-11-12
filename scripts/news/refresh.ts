@@ -63,4 +63,41 @@ async function stageFetch() {
   };
 
   ensureDir(OUT_DIR);
-  persistBundle(bu
+  persistBundle(bundle, path.join(OUT_DIR, `news-${tag}.json`));
+  writeJSON(path.join(OUT_DIR, "latest.json"), bundle);
+  console.log(`[news] Saved ${hotOnly.length} hot articles.`);
+}
+
+async function stageAnalyze() {
+  const fs = await import("fs");
+  const latestPath = path.join(OUT_DIR, "latest.json");
+  if (!fs.existsSync(latestPath)) {
+    console.error("[news] No latest news file. Run --stage=fetch first.");
+    process.exit(1);
+  }
+
+  const bundle = JSON.parse(fs.readFileSync(latestPath, "utf8"));
+  const ftmo = (process.env.FTMO_SYMBOLS || "").split(",").map(s => s.trim()).filter(Boolean);
+  const watch = (process.env.WATCHLIST_TICKERS || "").split(",").map(s => s.trim()).filter(Boolean);
+
+  const out = await analyzeWithAI(bundle.articles || [], {
+    topThemes: Number(process.env.NEWS_TOP_THEMES || 3),
+    ftmoSymbols: ftmo,
+    watchlist: watch
+  });
+
+  const tag = todayTag();
+  ensureDir(AI_DIR);
+  persistAI(out, path.join(AI_DIR, `ai-${tag}.json`));
+  writeJSON(path.join(AI_DIR, "latest.json"), out);
+  console.log("[news] analysis saved.");
+}
+
+async function main() {
+  const stage = process.argv.find(a => a.startsWith("--stage="))?.split("=")[1] || "all";
+  if (stage === "fetch") return stageFetch();
+  if (stage === "analyze") return stageAnalyze();
+  await stageFetch();
+  await stageAnalyze();
+}
+main().catch(e => { console.error(e); process.exit(1); });

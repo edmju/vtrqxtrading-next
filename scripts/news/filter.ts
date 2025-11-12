@@ -1,14 +1,17 @@
 import { RawArticle } from "./types";
-import { scoreText } from "./hotKeywords";
+import { scoreTextWithHits } from "./hotKeywords";
+import { isFinanceUrl } from "./siteFilters";
 
 export function filterAndScoreHot(
   articles: RawArticle[],
   opts: { tickers: string[]; max: number; minScore: number }
 ): RawArticle[] {
-  const scored = articles.map(a => {
+  const eligible = articles.filter(a => isFinanceUrl(a.url));
+
+  const scored = eligible.map(a => {
     const text = `${a.title || ""} ${a.description || ""}`;
-    const score = scoreText(text, opts.tickers);
-    return { ...a, score };
+    const { score, hits } = scoreTextWithHits(text, opts.tickers);
+    return { ...a, score, hits };
   });
 
   const hot = scored

@@ -1,25 +1,75 @@
 {
-  "generatedAt": "2025-11-12T04:36:45.702Z",
-  "total": 7,
+  "generatedAt": "2025-11-12T18:48:05.915Z",
+  "total": 10,
   "articles": [
     {
-      "url": "https://www.cnbc.com/2025/11/12/us-china-gestures-hint-at-calm-but-the-rivalry-still-runs-deep.html",
-      "title": "Tariffs thaw, rivalry simmers: U.S.–China trade truce enters uneasy phase",
-      "publishedAt": "2025-11-12T00:49:06.000Z",
-      "description": "Even as a U.S.–China trade truce appears to be holding, analysts caution that the détente remains fragile in a rivalry increasingly defined by strategic competition.",
+      "url": "https://www.cnbc.com/2025/11/12/india-october-inflation-matches-rbi-outlook-easing-hopes-for-rate-cuts.html",
+      "title": "India inflation cools more than expected in October, boosting hopes for further rate cuts",
+      "publishedAt": "2025-11-12T11:29:04.000Z",
+      "description": "India's consumer inflation cooled to 0.25% in October, strengthening hopes of more policy easing by the Reserve Bank of India.",
       "source": "CNBC",
       "lang": "en",
-      "id": "eb1c698183b49c88788f1b15bb0753be",
-      "score": 13
+      "id": "2d3eabd617e1ffa66eb6fcbfccabd2fa",
+      "score": 12
     },
     {
-      "url": "https://www.cnbc.com/2025/11/11/amd-lisa-su-growth-ai-analyst-day.html",
-      "title": "AMD&apos;s Lisa Su sees 35% annual sales growth driven by &apos;insatiable&apos; AI demand",
-      "publishedAt": "2025-11-11T21:14:25.000Z",
-      "description": "Su said that AMD could be able to achieve \"double-digit\" share in the data center AI chip market over the next three to five years.",
+      "url": "https://www.cnbc.com/2025/11/12/trump-jeffrey-epstein-ghislaine-maxwell-emails-house-democrats.html",
+      "title": "Trump &apos;knew about the girls,&apos; Jeffrey Epstein said in email",
+      "publishedAt": "2025-11-12T17:07:45.000Z",
+      "description": "President Trump and the DOJ have been criticized for reneging on promises by administration officials to release files about Jeffrey Epstein.",
       "source": "CNBC",
       "lang": "en",
-      "id": "ed8080d0f0f65b354f4bb81c8ed4c8b9",
+      "id": "5f29e970e28162f2e8d1254182a3e42a",
+      "score": 7
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/12/autonomous-ev-trucker-einride-to-go-public-in-spac-at-1point8-billion-value.html",
+      "title": "Autonomous EV trucking company Einride going public in SPAC deal valuing it at $1.8 billion",
+      "publishedAt": "2025-11-12T14:21:00.000Z",
+      "description": "Swedish autonomous EV trucking company Einride is planning to go public on the NYSE through a SPAC deal with Legato Merger Corp. III valuing it at $1.8 billion.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "1c93022b746d67678622eb5ff5a2cc60",
+      "score": 7
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/12/google-e-zpass-usps-text-scam-phishing-suit.html",
+      "title": "Google sues cybercriminal group behind E-ZPass, USPS text phishing scams",
+      "publishedAt": "2025-11-12T13:18:25.000Z",
+      "description": "Google filed a lawsuit against a cybercriminal group largely based in China that is behind a massive text message phishing operation, or \"smishing.\"",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "812d37828348eaf4995976322b7ff591",
+      "score": 7
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/12/snap-benefits-government-shutdown-negotiations.html",
+      "title": "Where SNAP benefits stand amid negotiations to end the government shutdown",
+      "publishedAt": "2025-11-12T16:46:58.000Z",
+      "description": "The continuity of Supplemental Nutrition Assistance Program, or SNAP, benefits has been affected by a federal government shutdown for the first time.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "ae41b11bde258c116dd2c8b6e1a575f8",
+      "score": 6
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/12/tax-bomb-may-hit-some-student-loan-borrowers-in-2026-advocates-warn.html",
+      "title": "&apos;Tax bomb&apos; worth over $10,000 could hit some student loan borrowers in 2026, senators and advocates warn",
+      "publishedAt": "2025-11-12T16:43:14.000Z",
+      "description": "A provision of the American Rescue Plan that excludes forgiven student loan debt from federal income tax is set to expire at the end of 2025.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "f0686477f6fc29fc321fb9c47711f928",
+      "score": 6
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/12/atlanta-fed-president-bostic-says-hell-leave-position-when-his-term-expires.html",
+      "title": "Atlanta Fed President Bostic says he&apos;ll leave position when his term expires in February",
+      "publishedAt": "2025-11-12T16:08:58.000Z",
+      "description": "Atlanta Federal Reserve President Raphael Bostic said Wednesday he will be leaving his position when his term expires in February.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "8cddf37b2cffcb07f6c2c32949682748",
       "score": 6
     },
     {
@@ -33,14 +83,14 @@
       "score": 6
     },
     {
-      "url": "https://www.cnbc.com/2025/11/11/trump-2000-tariff-rebate-plan.html",
-      "title": "Trump floats $2,000 tariff rebate checks: Here&apos;s what you need to know",
-      "publishedAt": "2025-11-11T13:30:01.000Z",
-      "description": "President Donald Trump refloated the idea of tariff rebate checks over the weekend, but experts say such a plan is unlikely to become policy.",
+      "url": "https://www.cnbc.com/2025/11/12/too-good-to-go-whole-foods-grocery-surprise-bags.html",
+      "title": "Too Good To Go launches grocery bags with Whole Foods as food costs climb",
+      "publishedAt": "2025-11-12T14:00:01.000Z",
+      "description": "Too Good To Go is launching discounted surprise bags for groceries with Whole Foods amid rising prices and inflation.",
       "source": "CNBC",
       "lang": "en",
-      "id": "f563be59918098b1acec12aa54741112",
-      "score": 6
+      "id": "e341cfa8fb95f36c95f071ec36ddfadc",
+      "score": 5
     },
     {
       "url": "https://www.cnbc.com/2025/11/11/when-the-government-data-will-start-rolling-out-with-the-shutdown-ending-and-what-it-is-likely-to-show.html",
@@ -50,26 +100,6 @@
       "source": "CNBC",
       "lang": "en",
       "id": "670722c6d2fc7cc6734016f9f51eb9d1",
-      "score": 5
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/11/mark-cuban-job-hunting-advice-i-give-my-kids-in-age-of-ai.html",
-      "title": "Mark Cuban: The job-hunting advice I give my own kids in the age of AI—it&apos;ll make their careers &apos;easier&apos; and more successful",
-      "publishedAt": "2025-11-11T19:07:22.000Z",
-      "description": "If you're looking for an entry-level job in the age of AI, seek jobs at small- to medium-sized businesses over ones at large corporations, says Mark Cuban.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "322ccc784c4ae5a17f3dae9c3083e3e1",
-      "score": 5
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/11/ghost-job-postings-add-another-layer-of-uncertainty-to-stalled-jobs-picture.html",
-      "title": "&apos;Ghost job&apos; postings are adding another layer of uncertainty to the stalling jobs picture",
-      "publishedAt": "2025-11-11T18:13:24.000Z",
-      "description": "Since the beginning of 2024, job openings have outnumbered hires by more than 2.2 million a month.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "24c64e8a1ca445602d880b14092ffb5a",
       "score": 5
     }
   ]

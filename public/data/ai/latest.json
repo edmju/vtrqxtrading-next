@@ -1,18 +1,47 @@
 {
-  "generatedAt": "2025-11-12T04:36:45.705Z",
+  "generatedAt": "2025-11-12T18:48:05.918Z",
   "mainThemes": [
     {
-      "label": "Tarifs & contrôles export",
+      "label": "M&A / Antitrust / Litiges",
       "weight": 3
+    },
+    {
+      "label": "Cybersécurité & ruptures",
+      "weight": 2
     },
     {
       "label": "Pivot/Assouplissement monétaire",
       "weight": 1
-    },
-    {
-      "label": "M&A / Antitrust / Litiges",
-      "weight": 1
     }
   ],
-  "actions": []
+  "actions": [
+    {
+      "symbol": "US500",
+      "direction": "BUY",
+      "conviction": 6,
+      "confidence": 47,
+      "reason": "Biais dovish/assouplissement monétaire."
+    },
+    {
+      "symbol": "XAUUSD",
+      "direction": "BUY",
+      "conviction": 5,
+      "confidence": 39,
+      "reason": "Recherche de couverture face aux tensions commerciales."
+    },
+    {
+      "symbol": "EURUSD",
+      "direction": "BUY",
+      "conviction": 4,
+      "confidence": 47,
+      "reason": "Dollar susceptible de se détendre en scénario dovish."
+    },
+    {
+      "symbol": "USOIL",
+      "direction": "BUY",
+      "conviction": 4,
+      "confidence": 27,
+      "reason": "Chocs d’offre (OPEC/refinery/outages)."
+    }
+  ]
 }

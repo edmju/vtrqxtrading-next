@@ -22,8 +22,8 @@ type NewsBundle = {
 type AIAction = {
   symbol: string;
   direction: "BUY" | "SELL";
-  conviction: number;   // 0..10
-  confidence: number;   // 0..100
+  conviction: number;
+  confidence: number; // 0..100
   reason: string;
 };
 type AIOutput = {
@@ -137,7 +137,7 @@ export default async function NewsPage() {
               <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
             </li>
           ))}
-          {ai.actions.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucune action proposée aujourd’hui.</li>}
+          {ai.actions.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucune action proposée aujourd’hui (pas de signal robuste).</li>}
         </ul>
       </section>
     </div>

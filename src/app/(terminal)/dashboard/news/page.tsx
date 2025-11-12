@@ -25,6 +25,7 @@ type AIAction = {
   conviction: number;
   confidence: number; // 0..100
   reason: string;
+  evidenceIds?: string[];
 };
 type AIOutput = {
   generatedAt: string;
@@ -68,6 +69,9 @@ function badgeConf(c: number) {
 
 export default async function NewsPage() {
   const { news, ai } = await getData();
+
+  // Aide: dictionnaire id->article pour afficher nb de preuves
+  const index = new Map(news.articles.map(a => [a.id, a]));
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
@@ -127,16 +131,30 @@ export default async function NewsPage() {
           <h2 className="text-xl font-semibold text-emerald-200">Actions proposées</h2>
         </div>
         <ul className="space-y-2">
-          {ai.actions.map((x, i) => (
-            <li key={i} className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
-              <div className="flex items-center justify-between">
-                <div className={`px-2 py-1 rounded ${badgeDir(x.direction)}`}>{x.direction}</div>
-                <div className={`px-2 py-1 rounded text-sm ${badgeConf(x.confidence)}`}>Confiance {x.confidence}/100</div>
-              </div>
-              <div className="mt-2 text-neutral-100 font-semibold">{x.symbol} <span className="text-neutral-400 font-normal">• Conviction {x.conviction}/10</span></div>
-              <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
-            </li>
-          ))}
+          {ai.actions.map((x, i) => {
+            const proofs = (x.evidenceIds || []).map(id => index.get(id)).filter(Boolean) as Article[];
+            return (
+              <li key={i} className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
+                <div className="flex items-center justify-between">
+                  <div className={`px-2 py-1 rounded ${badgeDir(x.direction)}`}>{x.direction}</div>
+                  <div className={`px-2 py-1 rounded text-sm ${badgeConf(x.confidence)}`}>Confiance {x.confidence}/100</div>
+                </div>
+                <div className="mt-2 text-neutral-100 font-semibold">
+                  {x.symbol} <span className="text-neutral-400 font-normal">• Conviction {x.conviction}/10</span>
+                </div>
+                <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
+                {proofs.length > 0 && (
+                  <ul className="mt-2 space-y-1">
+                    {proofs.map((p, k) => (
+                      <li key={k} className="text-xs text-neutral-400">
+                        • <a className="underline hover:text-neutral-200" href={p.url} target="_blank" rel="noreferrer">{p.source}: {p.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
           {ai.actions.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucune action proposée aujourd’hui (pas de signal robuste).</li>}
         </ul>
       </section>

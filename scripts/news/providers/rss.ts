@@ -3,8 +3,7 @@ import { RawArticle } from "../types";
 function decodeEntities(s: string) {
   return (s || "")
     .replace(/<!\[CDATA\[|\]\]>/g, "")
-    .replace(/&apos;/g, "'")
-    .replace(/&#39;/g, "'")
+    .replace(/&apos;|&#39;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
@@ -59,16 +58,16 @@ async function fetchOne(url: string, label: string): Promise<RawArticle[]> {
   return parseRss(xml).map(a => ({ ...a, source: label }));
 }
 
-// Flux business/markets larges
+// Feeds "business/markets" uniquement (plus larges pour plus de volume)
 const FEEDS: { url: string; label: string }[] = [
   { url: "https://feeds.reuters.com/reuters/businessNews", label: "Reuters" },
   { url: "https://feeds.reuters.com/reuters/marketsNews",  label: "Reuters" },
-  { url: "https://www.cnbc.com/id/10001147/device/rss/rss.html", label: "CNBC" }, // Markets
-  { url: "https://www.cnbc.com/id/100003114/device/rss/rss.html", label: "CNBC" }, // Top business
+  { url: "https://www.cnbc.com/id/10001147/device/rss/rss.html", label: "CNBC" },        // Markets
+  { url: "https://www.cnbc.com/id/100003114/device/rss/rss.html", label: "CNBC" },      // Business
   { url: "https://feeds.finance.yahoo.com/rss/2.0/category-markets?region=US&lang=en-US", label: "Yahoo Finance" },
   { url: "https://www.ft.com/markets?format=rss", label: "Financial Times" },
   { url: "https://www.marketwatch.com/markets?mod=rss", label: "MarketWatch" },
-  { url: "https://apnews.com/hub/ap-top-news?rss=1", label: "AP News" }
+  { url: "https://apnews.com/hub/business?rss=1", label: "AP News" }
 ];
 
 export async function fetchAllRss(): Promise<RawArticle[]> {

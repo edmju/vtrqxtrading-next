@@ -1,208 +1,252 @@
 "use client";
 
-import React from "react";
+import { useState, useMemo } from "react";
 
-type Article = {
-  id: string;
-  title: string;
-  url: string;
-  source: string;
-  publishedAt: string;
-  description?: string;
-  score?: number;
-  hits?: string[];
-};
-type NewsBundle = {
-  generatedAt: string;
-  total: number;
-  articles: Article[];
-};
-type AITheme = { label: string; weight: number; summary?: string; evidenceIds?: string[] };
-type AIAction = { symbol: string; direction: "BUY" | "SELL"; conviction: number; confidence: number; reason: string; evidenceIds?: string[] };
-type AICluster = { label: string; weight: number; summary: string; articleIds: string[] };
-type AIOutput = {
-  generatedAt: string;
-  mainThemes: AITheme[];
-  actions: AIAction[];
-  clusters?: AICluster[];
-};
+export default function NewsClient({
+  news,
+  ai,
+}: {
+  news: any;
+  ai: any;
+}) {
+  const [focusIds, setFocusIds] = useState<string[] | null>(null);
 
-function badgeDir(d: "BUY" | "SELL") {
-  return d === "BUY" ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-600/30" : "bg-rose-500/15 text-rose-300 ring-1 ring-rose-600/30";
-}
-function badgeConf(c: number) {
-  if (c >= 80) return "bg-green-500/20 text-green-300 ring-1 ring-green-600/40";
-  if (c >= 60) return "bg-lime-500/20 text-lime-300 ring-1 ring-lime-600/40";
-  if (c >= 40) return "bg-amber-500/20 text-amber-300 ring-1 ring-amber-600/40";
-  return "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
-}
+  const index = useMemo(() => {
+    const idx = new Map();
+    news.articles?.forEach((a: any) => idx.set(a.id, a));
+    return idx;
+  }, [news]);
 
-export default function NewsClient({ news, ai }: { news: NewsBundle; ai: AIOutput }) {
-  const [q, setQ] = React.useState("");
-  const [source, setSource] = React.useState<string>("all");
-  const [hours, setHours] = React.useState<number>(48);
-  const [focusIds, setFocusIds] = React.useState<string[]>([]);
-  const index = React.useMemo(() => new Map(news.articles.map(a => [a.id, a])), [news.articles]);
+  const openEvidence = (ids: string[]) => {
+    setFocusIds(ids);
+  };
 
-  const sources = React.useMemo(
-    () => Array.from(new Set(news.articles.map(a => a.source))).sort(),
-    [news.articles]
-  );
+  const badgeDir = (d: string) => {
+    if (d === "BUY") return "bg-emerald-700/40 text-emerald-300";
+    if (d === "SELL") return "bg-red-700/40 text-red-300";
+    return "bg-neutral-600/40 text-neutral-300";
+  };
 
-  const filtered = React.useMemo(() => {
-    const now = Date.now();
-    const match = (a: Article) => {
-      if (source !== "all" && a.source !== source) return false;
-      if (hours && now - new Date(a.publishedAt).getTime() > hours * 3600_000) return false;
-      if (q) {
-        const s = (a.title + " " + (a.description || "") + " " + (a.hits || []).join(" ")).toLowerCase();
-        if (!s.includes(q.toLowerCase())) return false;
-      }
-      if (focusIds.length && !focusIds.includes(a.id)) return false;
-      return true;
-    };
-    return news.articles.filter(match);
-  }, [news.articles, q, source, hours, focusIds]);
-
-  const openEvidence = (ids: string[] | undefined) => {
-    setFocusIds((ids || []).filter(Boolean));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const badgeConf = (c: number) => {
+    if (c >= 70) return "bg-emerald-700/40 text-emerald-300";
+    if (c >= 45) return "bg-amber-700/40 text-amber-300";
+    return "bg-red-700/40 text-red-300";
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 p-6">
-      {/* Left: filters + headlines */}
-      <div className="xl:col-span-5 space-y-3">
-        <div className="rounded-xl p-4 bg-gradient-to-b from-sky-900/30 to-sky-600/10 ring-1 ring-sky-500/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-sky-200">News</h2>
-              <p className="text-sm text-sky-300/70">Mise à jour: {news.generatedAt ? new Date(news.generatedAt).toLocaleString() : "-"}</p>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <input
-                value={q}
-                onChange={e => setQ(e.target.value)}
-                placeholder="filtrer (mot)"
-                className="px-2 py-1 rounded bg-black/40 text-sky-100 ring-1 ring-sky-700/40"
-              />
-              <select value={source} onChange={e => setSource(e.target.value)} className="px-2 py-1 rounded bg-black/40 text-sky-100 ring-1 ring-sky-700/40">
-                <option value="all">sources: toutes</option>
-                {sources.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-              <select value={String(hours)} onChange={e => setHours(Number(e.target.value))} className="px-2 py-1 rounded bg-black/40 text-sky-100 ring-1 ring-sky-700/40">
-                <option value="12">12h</option>
-                <option value="24">24h</option>
-                <option value="48">48h</option>
-                <option value="96">96h</option>
-                <option value="0">tout</option>
-              </select>
-            </div>
+    <div className="w-full flex gap-6">
+
+      {/* ------------------ COLONNE NEWS ------------------ */}
+      <div className="w-1/3 space-y-4">
+        <div className="p-4 rounded-xl bg-[#002233]/60 ring-1 ring-neutral-800">
+          <div className="text-lg font-semibold">News</div>
+          <div className="text-sm text-neutral-400">
+            Mise à jour: {news.generatedAt}
           </div>
         </div>
 
-        <ul className="space-y-2">
-          {filtered.map((a) => (
-            <li key={a.id} className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40 hover:ring-sky-500/40 transition">
-              <a href={a.url} target="_blank" rel="noreferrer" className="font-semibold hover:underline text-neutral-100">
-                {a.title}
-              </a>
-              <div className="text-xs text-neutral-400 mt-1 flex flex-wrap items-center gap-2">
-                <span>{a.source}</span>
-                <span>— {new Date(a.publishedAt).toLocaleString()}</span>
-                {typeof a.score === "number" && <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 ring-1 ring-sky-600/30">score {a.score}</span>}
+        {news.articles?.map((a: any, idxArt: number) => (
+          <div
+            key={idxArt}
+            className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40"
+          >
+            <div className="text-neutral-100 font-semibold">{a.title}</div>
+
+            <div className="text-sm text-neutral-400 mt-1">
+              {a.source} — {a.date}
+            </div>
+
+            {a.score && (
+              <div className="text-xs mt-1 inline-block px-2 py-1 bg-neutral-800/60 rounded">
+                score {a.score}
               </div>
-              {a.hits && a.hits.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {a.hits.slice(0, 8).map((h, idx) => (
-                    <span key={idx} className="text-xs px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 ring-1 ring-indigo-600/30">{h}</span>
-                  ))}
-                </div>
-              )}
-              {a.description ? <p className="text-sm text-neutral-300 mt-2 line-clamp-3">{a.description}</p> : null}
-            </li>
-          ))}
-          {filtered.length === 0 && <li className="text-sm text-neutral-400">Aucune actualité à afficher avec ces filtres.</li>}
-        </ul>
+            )}
+
+            <p className="text-sm text-neutral-300 mt-2">{a.text}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Middle: AI themes + clusters */}
-      <div className="xl:col-span-3 space-y-3">
-        <div className="rounded-xl p-4 bg-gradient-to-b from-violet-900/30 to-violet-600/10 ring-1 ring-violet-500/20">
-          <h2 className="text-xl font-semibold text-violet-200">News principales</h2>
-          <p className="text-sm text-violet-300/70">IA: {ai.generatedAt ? new Date(ai.generatedAt).toLocaleString() : "-"}</p>
+      {/* ------------------ COLONNE THEMES ------------------ */}
+      <div className="w-1/3 space-y-4">
+        <div className="p-4 rounded-xl bg-[#250042]/60 ring-1 ring-neutral-800">
+          <div className="text-lg font-semibold">News principales</div>
+          <div className="text-sm text-neutral-400">IA: {ai.generatedAt}</div>
         </div>
 
-        {/* Themes */}
-        <ul className="space-y-2">
-          {ai.mainThemes.map((t, i) => (
-            <li key={i} className="p-3 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
-              <div className="flex items-center justify-between">
-                <span className="text-neutral-100">{t.label}</span>
-                <span className="text-xs text-neutral-400">{Math.round((t.weight ?? 0) * 100)}/100</span>
-              </div>
-              {t.summary && <p className="text-sm text-neutral-300 mt-1">{t.summary}</p>}
-              {(t.evidenceIds && t.evidenceIds.length > 0) && (
-                <button onClick={() => openEvidence(t.evidenceIds)} className="text-xs text-violet-300 underline mt-2">voir preuves ({t.evidenceIds.length})</button>
-              )}
-            </li>
-          ))}
-          {ai.mainThemes.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucun thème clé (hors datas) généré.</li>}
-        </ul>
-
-        {/* Clusters */}
-        {ai.clusters && ai.clusters.length > 0 && (
-          <div className="space-y-2">
-            <div className="text-violet-200 font-semibold mt-4">Clusters</div>
-            {ai.clusters.map((c, i) => (
-              <div key={i} className="p-3 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
+        {/* --- THEMES PRINCIPAUX --- */}
+        {ai.mainThemes?.length > 0 ? (
+          <ul className="space-y-3">
+            {ai.mainThemes.map((theme: any, idxTheme: number) => (
+              <li
+                key={idxTheme}
+                className="p-3 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-neutral-100">{c.label}</span>
-                  <span className="text-xs text-neutral-400">{(c.articleIds || []).length} art.</span>
+                  <span className="text-neutral-100">{theme.label}</span>
+                  <span className="text-xs text-neutral-400">
+                    {Math.round((theme.weight ?? 0) * 100)}/100
+                  </span>
                 </div>
-                <p className="text-sm text-neutral-300 mt-1">{c.summary}</p>
-                {(c.articleIds && c.articleIds.length > 0) && (
-                  <button onClick={() => openEvidence(c.articleIds)} className="text-xs text-violet-300 underline mt-2">focus ({c.articleIds.length})</button>
+
+                {theme.summary && (
+                  <p className="text-sm text-neutral-300 mt-1">{theme.summary}</p>
                 )}
-              </div>
+
+                {theme.evidenceIds?.length > 0 && (
+                  <button
+                    onClick={() => openEvidence(theme.evidenceIds)}
+                    className="text-xs text-violet-300 underline mt-2"
+                  >
+                    Voir preuves ({theme.evidenceIds.length})
+                  </button>
+                )}
+              </li>
             ))}
+          </ul>
+        ) : (
+          <div className="text-neutral-400 text-sm px-2">
+            Aucun thème clé (hors datas) généré.
+          </div>
+        )}
+
+        {/* --- CLUSTERS (OPTION) --- */}
+        {ai.clusters?.length > 0 && (
+          <div className="pt-6">
+            <div className="text-neutral-400 uppercase tracking-wide text-xs">
+              Groupes identifiés
+            </div>
+
+            <div className="mt-2 space-y-3">
+              {ai.clusters.map((cl: any, idxCluster: number) => (
+                <div
+                  key={idxCluster}
+                  className="p-3 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-neutral-100">{cl.label}</span>
+                    <span className="text-xs text-neutral-400">
+                      {cl.articleIds?.length} art.
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-neutral-300 mt-1">{cl.summary}</p>
+
+                  {cl.articleIds?.length > 0 && (
+                    <button
+                      onClick={() => openEvidence(cl.articleIds)}
+                      className="text-xs text-violet-300 underline mt-2"
+                    >
+                      focus ({cl.articleIds.length})
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Right: AI actions */}
-      <div className="xl:col-span-4 space-y-3">
-        <div className="rounded-xl p-4 bg-gradient-to-b from-emerald-900/30 to-emerald-600/10 ring-1 ring-emerald-500/20">
-          <h2 className="text-xl font-semibold text-emerald-200">Actions proposées</h2>
+      {/* ------------------ COLONNE ACTIONS ------------------ */}
+      <div className="w-1/3 space-y-4">
+        <div className="p-4 rounded-xl bg-[#003322]/60 ring-1 ring-neutral-800">
+          <div className="text-lg font-semibold">Actions proposées</div>
         </div>
-        <ul className="space-y-2">
-          {ai.actions.map((x, i) => {
-            const proofs = (x.evidenceIds || []).map(id => index.get(id)).filter(Boolean) as Article[];
-            return (
-              <li key={i} className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40">
-                <div className="flex items-center justify-between">
-                  <div className={`px-2 py-1 rounded ${badgeDir(x.direction)}`}>{x.direction}</div>
-                  <div className={`px-2 py-1 rounded text-sm ${badgeConf(x.confidence)}`}>Confiance {x.confidence}/100</div>
-                </div>
-                <div className="mt-2 text-neutral-100 font-semibold">
-                  {x.symbol} <span className="text-neutral-400 font-normal">• Conviction {x.conviction}/10</span>
-                </div>
-                <p className="text-sm text-neutral-300 mt-1">{x.reason}</p>
-                {proofs.length > 0 && (
-                  <ul className="mt-2 space-y-1">
-                    {proofs.slice(0, 6).map((p, k) => (
-                      <li key={k} className="text-xs text-neutral-400">
-                        • <a className="underline hover:text-neutral-200" href={p.url} target="_blank" rel="noreferrer">{p.source}: {p.title}</a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            );
-          })}
-          {ai.actions.length === 0 && <li className="text-sm text-neutral-400 p-3">Aucune action proposée (pas de signal robuste).</li>}
-        </ul>
+
+        {ai.actions?.length > 0 ? (
+          <ul className="space-y-4">
+            {ai.actions.map((act: any, idxAction: number) => {
+              const proofs = (act.evidenceIds || [])
+                .map((id: string) => index.get(id))
+                .filter(Boolean);
+
+              return (
+                <li
+                  key={idxAction}
+                  className="p-4 rounded-xl bg-neutral-900/60 ring-1 ring-neutral-700/40"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className={`px-2 py-1 rounded ${badgeDir(act.direction)}`}>
+                      {act.direction}
+                    </div>
+
+                    <div className={`px-2 py-1 rounded text-sm ${badgeConf(act.confidence)}`}>
+                      Confiance {act.confidence}/100
+                    </div>
+                  </div>
+
+                  <div className="mt-2 text-neutral-100 font-semibold">
+                    {act.symbol}{' '}
+                    <span className="text-neutral-400 font-normal">
+                      • Conviction {act.conviction}/10
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-neutral-300 mt-1">{act.reason}</p>
+
+                  {proofs.length > 0 && (
+                    <ul className="mt-2 space-y-1">
+                      {proofs.slice(0, 6).map((p: any, idxProof: number) => (
+                        <li key={idxProof} className="text-xs text-neutral-400">
+                          •{' '}
+                          <a
+                            className="underline hover:text-neutral-200"
+                            href={p.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {p.source}: {p.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="text-neutral-400 text-sm px-2">
+            Aucune action proposée aujourd’hui (pas de signal robuste).
+          </div>
+        )}
       </div>
+
+      {/* ------------------ MODAL PREUVES ------------------ */}
+      {focusIds && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-6">
+          <div className="bg-neutral-900 p-6 rounded-xl w-[600px] max-h-[80vh] overflow-y-auto ring-1 ring-neutral-700">
+            <div className="text-xl font-semibold text-neutral-100 mb-4">
+              Preuves / Sources
+            </div>
+
+            {(focusIds || []).map((id: string, idxPv: number) => {
+              const p = index.get(id);
+              if (!p) return null;
+              return (
+                <div key={idxPv} className="mb-4">
+                  <a
+                    className="text-violet-300 underline"
+                    href={p.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {p.source}: {p.title}
+                  </a>
+                  <p className="text-neutral-400 text-sm mt-1">{p.text}</p>
+                </div>
+              );
+            })}
+
+            <button
+              onClick={() => setFocusIds(null)}
+              className="mt-4 px-4 py-2 bg-violet-700 hover:bg-violet-800 rounded text-white"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

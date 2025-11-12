@@ -7,7 +7,8 @@ export type RawArticle = {
   description?: string;
   tickers?: string[];
   lang?: string;
-  score?: number;
+  score?: number;      // score hot
+  hits?: string[];     // mots/expressions qui ont matché (preuve)
 };
 
 export type NewsBundle = {
@@ -16,13 +17,16 @@ export type NewsBundle = {
   articles: RawArticle[];
 };
 
+export type AiAction = {
+  symbol: string;
+  direction: "BUY" | "SELL";
+  conviction: number;   // 0..10 (intention de trade)
+  confidence: number;   // 0..100 (fiabilité du signal)
+  reason: string;       // explications synthétiques
+};
+
 export type AiOutputs = {
   generatedAt: string;
   mainThemes: { label: string; weight: number }[];
-  actions: {
-    symbol: string;
-    direction: "BUY" | "SELL";
-    conviction: number; // 0..10
-    reason: string;
-  }[];
+  actions: AiAction[];
 };

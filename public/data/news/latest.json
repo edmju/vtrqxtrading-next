@@ -1,106 +1,20 @@
 {
-  "generatedAt": "2025-11-12T18:48:05.915Z",
-  "total": 10,
+  "generatedAt": "2025-11-12T23:05:59.203Z",
+  "total": 1,
   "articles": [
     {
-      "url": "https://www.cnbc.com/2025/11/12/india-october-inflation-matches-rbi-outlook-easing-hopes-for-rate-cuts.html",
-      "title": "India inflation cools more than expected in October, boosting hopes for further rate cuts",
-      "publishedAt": "2025-11-12T11:29:04.000Z",
-      "description": "India's consumer inflation cooled to 0.25% in October, strengthening hopes of more policy easing by the Reserve Bank of India.",
-      "source": "CNBC",
+      "url": "https://www.ft.com/content/95c0f0e7-f736-4963-af8b-acc0ec9eee1b",
+      "title": "US antitrust regulator launches probe into ISS and Glass Lewis",
+      "publishedAt": "2025-11-12T22:12:28.000Z",
+      "description": "Federal Trade Commission’s investigation comes as Trump administration targets influential proxy advisers",
+      "source": "Financial Times",
       "lang": "en",
-      "id": "2d3eabd617e1ffa66eb6fcbfccabd2fa",
-      "score": 12
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/trump-jeffrey-epstein-ghislaine-maxwell-emails-house-democrats.html",
-      "title": "Trump &apos;knew about the girls,&apos; Jeffrey Epstein said in email",
-      "publishedAt": "2025-11-12T17:07:45.000Z",
-      "description": "President Trump and the DOJ have been criticized for reneging on promises by administration officials to release files about Jeffrey Epstein.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "5f29e970e28162f2e8d1254182a3e42a",
-      "score": 7
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/autonomous-ev-trucker-einride-to-go-public-in-spac-at-1point8-billion-value.html",
-      "title": "Autonomous EV trucking company Einride going public in SPAC deal valuing it at $1.8 billion",
-      "publishedAt": "2025-11-12T14:21:00.000Z",
-      "description": "Swedish autonomous EV trucking company Einride is planning to go public on the NYSE through a SPAC deal with Legato Merger Corp. III valuing it at $1.8 billion.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "1c93022b746d67678622eb5ff5a2cc60",
-      "score": 7
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/google-e-zpass-usps-text-scam-phishing-suit.html",
-      "title": "Google sues cybercriminal group behind E-ZPass, USPS text phishing scams",
-      "publishedAt": "2025-11-12T13:18:25.000Z",
-      "description": "Google filed a lawsuit against a cybercriminal group largely based in China that is behind a massive text message phishing operation, or \"smishing.\"",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "812d37828348eaf4995976322b7ff591",
-      "score": 7
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/snap-benefits-government-shutdown-negotiations.html",
-      "title": "Where SNAP benefits stand amid negotiations to end the government shutdown",
-      "publishedAt": "2025-11-12T16:46:58.000Z",
-      "description": "The continuity of Supplemental Nutrition Assistance Program, or SNAP, benefits has been affected by a federal government shutdown for the first time.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "ae41b11bde258c116dd2c8b6e1a575f8",
-      "score": 6
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/tax-bomb-may-hit-some-student-loan-borrowers-in-2026-advocates-warn.html",
-      "title": "&apos;Tax bomb&apos; worth over $10,000 could hit some student loan borrowers in 2026, senators and advocates warn",
-      "publishedAt": "2025-11-12T16:43:14.000Z",
-      "description": "A provision of the American Rescue Plan that excludes forgiven student loan debt from federal income tax is set to expire at the end of 2025.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "f0686477f6fc29fc321fb9c47711f928",
-      "score": 6
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/atlanta-fed-president-bostic-says-hell-leave-position-when-his-term-expires.html",
-      "title": "Atlanta Fed President Bostic says he&apos;ll leave position when his term expires in February",
-      "publishedAt": "2025-11-12T16:08:58.000Z",
-      "description": "Atlanta Federal Reserve President Raphael Bostic said Wednesday he will be leaving his position when his term expires in February.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "8cddf37b2cffcb07f6c2c32949682748",
-      "score": 6
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/11/trump-tariffs-trade-supreme-court-repayment.html",
-      "title": "If the Supreme Court orders Trump to repay tariffs, U.S. importers say it wouldn&apos;t be &apos;messy&apos;",
-      "publishedAt": "2025-11-11T18:00:13.000Z",
-      "description": "U.S. Customs has collected nearly $200 billion in tariffs since the beginning of 2025. The Supreme Court has raised concerns about the process of repaying them.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "fc8062b7b4a0f6d45f4079b29afa08ad",
-      "score": 6
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/12/too-good-to-go-whole-foods-grocery-surprise-bags.html",
-      "title": "Too Good To Go launches grocery bags with Whole Foods as food costs climb",
-      "publishedAt": "2025-11-12T14:00:01.000Z",
-      "description": "Too Good To Go is launching discounted surprise bags for groceries with Whole Foods amid rising prices and inflation.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "e341cfa8fb95f36c95f071ec36ddfadc",
-      "score": 5
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/11/when-the-government-data-will-start-rolling-out-with-the-shutdown-ending-and-what-it-is-likely-to-show.html",
-      "title": "The shutdown put jobs and inflation data on hold. Here&apos;s when it could be back — and what it might say",
-      "publishedAt": "2025-11-11T20:03:50.000Z",
-      "description": "Economic data releases — payroll and jobs reports, CPI and PPI — have lagged during the government shutdown and likely will take some time to get rolling again.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "670722c6d2fc7cc6734016f9f51eb9d1",
-      "score": 5
+      "id": "b2c32276f4ab44bfb3973e463bdbce15",
+      "score": 17,
+      "hits": [
+        "fed",
+        "antitrust"
+      ]
     }
   ]
 }

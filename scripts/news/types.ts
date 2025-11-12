@@ -7,8 +7,8 @@ export type RawArticle = {
   description?: string;
   tickers?: string[];
   lang?: string;
-  score?: number;      // score hot
-  hits?: string[];     // mots/expressions qui ont matché (preuve)
+  score?: number;      // score hot (rule-based)
+  hits?: string[];     // mots/expressions détectés (preuves)
 };
 
 export type NewsBundle = {
@@ -20,9 +20,10 @@ export type NewsBundle = {
 export type AiAction = {
   symbol: string;
   direction: "BUY" | "SELL";
-  conviction: number;   // 0..10 (intention de trade)
-  confidence: number;   // 0..100 (fiabilité du signal)
-  reason: string;       // explications synthétiques
+  conviction: number;     // 0..10 (intention de trade)
+  confidence: number;     // 0..100 (fiabilité synthétisée)
+  reason: string;         // justification courte
+  evidenceIds?: string[]; // ids d’articles qui justifient l’action
 };
 
 export type AiOutputs = {

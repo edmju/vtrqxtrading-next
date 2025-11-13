@@ -1,70 +1,74 @@
 {
-  "generatedAt": "2025-11-13T21:41:57.602Z",
+  "generatedAt": "2025-11-13T22:11:10.573Z",
   "mainThemes": [
     {
-      "label": "Banques centrales / Taux",
-      "weight": 0.68,
-      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur banques centrales / taux.",
+      "label": "Assouplissement monétaire (US)",
+      "weight": 0.28,
+      "summary": "Assouplissement monétaire (US)",
       "evidenceIds": [
-        "b2c32276f4ab44bfb3973e463bdbce15"
+        "e4a9ef94cd553f4ba3ab7858583157a4",
+        "e0d5870dc0a1a6ced7239c6a4c3a656f"
       ]
     },
     {
-      "label": "Tech / IA / Cybersécurité",
-      "weight": 0.49,
-      "summary": "3 article(s) sur les dernières 24h (Financial Times) sur tech / ia / cybersécurité.",
+      "label": "Chocs d’offre énergie (OPEC/refineries)",
+      "weight": 0.28,
+      "summary": "Chocs d’offre énergie (OPEC/refineries)",
       "evidenceIds": [
-        "0b56be656167ff8e9f7de25aa411d688",
-        "ef9ded0002544495353689fd801acb00",
-        "25f0f6c7f465ffb2caca9ea6b888bd8a"
+        "6a613fe72fa70c03246d766627fc3a25",
+        "238f58a9f889d40df4c912c3a96beb40"
       ]
     },
     {
-      "label": "Tarifs / Géopolitique commerciale",
-      "weight": 0.33,
-      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur tarifs / géopolitique commerciale.",
+      "label": "Tarifs / Contrôles export (US/Chine)",
+      "weight": 0.26,
+      "summary": "Tarifs / Contrôles export (US/Chine)",
       "evidenceIds": [
-        "4994b37dfdad3a7a6dd32f2cb17cf17c"
+        "14fa18aec09ffdcb1f5272410de66560"
       ]
     }
   ],
-  "actions": [
-    {
-      "symbol": "US500",
-      "direction": "BUY",
-      "conviction": 4,
-      "confidence": 68,
-      "reason": "Signal basé sur le thème « Banques centrales / Taux » (1 article(s)).",
-      "evidenceIds": [
-        "b2c32276f4ab44bfb3973e463bdbce15"
-      ]
-    }
-  ],
+  "actions": [],
   "clusters": [
     {
-      "label": "Banques centrales / Taux",
-      "weight": 0.68,
-      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur banques centrales / taux.",
+      "label": "Assouplissement monétaire (US)",
+      "weight": 0.28,
+      "summary": "Assouplissement monétaire (US)",
       "articleIds": [
-        "b2c32276f4ab44bfb3973e463bdbce15"
+        "6a72b7dc9fae62c981119965864a0581",
+        "6a613fe72fa70c03246d766627fc3a25",
+        "e4a9ef94cd553f4ba3ab7858583157a4",
+        "14fa18aec09ffdcb1f5272410de66560",
+        "238f58a9f889d40df4c912c3a96beb40",
+        "38e944648a60b61f0dbd288e4773da4a",
+        "50d197c9853c7065f6bcee4c6d1e79e5",
+        "b2c32276f4ab44bfb3973e463bdbce15",
+        "6899c28d1c773452e22af30628aa3425",
+        "2f3ed7555a2cbbdeda19b970f057aa7d",
+        "61c6dca015d8090cb496b9eed67f6fbe",
+        "6c5b5d278a0992f02e500591d0ce09e5",
+        "e0d5870dc0a1a6ced7239c6a4c3a656f",
+        "a29c9c914bc0cc8d9d72760e38dd5be0",
+        "278db2e5e92e336edca6d5f1b557f72d",
+        "179b501f380e55b9999e257b69530d99",
+        "cecfe6439f262e61b3e4877cdfa4340d",
+        "431b7a79deb481bca37f5bdde7451830",
+        "a2d86b30917523a3effbec356b062a6a",
+        "e398f1a724cfa4a29d926f5cb952ef79"
       ]
     },
     {
-      "label": "Tech / IA / Cybersécurité",
-      "weight": 0.49,
-      "summary": "3 article(s) sur les dernières 24h (Financial Times) sur tech / ia / cybersécurité.",
-      "articleIds": [
-        "0b56be656167ff8e9f7de25aa411d688",
-        "ef9ded0002544495353689fd801acb00",
-        "25f0f6c7f465ffb2caca9ea6b888bd8a"
-      ]
+      "label": "Chocs d’offre énergie (OPEC/refineries)",
+      "weight": 0.28,
+      "summary": "Chocs d’offre énergie (OPEC/refineries)",
+      "articleIds": []
     },
     {
-      "label": "Tarifs / Géopolitique commerciale",
-      "weight": 0.33,
-      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur tarifs / géopolitique commerciale.",
+      "label": "Tarifs / Contrôles export (US/Chine)",
+      "weight": 0.26,
+      "summary": "Tarifs / Contrôles export (US/Chine)",
       "articleIds": [
-        "4994b37dfdad3a7a6dd32f2cb17cf17c"
+        "14fa18aec09ffdcb1f5272410de66560"
       ]
     }
   ]

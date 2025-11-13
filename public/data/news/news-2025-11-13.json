@@ -1,7 +1,146 @@
 {
-  "generatedAt": "2025-11-13T21:41:57.591Z",
-  "total": 8,
+  "generatedAt": "2025-11-13T22:11:10.554Z",
+  "total": 60,
   "articles": [
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Hungarys-MOL-Moves-to-Acquire-Stake-in-Sanctioned-Serbian-Refinery.html",
+      "title": "Hungary’s MOL Moves to Acquire Stake in Sanctioned Serbian Refinery",
+      "publishedAt": "2025-11-13T13:00:00.000Z",
+      "description": "Hungarian oil company MOL is close to buying an 11.3% stake in Serbia’s only refinery from its Russian owners, Serbian news outlet NIN reported on Thursday, citing sources familiar with the plans. The Russians trust the Hungarian company, and Hungary’s Prime Minister Viktor Orban, and plans are for MOL to buy 11.3% of Serbia’s only refinery Naftna Industrija Srbije (NIS), the Serbian magazine reports. Gazprom Neft and Gazprom affiliates hold a majority stake in NIS, with the Serbian state owning the remaining 29.9%. …",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "6a72b7dc9fae62c981119965864a0581",
+      "score": 26,
+      "hits": [
+        "rba",
+        "sanction",
+        "fine",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/16/trump-tariffs-us-china-nvidia-ftse-100-markets-latest-news/",
+      "title": "Fed chairman defies Trump to warn tariffs will stoke inflation",
+      "publishedAt": "2025-04-16T19:01:40.000Z",
+      "description": "Fed chairman defies Trump to warn tariffs will stoke inflation",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "d2a1351ad89b9fc0cdc52de316393132",
+      "score": 23,
+      "hits": [
+        "fed",
+        "tariff",
+        "inflation"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Energy/Energy-General/The-Remarkable-Rise-of-Natural-Gas.html",
+      "title": "The Remarkable Rise of Natural Gas",
+      "publishedAt": "2025-11-13T19:00:00.000Z",
+      "description": "As oil prices struggle to find a footing in the wake of the latest OPEC moves, natural gas has stepped into a standout role in the global energy mix. This year, the demand and price trends for natural gas underscore both its resilience and its growing importance as an economic driver and transition fuel. Why Natural Gas Is Defying the Energy Downturn Global energy markets have been anything but stable in recent years. Geopolitical tensions, inflationary pressures, and the accelerating push toward decarbonization have made investors uneasy. Yet…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "6a613fe72fa70c03246d766627fc3a25",
+      "score": 22,
+      "hits": [
+        "geopolitical tension",
+        "opec",
+        "inflation"
+      ]
+    },
+    {
+      "url": "https://www.fxstreet.com/news/fx-today-gdp-figures-in-euroland-take-centre-stage-investors-gear-up-for-us-data-202511131836",
+      "title": "FX Today: GDP figures in Euroland take centre stage; investors gear up for US data",
+      "publishedAt": "2025-11-13T18:36:59.000Z",
+      "description": "The US Dollar (USD) resumed its downtrend on Thursday, reaching fresh monthly lows as market participants assessed the deal that ended the longest US government shutdown in history. Meanwhile, bets on a Fed rate cut in December remained pretty divided.",
+      "source": "FXStreet",
+      "lang": "en",
+      "id": "e4a9ef94cd553f4ba3ab7858583157a4",
+      "score": 22,
+      "hits": [
+        "rate cut",
+        "gdp",
+        "shutdown"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/US-Sanctions-Strand-a-Third-of-Russias-Crude-Exports-at-Sea.html",
+      "title": "U.S. Sanctions Strand a Third of Russia’s Crude Exports at Sea",
+      "publishedAt": "2025-11-13T17:30:00.000Z",
+      "description": "Nearly a third of Russia’s current seaborne oil export potential is now stuck in tankers as the U.S. sanctions upend crude flows and Russia’s top buyers, China and India, are still struggling to assess the implications of the sanctions, according to JPMorgan. “Russia’s oil exports are entering a new phase of disruption as sanctions targeting Rosneft and Lukoil are set to take effect, prompting its two largest customers — India and China — to sharply reduce their December purchases,” the Wall…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "14fa18aec09ffdcb1f5272410de66560",
+      "score": 22,
+      "hits": [
+        "sanction",
+        "oil exports",
+        "sanctions"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Crude-Prices-Stabilize-After-Selloff-Amid-OPEC-Reassessment-and-US-Funding-Dea.html",
+      "title": "Oil Stabilizes After Selloff Amid OPEC Reassessment and U.S. Funding Deal",
+      "publishedAt": "2025-11-13T16:15:00.000Z",
+      "description": "Oil prices steadied on Wednesday after a sharp 4% slide the day before, with Brent trading near $63.08 and WTI around $58.80 at 11:01 a.m. ET, as traders reassessed the latest OPEC shift toward a more balanced 2026 market outlook. The passage of the U.S. funding deal that ended the government shutdown removed one macro problem, but crude remained focused on supply signals rather than broader risk sentiment. The modest rebound contrasted with the equity rally highlighted by Bloomberg, where U.S. indices advanced on softer inflation readings, renewed…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "238f58a9f889d40df4c912c3a96beb40",
+      "score": 22,
+      "hits": [
+        "opec",
+        "inflation",
+        "shutdown",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/business/2025/nov/13/uk-economy-grew-by-just-01-in-third-quarter-amid-jlr-cyber-attack-hit",
+      "title": "UK economy grew by just 0.1% in third quarter after hit from JLR cyber-attack",
+      "publishedAt": "2025-11-13T08:49:37.000Z",
+      "description": "Figure undershoots forecasts, with Jaguar Land Rover hack helping to pull September GDP down by 0.1%• Business live – latest updates• Amid disappointing UK growth, how can Reeves escape the doom loop?The UK economy expanded by just 0.1% in the quarter from July to September as the crippling cyber-attack on Jaguar Land Rover hit manufacturing.The latest official figures, issued as Rachel Reeves prepares for a crunch budget on 26 November, show gross domestic product fell by 0.1% in September as car production was dragged to a 73-year low by the fallout from the hack. Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "38e944648a60b61f0dbd288e4773da4a",
+      "score": 22,
+      "hits": [
+        "hack",
+        "gdp",
+        "budget",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/business/2025/nov/13/amid-disappointing-uk-growth-how-can-rachel-reeves-escape-the-doom-loop",
+      "title": "Amid disappointing UK growth, how can Rachel Reeves escape the doom loop?",
+      "publishedAt": "2025-11-13T09:01:34.000Z",
+      "description": "Stronger finances require a stronger economy, but budget tax rises and spending cuts could squeeze activity further• Business live – latest updates• Economy grew by just 0.1% in third quarter amid hit from JLR cyber-attackRachel Reeves’s autumn budget is not simple: Britain’s economy is misfiring and things need turning around fast. Yet a fiscal consolidation on the scale the chancellor is expected to require could push in exactly the opposite direction.The latest figures from the economy are hardly encouraging. Growth slowed from 0.3% in the second quarter to just 0.1% in the third, driven down in part by the cyber-attack on Jaguar Land Rover. Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "50d197c9853c7065f6bcee4c6d1e79e5",
+      "score": 21,
+      "hits": [
+        "cyber attack",
+        "spending cuts",
+        "budget",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Nigeria-Scraps-Plans-for-Fuel-Import-Duty-in-Blow-to-Local-Refiners.html",
+      "title": "Nigeria Scraps Plans for Fuel Import Duty in Blow to Local Refiners",
+      "publishedAt": "2025-11-13T16:30:00.000Z",
+      "description": "Nigeria is abandoning plans to impose a 15% duty on imported refined petroleum products, which is a blow to its new private domestic refinery of billionaire Aliko Dangote. “The implementation of the 15 per cent ad-valorem import duty on imported Premium Motor Spirit and Diesel is no longer in view,” the Nigerian Midstream and Downstream Petroleum Regulatory Authority (NMDPRA) said on Thursday in a statement advising against “panic buying of any petroleum product.” There is an adequate supply of petroleum products…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "3701e1ee862b8bb27a759965de833876",
+      "score": 18,
+      "hits": [
+        "import duty",
+        "fine",
+        "percent"
+      ]
+    },
     {
       "url": "https://www.ft.com/content/95c0f0e7-f736-4963-af8b-acc0ec9eee1b",
       "title": "US antitrust regulator launches probe into ISS and Glass Lewis",
@@ -17,6 +156,653 @@
       ]
     },
     {
+      "url": "https://www.telegraph.co.uk/business/2025/06/18/trump-lashes-out-at-stupid-powell-ahead-of-fed-decision/",
+      "title": "Fed downgrades growth in fresh blow for Trump",
+      "publishedAt": "2025-06-19T06:20:26.000Z",
+      "description": "Fed downgrades growth in fresh blow for Trump",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "473511050e87e341a861d476c3f90ab0",
+      "score": 17,
+      "hits": [
+        "fed",
+        "downgrade"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/01/ftse-100-markets-latest-news-house-prices-bailey-sintra-boe/",
+      "title": "Fed chief blames Trump tariffs for freeze in rate cuts",
+      "publishedAt": "2025-07-01T16:48:04.000Z",
+      "description": "Fed chief blames Trump tariffs for freeze in rate cuts",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "c4d1170d3dc5023cbd706ca1692835fe",
+      "score": 16,
+      "hits": [
+        "rate cut",
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/09/11/rental-listings-covid-reeves-tax-raid/",
+      "title": "Trump’s trade war hits jobs",
+      "publishedAt": "2025-09-11T17:25:48.000Z",
+      "description": "Trump’s trade war hits jobs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "2b4431e4ba0e095d33cc769e2a277e78",
+      "score": 15,
+      "hits": [
+        "trade war",
+        "jobs"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/08/20/uk-inflation-cpi-reeves-interest-rates-ftse-100-markets/",
+      "title": "Inflation to stay ‘miles above target’ in blow to rate cut hopes",
+      "publishedAt": "2025-08-20T15:24:35.000Z",
+      "description": "Inflation to stay ‘miles above target’ in blow to rate cut hopes",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "71c211710bb0d83ebe47c9c4a1f25132",
+      "score": 15,
+      "hits": [
+        "rate cut",
+        "inflation"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/08/14/uk-gdp-economy-trump-tariffs-reeves-tax-ftse-100-markets/",
+      "title": "Trump tariffs trigger US inflation shock",
+      "publishedAt": "2025-08-14T17:13:28.000Z",
+      "description": "Trump tariffs trigger US inflation shock",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "6899c28d1c773452e22af30628aa3425",
+      "score": 15,
+      "hits": [
+        "tariff",
+        "inflation"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/13/trump-trade-war-china-us-tariffs-boeing-ftse-100-markets/",
+      "title": "Trump renews attack on Fed chief after surprise fall in inflation",
+      "publishedAt": "2025-05-13T18:26:48.000Z",
+      "description": "Trump renews attack on Fed chief after surprise fall in inflation",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "be39439a6813ced4bef0d7b70ab5bd13",
+      "score": 15,
+      "hits": [
+        "fed",
+        "inflation"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/30/trump-tariffs-us-cars-markets-latest-news-ftse-100-uk/",
+      "title": "US risks recession as economy shrinks in tariff war",
+      "publishedAt": "2025-05-01T04:47:13.000Z",
+      "description": "US risks recession as economy shrinks in tariff war",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "2f3ed7555a2cbbdeda19b970f057aa7d",
+      "score": 15,
+      "hits": [
+        "tariff",
+        "recession"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/03/31/ftse-100-markets-latest-news-trump-tariffs-putin-oil-russia/",
+      "title": "Wall Street doubles US recession risk as Trump tariffs loom",
+      "publishedAt": "2025-03-31T18:00:27.000Z",
+      "description": "Wall Street doubles US recession risk as Trump tariffs loom",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "61c6dca015d8090cb496b9eed67f6fbe",
+      "score": 15,
+      "hits": [
+        "tariff",
+        "recession"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/business/nils-pratley-on-finance/2025/nov/12/sse-grid-upgrade-consumers-small-businesses",
+      "title": "SSE is a winner in the great grid upgrade. Who is looking out for consumers and small businesses? | Nils Pratley",
+      "publishedAt": "2025-11-12T17:43:36.000Z",
+      "description": "Nobody doubts chunky spending is necessary to improve the grid. But how much of that money will be funded through consumer bills?It is a “once-in-a-generation opportunity to upgrade the UK electricity network”, gushed Martin Pibworth, the chief executive of SSE, and you can understand his excitement. The great grid upgrade has put a rocket under his share price. SSE’s shares soared 17% on Wednesday as the group laid out plans to spend the phenomenal sum of £33bn – more than the company’s current stock market value – over the next five years.That’s terrific news for SSE shareholders, but the stock market’s enthusiasm will do nothing to quiet two big worries about the sprint to upgrade the electricity grid. Has the regulator Ofgem – under orders from the government to get the upgrade done by 2030 – had to throw gold in the path of SSE, Scottish Power and National Grid Group, the trio behind the overall £80bn network investment programme? And what does it all mean for electricity consumers – households and businesses – who will fund this upgrade through their bills? Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "6c5b5d278a0992f02e500591d0ce09e5",
+      "score": 10,
+      "hits": [
+        "upgrade",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/24/trump-tariffs-eu-us-trade-deal-ftse-100-markets-latest/",
+      "title": "Job cuts accelerate as Reeves tax raid bites",
+      "publishedAt": "2025-07-24T15:43:51.000Z",
+      "description": "Job cuts accelerate as Reeves tax raid bites",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "b13e4856d2b1206e17c9f9ea7ee0582b",
+      "score": 9,
+      "hits": [
+        "job cuts"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/technology/2025/nov/13/uk-firms-can-win-significant-chunk-ai-chip-market",
+      "title": "UK firms can win a significant chunk of the AI chip market | John Browne",
+      "publishedAt": "2025-11-13T18:26:25.000Z",
+      "description": "Britain’s legacy in chip design is world-class, and we could supply up to 5% of global demand if we get our act togetherThe UK is in a uniquely promising position, far too little understood, to play a lucrative role in the coming era of artificial intelligence – but only if it also grabs the opportunity to start making millions of computer chips.AI requires vast numbers of chips and we could supply up to 5% of world demand if we get our national act together.Lord Browne is the co-chair of the Council for Science and Technology. He is the chair of BeyondNetZero and was the chief executive of BP from 1995 to 2007 Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "fcabb56128b30c81c2ef1fadfed2a720",
+      "score": 8,
+      "hits": [
+        "ai chip",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Energy/Energy-General/Putin-Confronts-Kazakhstans-President-Over-US-Pivot.html",
+      "title": "Putin Confronts Kazakhstan’s President Over U.S. Pivot",
+      "publishedAt": "2025-11-13T16:20:00.000Z",
+      "description": "Kazakh President Kassym-Jomart Tokayev kicked off a two-day visit November 11 to Russia by exchanging pleasantries in the Kremlin with Vladimir Putin and meeting with students at the prestigious Moscow State Institute for International Relations. Tokayev sought to reassure Putin that bilateral ties retain “the character of strategic partnership,” adding that “there are no serious problems between our states.” Putin, meanwhile, voiced a desire to “talk informally about issues…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "e0d5870dc0a1a6ced7239c6a4c3a656f",
+      "score": 8,
+      "hits": [
+        "pivot"
+      ]
+    },
+    {
+      "url": "https://www.scmp.com/economy/china-economy/article/3332669/china-us-trade-war-seen-growing-more-volatile-despite-truce-both-court-third-countries?utm_source=rss_feed",
+      "title": "Calm before storm? China-US trade war seen growing more volatile despite truce",
+      "publishedAt": "2025-11-13T13:00:22.000Z",
+      "description": "China-US relations are likely to become more volatile in the coming years, with both sides competing to win over third countries – a dynamic already reshaping global supply chains, according to analysts. “We’re going to see cycles of ups and downs. They’re going to test each other,” said Scott Kennedy, senior adviser at the US think tank Centre for Strategic and International Studies, at a forum in Beijing on Thursday. “What we’ve seen over time is the amplitude of those cycles that has got...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "a29c9c914bc0cc8d9d72760e38dd5be0",
+      "score": 8,
+      "hits": [
+        "trade war"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/11/11/uk-unemployment-jobs-wages-ftse-100-markets/",
+      "title": "Traders bet on rate cuts to support ‘weakening’ economy",
+      "publishedAt": "2025-11-11T18:55:22.000Z",
+      "description": "Traders bet on rate cuts to support ‘weakening’ economy",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "4f12de4a04107f07fdceffa2916fe3b0",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/10/10/us-wall-street-stock-market-ai-rally-ftse-100-uk-latest/",
+      "title": "Crypto prices plunge as Trump hits China with 100pc tariffs",
+      "publishedAt": "2025-10-10T22:26:26.000Z",
+      "description": "Crypto prices plunge as Trump hits China with 100pc tariffs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "88b66c3678c038ac5768f199506acf42",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/10/08/gold-france-japan-bond-markets-ftse-100-latest-uk/",
+      "title": "Car giants suffer £6bn hit as fears rise over steel tariffs",
+      "publishedAt": "2025-10-08T17:10:39.000Z",
+      "description": "Car giants suffer £6bn hit as fears rise over steel tariffs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "27dc3a9299dc7dc12fd0520d8462a95f",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/09/17/federal-reserve-decision-interest-rates-trump-pressure/",
+      "title": "Fed cuts US interest rates after Trump pressure as economy weakens",
+      "publishedAt": "2025-09-17T20:01:03.000Z",
+      "description": "Fed cuts US interest rates after Trump pressure as economy weakens",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "278db2e5e92e336edca6d5f1b557f72d",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/09/03/uk-borrowing-costs-rise-amid-global-bond-sell-off/",
+      "title": "Trump attacks on Fed are ‘very concerning’, says Bailey",
+      "publishedAt": "2025-09-03T16:23:25.000Z",
+      "description": "Trump attacks on Fed are ‘very concerning’, says Bailey",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "5507e717561974ee28e84e746aa328d5",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/24/trump-visits-federal-reserve-jerome-powell/",
+      "title": "Trump and Fed chief in awkward clash over ‘very expensive’ renovation",
+      "publishedAt": "2025-07-24T20:59:09.000Z",
+      "description": "Trump and Fed chief in awkward clash over ‘very expensive’ renovation",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "bb3d6ef8ef200b9c2203bc257ea6d697",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/16/uk-inflation-cpi-bank-of-england-boe-ftse-100-markets-news/",
+      "title": "Donald Trump says Fed chief could be sacked for fraud",
+      "publishedAt": "2025-07-16T18:44:04.000Z",
+      "description": "Donald Trump says Fed chief could be sacked for fraud",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "d51494a679a3770b650c819310f79791",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/14/trump-tariffs-eu-us-ftse-100-markets-latest-news/",
+      "title": "EU prepares counter-tariffs on €72bn of US imports",
+      "publishedAt": "2025-07-14T17:53:21.000Z",
+      "description": "EU prepares counter-tariffs on €72bn of US imports",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "179b501f380e55b9999e257b69530d99",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/11/uk-gdp-economy-trump-tariffs-us-trade-deal-ftse-100-markets/",
+      "title": "Interest rate cut ‘almost certain’ after economy shrinks",
+      "publishedAt": "2025-07-11T15:10:44.000Z",
+      "description": "Interest rate cut ‘almost certain’ after economy shrinks",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "8c5c183cbd9c1d011e784ceb9e8d104c",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/10/ftse-100-markets-latest-news-trump-tariffs-miners-copper/",
+      "title": "Trump tariff war ‘to hammer British industry’",
+      "publishedAt": "2025-07-10T16:34:44.000Z",
+      "description": "Trump tariff war ‘to hammer British industry’",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "cecfe6439f262e61b3e4877cdfa4340d",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/09/trump-tariffs-copper-us-eu-ftse-100-markets-latest-news/",
+      "title": "Trump sends tariff letters to seven more countries",
+      "publishedAt": "2025-07-09T18:27:43.000Z",
+      "description": "Trump sends tariff letters to seven more countries",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "fba1722c17c41bbbe11cc953814d78be",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/07/08/trump-tariffs-japan-china-ftse-100-markets-latest-news-uk/",
+      "title": "Trump threatens 200pc tariffs on medicine",
+      "publishedAt": "2025-07-08T19:59:24.000Z",
+      "description": "Trump threatens 200pc tariffs on medicine",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "4d225309aa9604f7174f080155192f50",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/06/05/eu-trade-us-trump-tariffs-ftse-100-markets-uk-latest-news/",
+      "title": "Xi invites Trump to China amid tariff tensions",
+      "publishedAt": "2025-06-05T16:43:50.000Z",
+      "description": "Xi invites Trump to China amid tariff tensions",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "e1d73dd7289f75ed5fccb9ca5f942a7e",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/06/03/trump-tariffs-china-factories-us-ftse-100-markets-latest/",
+      "title": "Donald Trump spares Britain from 50pc steel tariffs",
+      "publishedAt": "2025-06-03T18:54:43.000Z",
+      "description": "Donald Trump spares Britain from 50pc steel tariffs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "309b724c0491d5903ea214f759991029",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/06/02/trump-tariffs-china-trade-deal-ftse-100-markets-latest/",
+      "title": "Pound closes in on three-year high as concerns over US tariffs mount",
+      "publishedAt": "2025-06-02T17:17:22.000Z",
+      "description": "Pound closes in on three-year high as concerns over US tariffs mount",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "431b7a79deb481bca37f5bdde7451830",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/29/stock-markets-surge-after-us-court-blocks-trump-tariffs/",
+      "title": "Trump wins right to keep tariffs after ‘activist judges’ ban",
+      "publishedAt": "2025-05-29T19:53:14.000Z",
+      "description": "Trump wins right to keep tariffs after ‘activist judges’ ban",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "1be028efdc6b504e859dafc4a01c8eaa",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/27/markets-26052025/",
+      "title": "US tariffs could fall below 10pc, says Trump adviser",
+      "publishedAt": "2025-05-27T16:03:06.000Z",
+      "description": "US tariffs could fall below 10pc, says Trump adviser",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "a2d86b30917523a3effbec356b062a6a",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/26/trump-delays-plans-to-hit-eu-50pc-tariffs/",
+      "title": "Trump delays plans to hit EU with 50pc tariffs",
+      "publishedAt": "2025-05-25T23:25:14.000Z",
+      "description": "US president extends EU’s deadline to agree a trade deal to Jul 9 as initially planned under the 90-day tariff pause",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "e398f1a724cfa4a29d926f5cb952ef79",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/22/reeves-borrowing-economy-ftse-100-markets-uk-latest-news/",
+      "title": "FTSE falls as economists push back bets on rate cuts",
+      "publishedAt": "2025-05-22T17:24:52.000Z",
+      "description": "FTSE falls as economists push back bets on rate cuts",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "075b3ec00f60120831ca9491d281bc66",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/09/trump-tariffs-trade-uk-us-eu-andrew-bailey-ftse-100-markets/",
+      "title": "Trump prepares to lower tariffs on China",
+      "publishedAt": "2025-05-09T17:19:42.000Z",
+      "description": "Trump prepares to lower tariffs on China",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "887c76eab27001a0c97ee82c39514873",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/07/trump-tariffs-us-china-talks-fed-interest-rates-markets/",
+      "title": "Fed defies Trump as it declines to lower rates",
+      "publishedAt": "2025-05-07T20:07:21.000Z",
+      "description": "Fed defies Trump as it declines to lower rates",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "495622ba5572a2284adbc978c98be5f1",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/05/01/trump-tariffs-us-china-talks-ftse-100-markets-latest-news/",
+      "title": "Apple warns of $900m hit from Trump’s trade war",
+      "publishedAt": "2025-05-01T22:22:23.000Z",
+      "description": "Apple warns of $900m hit from Trump’s trade war",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "59189ae3404d6645ad5298e1c3c0de60",
+      "score": 8,
+      "hits": [
+        "trade war"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/17/donald-trump-tariffs-latest-ftse-100-gold-ecb-interest-rate/",
+      "title": "Fed chairman in fight to save job as Trump rages",
+      "publishedAt": "2025-04-17T20:17:46.000Z",
+      "description": "Fed chairman in fight to save job as Trump rages",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "cc4f4c3d643f8b1948c702e4da5ef9e1",
+      "score": 8,
+      "hits": [
+        "fed"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/15/trump-tariffs-business-confidence-ftse-100-markets-latest/",
+      "title": "EU faces higher tariffs as US talks break down",
+      "publishedAt": "2025-04-15T18:57:47.000Z",
+      "description": "EU faces higher tariffs as US talks break down",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "b8aabfa4916e75f37a58c2ab3763a92b",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/14/trump-tariffs-china-semiconductor-chips-markets-latest/",
+      "title": "Trump vows tariffs on pharma imports",
+      "publishedAt": "2025-04-14T18:28:16.000Z",
+      "description": "Trump vows tariffs on pharma imports",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "45df0ec6d1299a14692c22b9cfd787bf",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/10/trump-tariffs-climbdown-stocks-surge-markets-latest/",
+      "title": "Wall Street plunges after China hit with 145pc tariff",
+      "publishedAt": "2025-04-10T20:31:19.000Z",
+      "description": "Wall Street plunges after China hit with 145pc tariff",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "21df40ae1c1baaf0775b11ef5c3dca34",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/08/trump-tariffs-china-trade-war-ftse-100-markets-latest-news/",
+      "title": "US stocks fall after Trump confirms 104pc tariffs on China",
+      "publishedAt": "2025-04-09T00:57:48.000Z",
+      "description": "US stocks fall after Trump confirms 104pc tariffs on China",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "019ab3f5d60cc181ad3d258caecbe1a3",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/07/donald-trump-tariffs-market-reaction-live/",
+      "title": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
+      "publishedAt": "2025-04-07T21:36:30.000Z",
+      "description": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "7b1b985d9152048c3b542d8b3a087739",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/03/trump-tariffs-eu-cars-ftse-100-markets-latest-news/",
+      "title": "Trump says tariffs going ‘very well’ as stocks sink",
+      "publishedAt": "2025-04-03T21:52:26.000Z",
+      "description": "Trump says tariffs going ‘very well’ as stocks sink",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "33bba78be824e13d59a2e909ab0ff703",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/02/trump-tariffs-liberation-day-ftse-100-markets-latest-news/",
+      "title": "Brexit dividend saves Britain from worst of Trump’s tariffs",
+      "publishedAt": "2025-04-03T01:07:08.000Z",
+      "description": "Brexit dividend saves Britain from worst of Trump’s tariffs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "78fc6d26542efdfe6aa78f578f4d429d",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/01/ftse-100-markets-latest-trump-tariffs-liberation-day-gold/",
+      "title": "Trump ‘open’ to negotiation even after tariffs announced",
+      "publishedAt": "2025-04-02T06:27:49.000Z",
+      "description": "Trump ‘open’ to negotiation even after tariffs announced",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "6d42ab9229d07d990ab486475672f35f",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/03/28/uk-economy-nears-stagnation-rachel-reeves-markets-live/",
+      "title": "Stock markets sink as Trump tariffs trigger price rise fears",
+      "publishedAt": "2025-03-28T18:13:42.000Z",
+      "description": "Stock markets sink as Trump tariffs trigger price rise fears",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "3c561a3491941f01c2ff0a96164b46a2",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/applied-materials-forecasts-strong-quarterly-revenue-on-ai-chip-demand-4356886",
+      "title": "Applied Materials projects upbeat quarterly revenue on steady AI chip demand",
+      "publishedAt": "2025-11-13T21:43:09.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "ee38311b4d548802d47303863e9fd468",
+      "score": 7,
+      "hits": [
+        "ai chip"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Germany-Caps-Power-Prices-to-Save-Its-Industrial-Base.html",
+      "title": "Germany Caps Power Prices to Save Its Industrial Base",
+      "publishedAt": "2025-11-13T20:30:00.000Z",
+      "description": "Germany has agreed to subsidize electricity for its heavy industries, capping prices at about €0.05 per kilowatt-hour from 2026 through 2028—a major policy move aimed at keeping its industrial base from eroding under the weight of Europe’s soaring energy costs. Chancellor Friedrich Merz said Thursday that Berlin’s coalition partners reached the deal after months of debate, and that discussions with the European Commission for approval were “largely complete.” The measure will target energy-intensive industries…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "1f2f95996791e072edcd455a5bcb34ae",
+      "score": 7,
+      "hits": [
+        "ppi"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/11/13/uk-gdp-economy-budget-starmer-reeves-ftse-100-markets/",
+      "title": "Jaguar Land Rover hack to blame for weaker economy, says Reeves",
+      "publishedAt": "2025-11-13T17:37:39.000Z",
+      "description": "Jaguar Land Rover hack to blame for weaker economy, says Reeves",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "9446f96406a2e307ecb9675039db2d1b",
+      "score": 7,
+      "hits": [
+        "hack"
+      ]
+    },
+    {
+      "url": "https://www.fxstreet.com/news/stocks-stumble-into-the-red-202511131723",
+      "title": "Stocks stumble into the red",
+      "publishedAt": "2025-11-13T17:23:44.000Z",
+      "description": "Buy the shutdown, sell the re-opening appears to be the trade in markets today, says Chris Beauchamp, Chief Market Analyst at investing and trading platform IG.",
+      "source": "FXStreet",
+      "lang": "en",
+      "id": "e9219cf628e0343918fe4b69e5fbd078",
+      "score": 7,
+      "hits": [
+        "shutdown"
+      ]
+    },
+    {
       "url": "https://www.ft.com/content/f6b34e71-2b3e-43ad-99a9-558a34f56853",
       "title": "How Norway jeopardised its integrity overnight",
       "publishedAt": "2025-11-13T11:00:03.000Z",
@@ -28,74 +814,6 @@
       "hits": [
         "opa"
       ]
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/13/foreclosures-rise-october-housing-market-distress.html",
-      "title": "New foreclosures jump 20% in October, a sign of more distress in the housing market",
-      "publishedAt": "2025-11-13T18:40:13.000Z",
-      "description": "All phases of the foreclosure process are seeing big increases, as homeowners fall behind on mortgage payments due to stress in the economy.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "8e3a90a2aecb05c4c6ea62ecbdec1098",
-      "score": 1,
-      "hits": [
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.ft.com/content/36211977-d032-401d-a15c-9404d547c3b1",
-      "title": "Wall Street stocks slide as tech jitters return",
-      "publishedAt": "2025-11-13T21:02:14.000Z",
-      "description": "Investor concerns over lofty valuations for artificial intelligence companies hits sentiment",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "0b56be656167ff8e9f7de25aa411d688",
-      "score": 0,
-      "hits": []
-    },
-    {
-      "url": "https://www.ft.com/content/53162cba-294c-4ab5-89bc-375cfe38529a",
-      "title": "Carlyle considers bid for foreign assets of Russia’s Lukoil",
-      "publishedAt": "2025-11-13T19:23:46.000Z",
-      "description": "US buyout group is one of several bidders vying for parts of oil major’s sanctions-hit international operations",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "4994b37dfdad3a7a6dd32f2cb17cf17c",
-      "score": 0,
-      "hits": []
-    },
-    {
-      "url": "https://www.ft.com/content/7c268962-7663-43ed-b30d-901d509f831b",
-      "title": "AI bubble trouble talk is overblown",
-      "publishedAt": "2025-11-13T18:04:50.000Z",
-      "description": "For the foreseeable future, the market is facing a shortage of capacity — hardly the conditions that spell imminent disaster",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "ef9ded0002544495353689fd801acb00",
-      "score": 0,
-      "hits": []
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/13/tko-polymarket-strike-multiyear-deal-to-integrate-prediction-markets-into-ufc-events.html",
-      "title": "TKO, Polymarket strike multiyear deal to integrate prediction markets into UFC events",
-      "publishedAt": "2025-11-13T17:08:52.000Z",
-      "description": "The deal makes UFC and Zuffa Boxing the first sports organizations to incorporate prediction market technology into live events.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "c11c284c7dfb8f98bd5a29337539fea2",
-      "score": 0,
-      "hits": []
-    },
-    {
-      "url": "https://www.ft.com/content/cec33db6-7842-4bf5-80d5-677007bcab3e",
-      "title": "‘Big Short’ investor Michael Burry to close fund as he warns on valuations",
-      "publishedAt": "2025-11-13T16:58:43.000Z",
-      "description": "Asset manager famous for bet against US housing market says stock prices are unhinged from fundamentals",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "25f0f6c7f465ffb2caca9ea6b888bd8a",
-      "score": 0,
-      "hits": []
     }
   ]
 }

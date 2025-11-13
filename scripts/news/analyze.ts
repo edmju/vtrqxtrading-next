@@ -1,6 +1,13 @@
 // scripts/news/analyze.ts
+
 import OpenAI from "openai";
-import { AiOutputs, AiAction, RawArticle, AiCluster, AiTheme } from "./types";
+import {
+  AiOutputs,
+  AiAction,
+  RawArticle,
+  AiCluster,
+  AiTheme,
+} from "./types";
 import { runAllDetectors } from "./detectors";
 import { writeJSON } from "../../src/lib/news/fs";
 
@@ -203,7 +210,10 @@ function inferCategoryKey(a: RawArticle): string | null {
 }
 
 function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
-  const map = new Map<string, { key: string; label: string; articles: RawArticle[] }>();
+  const map = new Map<
+    string,
+    { key: string; label: string; articles: RawArticle[] }
+  >();
 
   for (const a of articles) {
     const key = inferCategoryKey(a);
@@ -229,14 +239,7 @@ function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
     const avgFresh =
       bucket.articles.reduce((s, a) => {
         const h = hoursSince(a.publishedAt);
-        return (
-          s +
-          (h <= 24
-            ? 1
-            : h <= 72
-            ? 0.7
-            : 0.4)
-        );
+        return s + (h <= 24 ? 1 : h <= 72 ? 0.7 : 0.4);
       }, 0) / n;
 
     const raw =
@@ -257,12 +260,14 @@ function bucketSummary(b: CategoryBucket): string {
   const minAge = Math.min(...ages, 72);
   const srcs = Array.from(new Set(b.articles.map((a) => a.source))).slice(
     0,
-    3,
+    3
   );
   const window =
     minAge <= 24 ? "sur les dernières 24h" : "sur les derniers jours";
   const srcTxt = srcs.join(", ");
-  return `${n} article(s) ${window}${srcTxt ? ` (${srcTxt})` : ""} sur ${b.label.toLowerCase()}.`;
+  return `${n} article(s) ${window}${
+    srcTxt ? ` (${srcTxt})` : ""
+  } sur ${b.label.toLowerCase()}.`;
 }
 
 function guessDirectionFromText(text: string): "BUY" | "SELL" {
@@ -315,7 +320,7 @@ function symbolForCategory(key: string, pool: string[]): string | null {
 function fallbackDeterministic(
   articles: RawArticle[],
   ftmoPool: string[],
-  topThemes: number,
+  topThemes: number
 ): AiOutputs {
   const pool = defaultPool(ftmoPool);
   const sigs = runAllDetectors(articles);
@@ -347,7 +352,7 @@ function fallbackDeterministic(
       .filter(Boolean),
   }));
 
-  // Fusion : on garde les thèmes de signaux en priorité, puis on complète avec les buckets
+  // Fusion : thèmes de signaux en priorité, puis buckets
   const themes: AiTheme[] = [];
   const seen = new Set<string>();
 
@@ -364,14 +369,14 @@ function fallbackDeterministic(
     }
   }
 
-  // S'il reste toujours 0 thème mais qu'on a quand même des articles, crée un thème "fourre-tout"
   if (!themes.length && articles.length) {
-    const bucket: CategoryBucket = buckets[0] || {
-      key: "misc",
-      label: "Flux divers marchés",
-      articles: articles.slice(0, 20),
-      weight: 0.3,
-    };
+    const bucket: CategoryBucket =
+      buckets[0] || {
+        key: "misc",
+        label: "Flux divers marchés",
+        articles: articles.slice(0, 20),
+        weight: 0.3,
+      };
     themes.push({
       label: bucket.label,
       weight: bucket.weight,
@@ -383,7 +388,7 @@ function fallbackDeterministic(
     });
   }
 
-  // Clusters pour l’UI : si un thème correspond à un bucket → cluster direct, sinon recherche textuelle
+  // Clusters pour l’UI
   const clusters: AiCluster[] = themes.map((th) => {
     const bucket = buckets.find((b) => b.label === th.label);
     let ids: string[];
@@ -402,8 +407,8 @@ function fallbackDeterministic(
       ids = articles
         .filter((a) =>
           keys.some((k) =>
-            (a.title + " " + (a.description || "")).toLowerCase().includes(k),
-          ),
+            (a.title + " " + (a.description || "")).toLowerCase().includes(k)
+          )
         )
         .slice(0, 20)
         .map((a) => a.id ?? "")
@@ -422,6 +427,7 @@ function fallbackDeterministic(
   const actions: AiAction[] = [];
   for (const s of sigs.sort((a, b) => b.strength - a.strength)) {
     if (s.strength <= 0) continue;
+    if ((s.evidences || []).length < 3) continue; // exige au moins 3 articles support
 
     const conf = Math.round(Math.max(25, Math.min(95, 25 + s.strength * 70)));
 
@@ -481,29 +487,31 @@ function fallbackDeterministic(
     if (actions.length >= 4) break;
   }
 
-  // Dernier recours : si aucune action n’a été construite mais qu’on a au moins un bucket,
-  // on fabrique un trade « soft » basé sur le thème le plus lourd.
+  // Dernier recours : action « soft » basée sur le thème le plus lourd,
+  // seulement si on a vraiment un cluster (>= 10 articles)
   if (!actions.length && buckets.length) {
     const best = buckets[0];
-    const sym = symbolForCategory(best.key, pool);
-    if (sym) {
-      const text = best.articles
-        .slice(0, 10)
-        .map((a) => `${a.title} ${a.description || ""}`)
-        .join(" ");
-      const dir = guessDirectionFromText(text);
-      const conf = Math.round(best.weight * 100);
-      actions.push({
-        symbol: sym,
-        direction: dir,
-        conviction: 4,
-        confidence: conf,
-        reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
-        evidenceIds: best.articles
-          .slice(0, 4)
-          .map((a) => a.id ?? "")
-          .filter(Boolean),
-      });
+    if (best.articles.length >= 10) {
+      const sym = symbolForCategory(best.key, pool);
+      if (sym) {
+        const text = best.articles
+          .slice(0, 10)
+          .map((a) => `${a.title} ${a.description || ""}`)
+          .join(" ");
+        const dir = guessDirectionFromText(text);
+        const conf = Math.round(best.weight * 100);
+        actions.push({
+          symbol: sym,
+          direction: dir,
+          conviction: 4,
+          confidence: conf,
+          reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
+          evidenceIds: best.articles
+            .slice(0, 6)
+            .map((a) => a.id ?? "")
+            .filter(Boolean),
+        });
+      }
     }
   }
 
@@ -519,7 +527,7 @@ function fallbackDeterministic(
 
 export async function analyzeWithAI(
   articles: RawArticle[],
-  opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] },
+  opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] }
 ): Promise<AiOutputs> {
   const topThemes = Math.max(1, Number(opts.topThemes || 3));
   const pool = defaultPool(opts.ftmoSymbols);
@@ -614,10 +622,7 @@ Contraintes:
         (!out.mainThemes || !out.mainThemes.length)
       ) {
         const fb = fallbackDeterministic(articles, pool, topThemes);
-        if (
-          (!out.mainThemes || !out.mainThemes.length) &&
-          fb.mainThemes.length
-        ) {
+        if ((!out.mainThemes || !out.mainThemes.length) && fb.mainThemes.length) {
           out.mainThemes = fb.mainThemes;
         }
         if (!out.actions.length && fb.actions.length) {

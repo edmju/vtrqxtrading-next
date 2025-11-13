@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-13T22:11:10.554Z",
+  "generatedAt": "2025-11-13T22:52:47.663Z",
   "total": 60,
   "articles": [
     {
@@ -279,6 +279,19 @@
       "hits": [
         "upgrade",
         "percent"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/apple-and-openai-must-face-x-corps-lawsuit-for-now-us-judge-rules-4357312",
+      "title": "Apple and OpenAI must face X Corp’s lawsuit for now, US judge rules",
+      "publishedAt": "2025-11-13T22:24:36.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "c2868bb114290118884e415bb620bf1b",
+      "score": 9,
+      "hits": [
+        "lawsuit"
       ]
     },
     {
@@ -751,16 +764,16 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/applied-materials-forecasts-strong-quarterly-revenue-on-ai-chip-demand-4356886",
-      "title": "Applied Materials projects upbeat quarterly revenue on steady AI chip demand",
-      "publishedAt": "2025-11-13T21:43:09.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://www.fxstreet.com/news/new-zealand-business-nz-pmi-increased-to-514-in-october-from-previous-499-202511132130",
+      "title": "New Zealand Business NZ PMI increased to 51.4 in October from previous 49.9",
+      "publishedAt": "2025-11-13T21:30:01.000Z",
+      "description": "New Zealand Business NZ PMI increased to 51.4 in October from previous 49.9",
+      "source": "FXStreet",
       "lang": "en",
-      "id": "ee38311b4d548802d47303863e9fd468",
+      "id": "23a95827c84609881d7785d539d56959",
       "score": 7,
       "hits": [
-        "ai chip"
+        "pmi"
       ]
     },
     {
@@ -800,19 +813,6 @@
       "score": 7,
       "hits": [
         "shutdown"
-      ]
-    },
-    {
-      "url": "https://www.ft.com/content/f6b34e71-2b3e-43ad-99a9-558a34f56853",
-      "title": "How Norway jeopardised its integrity overnight",
-      "publishedAt": "2025-11-13T11:00:03.000Z",
-      "description": "Oslo abruptly changed the ethics rules for the world’s largest sovereign wealth fund",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "e057f7361dfb2da512f111aef54d9074",
-      "score": 7,
-      "hits": [
-        "opa"
       ]
     }
   ]

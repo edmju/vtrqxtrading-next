@@ -14,9 +14,29 @@ export function filterAndScoreHot(
     return { ...a, score, hits };
   });
 
-  const hot = scored
-    .filter(a => (a.score ?? 0) >= opts.minScore)
-    .sort((a, b) => (b.score! - a.score!) || (+new Date(b.publishedAt) - +new Date(a.publishedAt)));
+  const baseMin = opts.minScore;
+  const hardMinDaily =
+    Number(process.env.NEWS_MIN_DAILY_HOT || 8); // cible mini d’articles « hot »
+
+  const sortFn = (a: RawArticle, b: RawArticle) =>
+    (b.score! - a.score!) ||
+    (+new Date(b.publishedAt) - +new Date(a.publishedAt));
+
+  const pick = (minScore: number) =>
+    scored
+      .filter(a => (a.score ?? 0) >= minScore)
+      .sort(sortFn);
+
+  // 1er passage: seuil normal (assez strict)
+  let hot = pick(baseMin);
+
+  // Si on a trop peu de news, on détend légèrement le seuil
+  if (hot.length < Math.min(hardMinDaily, opts.max)) {
+    const relaxed = Math.max(1, baseMin - 2);
+    if (relaxed < baseMin) {
+      hot = pick(relaxed);
+    }
+  }
 
   return hot.slice(0, opts.max);
 }

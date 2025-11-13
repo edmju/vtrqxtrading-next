@@ -38,7 +38,7 @@ function defaultPool(ftmo: string[]) {
   return ftmo.length ? ftmo : base;
 }
 
-function buildAiPayload(arts: RawArticle[], limit = 120) {
+function buildAiPayload(arts: RawArticle[], limit = 150) {
   return arts.slice(0, limit).map((a, idx) => ({
     id: a.id ?? String(idx),
     title: a.title,
@@ -271,7 +271,6 @@ function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
         return s + (h <= 24 ? 1 : h <= 72 ? 0.7 : 0.4);
       }, 0) / n;
 
-    // Beaucoup de poids pour « nombre d’articles », puis qualité.
     const raw =
       0.5 * Math.min(1, n / 10) +
       0.3 * Math.min(1, avgScore / 12) +
@@ -347,8 +346,7 @@ function symbolForCategory(key: string, pool: string[]): string | null {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Fallback déterministe – toujours un radar de thèmes & éventuellement des  */
-/*  trades si un cluster a vraiment beaucoup de news.                         */
+/*  Fallback déterministe : radar + éventuelles actions                       */
 /* -------------------------------------------------------------------------- */
 
 function fallbackDeterministic(
@@ -360,7 +358,6 @@ function fallbackDeterministic(
   const sigs = runAllDetectors(articles);
   const buckets = buildCategoryBuckets(articles);
 
-  // Thèmes issus des buckets (structure très lisible pour le radar)
   const bucketThemes: AiTheme[] = buckets.map((b) => ({
     label: b.label,
     weight: Math.round(b.weight * 100) / 100,
@@ -371,7 +368,6 @@ function fallbackDeterministic(
       .filter(Boolean),
   }));
 
-  // On injecte aussi les signaux durs (dovish/hawkish/tariffs...) si présents.
   const signalThemes: AiTheme[] = sigs
     .filter((s) => s.strength > 0)
     .sort((a, b) => b.strength - a.strength)
@@ -421,7 +417,6 @@ function fallbackDeterministic(
     });
   }
 
-  // Clusters pour l’UI : un cluster = 1 thème => listes d’articles
   const clusters: AiCluster[] = themes.map((th) => {
     const bucket = buckets.find((b) => b.label === th.label);
     let ids: string[];
@@ -456,7 +451,6 @@ function fallbackDeterministic(
     };
   });
 
-  // Actions « backup » uniquement si un cluster est vraiment massif (>= 12 news)
   const actions: AiAction[] = [];
   const big = buckets.filter((b) => b.articles.length >= 12);
 
@@ -493,8 +487,7 @@ function fallbackDeterministic(
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Analyse OpenAI : on s’appuie sur le fallback pour les thèmes & clusters,  */
-/*  et l’IA sert surtout à construire des trades.                              */
+/*  Analyse OpenAI : résumés de thèmes + trades                               */
 /* -------------------------------------------------------------------------- */
 
 export async function analyzeWithAI(
@@ -504,7 +497,6 @@ export async function analyzeWithAI(
   const topThemes = Math.max(3, Number(opts.topThemes || 5));
   const pool = defaultPool(opts.ftmoSymbols);
 
-  // Toujours construire un radar de thèmes déterministe d’abord.
   const baseline = fallbackDeterministic(articles, pool, topThemes);
 
   if (!process.env.OPENAI_API_KEY) {
@@ -521,14 +513,19 @@ export async function analyzeWithAI(
 Tu es un analyste buy-side macro / multi-actifs.
 On t'envoie:
 - un pool d'instruments FTMO (${poolStr}),
-- une liste de thèmes de marché déjà identifiés (avec leur poids),
+- une liste de thèmes de marché déjà identifiés (avec leur poids + résumé technique),
 - un échantillon de titres d'articles (avec id, source, score, ancienneté).
 
-Ta mission UNIQUE:
-→ Proposer jusqu'à 4 idées de trade très structurées.
+Ta mission:
+1) Réécrire un RÉSUMÉ NARRATIF court (max ~220 caractères, en français) pour chaque thème, en expliquant ce qui se passe concrètement pour le marché.
+2) Proposer 2 à 4 idées de trade très structurées.
 
-Règles:
-- Utilise uniquement les instruments dans le pool.
+Règles themes:
+- Ne change PAS les labels.
+- Le résumé doit être actionnable, lisible par un trader (« La Fed prépare... », « Les tarifs US/Chine se durcissent... »), pas une phrase robotique sur le nombre d'articles.
+
+Règles trades:
+- Utilise uniquement les instruments du pool.
 - Chaque trade doit s'appuyer sur un ou plusieurs thèmes où il y a BEAUCOUP de news (cluster de >= 12 articles pertinents).
 - Pas de trade basé sur un seul titre isolé.
 - Structure d'une action:
@@ -540,18 +537,35 @@ Règles:
     "reason": texte court (<= 220 caractères, en français),
     "evidenceIds": tableau de 10 à 20 ids d'articles parmi ceux fournis
   }
-- "confidence" doit refléter le nombre d'articles alignés, la cohérence du narratif et la qualité des sources (Reuters/FT > CNBC > Yahoo/AP).
+- "confidence" doit refléter le nombre d'articles alignés, la cohérence du narratif et la qualité des sources.
 - Si tu n'as PAS au moins 12 articles alignés pour un scénario donné, NE PROPOSE PAS de trade pour ce scénario.
-- Réponds STRICTEMENT au format JSON:
-  { "actions": [ ... ] }`;
 
-  const user = JSON.stringify({
-    themes: baseline.mainThemes.map((t) => ({
+Réponds STRICTEMENT au format JSON:
+{
+  "themes": [
+    { "label": "...", "summary": "..." }
+  ],
+  "actions": [ ... ]
+}`;
+
+  const themesForModel = baseline.mainThemes.map((t) => {
+    const ids = (t.evidenceIds || []).slice(0, 12);
+    const sampleTitles = ids
+      .map((id) => articles.find((a) => a.id === id))
+      .filter(Boolean)
+      .slice(0, 6)
+      .map((a) => (a as RawArticle).title);
+    return {
       label: t.label,
       weight: t.weight,
-      summary: t.summary,
-    })),
-    clusters: baseline.clusters.map((c) => ({
+      baseSummary: t.summary,
+      sampleTitles,
+    };
+  });
+
+  const user = JSON.stringify({
+    themes: themesForModel,
+    clusters: (baseline.clusters || []).map((c) => ({
       label: c.label,
       weight: c.weight,
       size: c.articleIds.length,
@@ -560,11 +574,12 @@ Règles:
   });
 
   let actions: AiAction[] = baseline.actions ?? [];
+  let mainThemes: AiTheme[] = baseline.mainThemes;
 
   try {
     const r = await client.chat.completions.create({
       model,
-      temperature: 0.1,
+      temperature: 0.15,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: sys },
@@ -574,6 +589,22 @@ Règles:
 
     const raw = JSON.parse(r.choices[0]?.message?.content || "{}");
 
+    // maj résumés de thèmes
+    if (Array.isArray(raw.themes)) {
+      const byLabel = new Map<string, string>();
+      for (const t of raw.themes) {
+        if (!t) continue;
+        const label = String(t.label || "");
+        const summary = String(t.summary || "");
+        if (label && summary) byLabel.set(label, summary.slice(0, 260));
+      }
+      mainThemes = baseline.mainThemes.map((t) => ({
+        ...t,
+        summary: byLabel.get(t.label) || t.summary,
+      }));
+    }
+
+    // parsing actions
     if (Array.isArray(raw.actions)) {
       const parsed: AiAction[] = raw.actions.map((a: any) => ({
         symbol: String(a.symbol || "").toUpperCase(),
@@ -589,7 +620,6 @@ Règles:
           : [],
       }));
 
-      // On garde seulement les trades réellement supportés par au moins 10 news uniques.
       const robust = parsed.filter((a) => {
         const uniq = new Set(a.evidenceIds || []);
         return uniq.size >= 10;
@@ -600,12 +630,12 @@ Règles:
       }
     }
   } catch {
-    // en cas d’erreur OpenAI → on garde simplement le baseline.actions
+    // en cas d’erreur OpenAI -> on garde baseline
   }
 
   return {
     generatedAt: new Date().toISOString(),
-    mainThemes: baseline.mainThemes,
+    mainThemes,
     actions,
     clusters: baseline.clusters,
   };

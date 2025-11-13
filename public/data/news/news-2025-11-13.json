@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-13T22:52:47.663Z",
+  "generatedAt": "2025-11-13T23:13:22.710Z",
   "total": 60,
   "articles": [
     {
@@ -170,6 +170,20 @@
       ]
     },
     {
+      "url": "https://www.cnbc.com/2025/11/13/coatues-philippe-laffont-says-the-ipo-market-is-broken-beyond-repair.html",
+      "title": "Coatue's Philippe Laffont says the IPO market is broken beyond repair",
+      "publishedAt": "2025-11-13T23:00:58.000Z",
+      "description": "Coatue Management's founder and portfolio manager said the market today bears little resemblance to the vibrant IPO pipeline of prior decades.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "8248e8875fd2a66e62b77890dee67970",
+      "score": 16,
+      "hits": [
+        "pipeline",
+        "ipo"
+      ]
+    },
+    {
       "url": "https://www.telegraph.co.uk/business/2025/07/01/ftse-100-markets-latest-news-house-prices-bailey-sintra-boe/",
       "title": "Fed chief blames Trump tariffs for freeze in rate cuts",
       "publishedAt": "2025-07-01T16:48:04.000Z",
@@ -282,9 +296,35 @@
       ]
     },
     {
+      "url": "https://www.investing.com/news/earnings/flux-power-holdings-earnings-missed-by-008-revenue-fell-short-of-estimates-4357425",
+      "title": "Flux Power Holdings earnings missed by $0.08, revenue fell short of estimates",
+      "publishedAt": "2025-11-13T23:04:33.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "4efb499ff7a5e6fdaf2566826b180533",
+      "score": 9,
+      "hits": [
+        "earnings miss"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/under-armour-expands-restructuring-effort-plans-to-separate-curry-business-4357410",
+      "title": "Under Armour expands restructuring effort, plans to separate Curry business",
+      "publishedAt": "2025-11-13T22:55:34.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "72754fa3c83328e305a07d18270b6bed",
+      "score": 9,
+      "hits": [
+        "restructuring"
+      ]
+    },
+    {
       "url": "https://www.investing.com/news/stock-market-news/apple-and-openai-must-face-x-corps-lawsuit-for-now-us-judge-rules-4357312",
       "title": "Apple and OpenAI must face X Corp’s lawsuit for now, US judge rules",
-      "publishedAt": "2025-11-13T22:24:36.000Z",
+      "publishedAt": "2025-11-13T22:55:15.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
@@ -764,55 +804,16 @@
       ]
     },
     {
-      "url": "https://www.fxstreet.com/news/new-zealand-business-nz-pmi-increased-to-514-in-october-from-previous-499-202511132130",
-      "title": "New Zealand Business NZ PMI increased to 51.4 in October from previous 49.9",
-      "publishedAt": "2025-11-13T21:30:01.000Z",
-      "description": "New Zealand Business NZ PMI increased to 51.4 in October from previous 49.9",
-      "source": "FXStreet",
-      "lang": "en",
-      "id": "23a95827c84609881d7785d539d56959",
-      "score": 7,
-      "hits": [
-        "pmi"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Germany-Caps-Power-Prices-to-Save-Its-Industrial-Base.html",
-      "title": "Germany Caps Power Prices to Save Its Industrial Base",
-      "publishedAt": "2025-11-13T20:30:00.000Z",
-      "description": "Germany has agreed to subsidize electricity for its heavy industries, capping prices at about €0.05 per kilowatt-hour from 2026 through 2028—a major policy move aimed at keeping its industrial base from eroding under the weight of Europe’s soaring energy costs. Chancellor Friedrich Merz said Thursday that Berlin’s coalition partners reached the deal after months of debate, and that discussions with the European Commission for approval were “largely complete.” The measure will target energy-intensive industries…",
+      "url": "https://oilprice.com/Energy/Energy-General/Beijing-Lures-Private-Investors-to-Reignite-Infrastructure-Growth.html",
+      "title": "Beijing Lures Private Investors to Reignite Infrastructure Growth",
+      "publishedAt": "2025-11-13T23:00:00.000Z",
+      "description": "After decades of funding major infrastructure projects with state money, the Chinese government has zeroed in on private capital as a source of fresh cash for big projects in everything from transport to energy, to power generation, and drones. In a new policy presented earlier this week, Beijing signaled private capital is now welcome in hydropower, nuclear power, oil and gas pipelines, and water supply, media reported, citing government officials. “Private investment serves as a key barometer reflecting economic vitality and plays a crucial…",
       "source": "OilPrice",
       "lang": "en",
-      "id": "1f2f95996791e072edcd455a5bcb34ae",
+      "id": "1c02771ecaadb63b371c8aaaf527ed13",
       "score": 7,
       "hits": [
-        "ppi"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/11/13/uk-gdp-economy-budget-starmer-reeves-ftse-100-markets/",
-      "title": "Jaguar Land Rover hack to blame for weaker economy, says Reeves",
-      "publishedAt": "2025-11-13T17:37:39.000Z",
-      "description": "Jaguar Land Rover hack to blame for weaker economy, says Reeves",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "9446f96406a2e307ecb9675039db2d1b",
-      "score": 7,
-      "hits": [
-        "hack"
-      ]
-    },
-    {
-      "url": "https://www.fxstreet.com/news/stocks-stumble-into-the-red-202511131723",
-      "title": "Stocks stumble into the red",
-      "publishedAt": "2025-11-13T17:23:44.000Z",
-      "description": "Buy the shutdown, sell the re-opening appears to be the trade in markets today, says Chris Beauchamp, Chief Market Analyst at investing and trading platform IG.",
-      "source": "FXStreet",
-      "lang": "en",
-      "id": "e9219cf628e0343918fe4b69e5fbd078",
-      "score": 7,
-      "hits": [
-        "shutdown"
+        "pipeline"
       ]
     }
   ]

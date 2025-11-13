@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-13T22:52:47.676Z",
+  "generatedAt": "2025-11-13T23:13:22.723Z",
   "mainThemes": [
     {
       "label": "Banques centrales / Taux",
@@ -59,15 +59,14 @@
       ]
     },
     {
-      "label": "Tech / IA / Cybersécurité",
+      "label": "Earnings / Guidance / M&A / Antitrust",
       "weight": 0.69,
-      "summary": "5 article(s) sur les dernières 24h (The Guardian, Telegraph Business, OilPrice) sur tech / ia / cybersécurité.",
+      "summary": "4 article(s) sur les dernières 24h (The Guardian, Investing.com) sur earnings / guidance / m&a / antitrust.",
       "evidenceIds": [
-        "50d197c9853c7065f6bcee4c6d1e79e5",
-        "b13e4856d2b1206e17c9f9ea7ee0582b",
-        "fcabb56128b30c81c2ef1fadfed2a720",
-        "e0d5870dc0a1a6ced7239c6a4c3a656f",
-        "9446f96406a2e307ecb9675039db2d1b"
+        "38e944648a60b61f0dbd288e4773da4a",
+        "6c5b5d278a0992f02e500591d0ce09e5",
+        "4efb499ff7a5e6fdaf2566826b180533",
+        "c2868bb114290118884e415bb620bf1b"
       ]
     }
   ],
@@ -165,15 +164,14 @@
       ]
     },
     {
-      "label": "Tech / IA / Cybersécurité",
+      "label": "Earnings / Guidance / M&A / Antitrust",
       "weight": 0.69,
-      "summary": "5 article(s) sur les dernières 24h (The Guardian, Telegraph Business, OilPrice) sur tech / ia / cybersécurité.",
+      "summary": "4 article(s) sur les dernières 24h (The Guardian, Investing.com) sur earnings / guidance / m&a / antitrust.",
       "articleIds": [
-        "50d197c9853c7065f6bcee4c6d1e79e5",
-        "b13e4856d2b1206e17c9f9ea7ee0582b",
-        "fcabb56128b30c81c2ef1fadfed2a720",
-        "e0d5870dc0a1a6ced7239c6a4c3a656f",
-        "9446f96406a2e307ecb9675039db2d1b"
+        "38e944648a60b61f0dbd288e4773da4a",
+        "6c5b5d278a0992f02e500591d0ce09e5",
+        "4efb499ff7a5e6fdaf2566826b180533",
+        "c2868bb114290118884e415bb620bf1b"
       ]
     }
   ]

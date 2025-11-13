@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-13T21:11:42.426Z",
-  "total": 2,
+  "generatedAt": "2025-11-13T21:41:57.591Z",
+  "total": 8,
   "articles": [
     {
       "url": "https://www.ft.com/content/95c0f0e7-f736-4963-af8b-acc0ec9eee1b",
@@ -28,6 +28,74 @@
       "hits": [
         "opa"
       ]
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/13/foreclosures-rise-october-housing-market-distress.html",
+      "title": "New foreclosures jump 20% in October, a sign of more distress in the housing market",
+      "publishedAt": "2025-11-13T18:40:13.000Z",
+      "description": "All phases of the foreclosure process are seeing big increases, as homeowners fall behind on mortgage payments due to stress in the economy.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "8e3a90a2aecb05c4c6ea62ecbdec1098",
+      "score": 1,
+      "hits": [
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/36211977-d032-401d-a15c-9404d547c3b1",
+      "title": "Wall Street stocks slide as tech jitters return",
+      "publishedAt": "2025-11-13T21:02:14.000Z",
+      "description": "Investor concerns over lofty valuations for artificial intelligence companies hits sentiment",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "0b56be656167ff8e9f7de25aa411d688",
+      "score": 0,
+      "hits": []
+    },
+    {
+      "url": "https://www.ft.com/content/53162cba-294c-4ab5-89bc-375cfe38529a",
+      "title": "Carlyle considers bid for foreign assets of Russia’s Lukoil",
+      "publishedAt": "2025-11-13T19:23:46.000Z",
+      "description": "US buyout group is one of several bidders vying for parts of oil major’s sanctions-hit international operations",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "4994b37dfdad3a7a6dd32f2cb17cf17c",
+      "score": 0,
+      "hits": []
+    },
+    {
+      "url": "https://www.ft.com/content/7c268962-7663-43ed-b30d-901d509f831b",
+      "title": "AI bubble trouble talk is overblown",
+      "publishedAt": "2025-11-13T18:04:50.000Z",
+      "description": "For the foreseeable future, the market is facing a shortage of capacity — hardly the conditions that spell imminent disaster",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "ef9ded0002544495353689fd801acb00",
+      "score": 0,
+      "hits": []
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/13/tko-polymarket-strike-multiyear-deal-to-integrate-prediction-markets-into-ufc-events.html",
+      "title": "TKO, Polymarket strike multiyear deal to integrate prediction markets into UFC events",
+      "publishedAt": "2025-11-13T17:08:52.000Z",
+      "description": "The deal makes UFC and Zuffa Boxing the first sports organizations to incorporate prediction market technology into live events.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "c11c284c7dfb8f98bd5a29337539fea2",
+      "score": 0,
+      "hits": []
+    },
+    {
+      "url": "https://www.ft.com/content/cec33db6-7842-4bf5-80d5-677007bcab3e",
+      "title": "‘Big Short’ investor Michael Burry to close fund as he warns on valuations",
+      "publishedAt": "2025-11-13T16:58:43.000Z",
+      "description": "Asset manager famous for bet against US housing market says stock prices are unhinged from fundamentals",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "25f0f6c7f465ffb2caca9ea6b888bd8a",
+      "score": 0,
+      "hits": []
     }
   ]
 }

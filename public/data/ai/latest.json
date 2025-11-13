@@ -1,6 +1,71 @@
 {
-  "generatedAt": "2025-11-13T21:11:42.431Z",
-  "mainThemes": [],
-  "actions": [],
-  "clusters": []
+  "generatedAt": "2025-11-13T21:41:57.602Z",
+  "mainThemes": [
+    {
+      "label": "Banques centrales / Taux",
+      "weight": 0.68,
+      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur banques centrales / taux.",
+      "evidenceIds": [
+        "b2c32276f4ab44bfb3973e463bdbce15"
+      ]
+    },
+    {
+      "label": "Tech / IA / Cybersécurité",
+      "weight": 0.49,
+      "summary": "3 article(s) sur les dernières 24h (Financial Times) sur tech / ia / cybersécurité.",
+      "evidenceIds": [
+        "0b56be656167ff8e9f7de25aa411d688",
+        "ef9ded0002544495353689fd801acb00",
+        "25f0f6c7f465ffb2caca9ea6b888bd8a"
+      ]
+    },
+    {
+      "label": "Tarifs / Géopolitique commerciale",
+      "weight": 0.33,
+      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur tarifs / géopolitique commerciale.",
+      "evidenceIds": [
+        "4994b37dfdad3a7a6dd32f2cb17cf17c"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "symbol": "US500",
+      "direction": "BUY",
+      "conviction": 4,
+      "confidence": 68,
+      "reason": "Signal basé sur le thème « Banques centrales / Taux » (1 article(s)).",
+      "evidenceIds": [
+        "b2c32276f4ab44bfb3973e463bdbce15"
+      ]
+    }
+  ],
+  "clusters": [
+    {
+      "label": "Banques centrales / Taux",
+      "weight": 0.68,
+      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur banques centrales / taux.",
+      "articleIds": [
+        "b2c32276f4ab44bfb3973e463bdbce15"
+      ]
+    },
+    {
+      "label": "Tech / IA / Cybersécurité",
+      "weight": 0.49,
+      "summary": "3 article(s) sur les dernières 24h (Financial Times) sur tech / ia / cybersécurité.",
+      "articleIds": [
+        "0b56be656167ff8e9f7de25aa411d688",
+        "ef9ded0002544495353689fd801acb00",
+        "25f0f6c7f465ffb2caca9ea6b888bd8a"
+      ]
+    },
+    {
+      "label": "Tarifs / Géopolitique commerciale",
+      "weight": 0.33,
+      "summary": "1 article(s) sur les dernières 24h (Financial Times) sur tarifs / géopolitique commerciale.",
+      "articleIds": [
+        "4994b37dfdad3a7a6dd32f2cb17cf17c"
+      ]
+    }
+  ]
 }

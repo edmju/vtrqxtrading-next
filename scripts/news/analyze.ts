@@ -11,9 +11,14 @@ import {
 import { runAllDetectors } from "./detectors";
 import { writeJSON } from "../../src/lib/news/fs";
 
+/* -------------------------------------------------------------------------- */
+/*  Helpers                                                                   */
+/* -------------------------------------------------------------------------- */
+
 function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
 }
+
 function hoursSince(d: string) {
   return (Date.now() - new Date(d).getTime()) / 36e5;
 }
@@ -33,7 +38,7 @@ function defaultPool(ftmo: string[]) {
   return ftmo.length ? ftmo : base;
 }
 
-function buildAiPayload(arts: RawArticle[], limit = 90) {
+function buildAiPayload(arts: RawArticle[], limit = 120) {
   return arts.slice(0, limit).map((a, idx) => ({
     id: a.id ?? String(idx),
     title: a.title,
@@ -41,11 +46,13 @@ function buildAiPayload(arts: RawArticle[], limit = 90) {
     url: a.url,
     ageH: Math.round(hoursSince(a.publishedAt)),
     score: a.score ?? 0,
-    hits: (a.hits || []).slice(0, 8),
+    hits: (a.hits || []).slice(0, 12),
   }));
 }
 
-/* ---------- CATEGORIES DÉTERMINISTES POUR THÈMES / ACTIONS ---------- */
+/* -------------------------------------------------------------------------- */
+/*  Catégories « dures » pour thèmes / buckets                                */
+/* -------------------------------------------------------------------------- */
 
 type CategoryDef = {
   key: string;
@@ -73,9 +80,13 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "boe",
       "bank of japan",
       "boj",
+      "riksbank",
+      "snb",
       "central bank",
       "rate cut",
       "rate hike",
+      "cut rates",
+      "raises rates",
       "interest rate",
       "yields",
       "treasury",
@@ -104,11 +115,14 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "blacklist",
       "duties",
       "customs",
+      "import tax",
+      "section 301",
+      "section 232",
     ],
   },
   {
     key: "energy",
-    label: "Énergie & commodities",
+    label: "Énergie & Commodities",
     patterns: [
       "opec",
       "opec+",
@@ -124,7 +138,13 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "supply disruption",
       "production cut",
       "output cut",
+      "supply cut",
       "inventory draw",
+      "stockpiles",
+      "miner",
+      "copper",
+      "gold mine",
+      "iron ore",
     ],
   },
   {
@@ -134,9 +154,11 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "earnings",
       "results",
       "profits",
+      "losses",
       "guidance",
       "forecast",
       "outlook",
+      "profit warning",
       "merger",
       "acquisition",
       "deal",
@@ -144,6 +166,7 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "takeover",
       "bid",
       "offer",
+      "buyout",
       "antitrust",
       "regulator",
       "investigation",
@@ -163,12 +186,15 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "gpu",
       "ai",
       "artificial intelligence",
+      "machine learning",
       "cloud",
       "datacenter",
+      "data center",
       "cyber",
       "ransomware",
       "hack",
       "data breach",
+      "breach",
     ],
   },
   {
@@ -186,9 +212,12 @@ const CATEGORY_DEFS: CategoryDef[] = [
       "shutdown",
       "debt ceiling",
       "election",
+      "vote",
       "congress",
       "parliament",
       "white house",
+      "policy",
+      "fiscal",
     ],
   },
 ];
@@ -242,12 +271,13 @@ function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
         return s + (h <= 24 ? 1 : h <= 72 ? 0.7 : 0.4);
       }, 0) / n;
 
+    // Beaucoup de poids pour « nombre d’articles », puis qualité.
     const raw =
-      0.4 * Math.min(1, n / 5) +
-      0.35 * Math.min(1, avgScore / 12) +
-      0.25 * avgFresh;
+      0.5 * Math.min(1, n / 10) +
+      0.3 * Math.min(1, avgScore / 12) +
+      0.2 * avgFresh;
 
-    const weight = clamp(raw, 0.15, 0.95);
+    const weight = clamp(raw, 0.15, 0.99);
     buckets.push({ ...bucket, weight });
   }
 
@@ -260,7 +290,7 @@ function bucketSummary(b: CategoryBucket): string {
   const minAge = Math.min(...ages, 72);
   const srcs = Array.from(new Set(b.articles.map((a) => a.source))).slice(
     0,
-    3
+    4
   );
   const window =
     minAge <= 24 ? "sur les dernières 24h" : "sur les derniers jours";
@@ -276,7 +306,8 @@ function guessDirectionFromText(text: string): "BUY" | "SELL" {
     t.includes("rate cut") ||
     t.includes("dovish") ||
     t.includes("easing") ||
-    t.includes("beats") ||
+    t.includes("stimulus") ||
+    t.includes("beats expectations") ||
     t.includes("rally") ||
     t.includes("surge") ||
     t.includes("record high")
@@ -291,7 +322,7 @@ function guessDirectionFromText(text: string): "BUY" | "SELL" {
     t.includes("plunge") ||
     t.includes("selloff") ||
     t.includes("misses estimates") ||
-    t.includes("warning")
+    t.includes("profit warning")
   ) {
     return "SELL";
   }
@@ -315,7 +346,10 @@ function symbolForCategory(key: string, pool: string[]): string | null {
   }
 }
 
-/* ---------- FALLBACK DÉTERMINISTE (toujours renvoyer qqch) ---------- */
+/* -------------------------------------------------------------------------- */
+/*  Fallback déterministe – toujours un radar de thèmes & éventuellement des  */
+/*  trades si un cluster a vraiment beaucoup de news.                         */
+/* -------------------------------------------------------------------------- */
 
 function fallbackDeterministic(
   articles: RawArticle[],
@@ -326,11 +360,21 @@ function fallbackDeterministic(
   const sigs = runAllDetectors(articles);
   const buckets = buildCategoryBuckets(articles);
 
-  // Thèmes venant des signaux "durs"
+  // Thèmes issus des buckets (structure très lisible pour le radar)
+  const bucketThemes: AiTheme[] = buckets.map((b) => ({
+    label: b.label,
+    weight: Math.round(b.weight * 100) / 100,
+    summary: bucketSummary(b),
+    evidenceIds: b.articles
+      .slice(0, 24)
+      .map((a) => a.id ?? "")
+      .filter(Boolean),
+  }));
+
+  // On injecte aussi les signaux durs (dovish/hawkish/tariffs...) si présents.
   const signalThemes: AiTheme[] = sigs
     .filter((s) => s.strength > 0)
     .sort((a, b) => b.strength - a.strength)
-    .slice(0, topThemes)
     .map((s) => ({
       label: s.label,
       weight: Math.round(s.strength * 100) / 100,
@@ -338,31 +382,19 @@ function fallbackDeterministic(
       evidenceIds: s.evidences
         .map((e) => e.id ?? "")
         .filter(Boolean)
-        .slice(0, 5),
+        .slice(0, 24),
     }));
 
-  // Thèmes venant des catégories "soft"
-  const bucketThemes: AiTheme[] = buckets.map((b) => ({
-    label: b.label,
-    weight: Math.round(b.weight * 100) / 100,
-    summary: bucketSummary(b),
-    evidenceIds: b.articles
-      .slice(0, 6)
-      .map((a) => a.id ?? "")
-      .filter(Boolean),
-  }));
-
-  // Fusion : thèmes de signaux en priorité, puis buckets
   const themes: AiTheme[] = [];
   const seen = new Set<string>();
 
-  for (const t of signalThemes) {
+  for (const t of bucketThemes) {
     if (!seen.has(t.label) && themes.length < topThemes) {
       themes.push(t);
       seen.add(t.label);
     }
   }
-  for (const t of bucketThemes) {
+  for (const t of signalThemes) {
     if (!seen.has(t.label) && themes.length < topThemes) {
       themes.push(t);
       seen.add(t.label);
@@ -370,32 +402,33 @@ function fallbackDeterministic(
   }
 
   if (!themes.length && articles.length) {
-    const bucket: CategoryBucket =
-      buckets[0] || {
+    const b =
+      buckets[0] ||
+      ({
         key: "misc",
         label: "Flux divers marchés",
-        articles: articles.slice(0, 20),
+        articles: articles.slice(0, 40),
         weight: 0.3,
-      };
+      } as CategoryBucket);
     themes.push({
-      label: bucket.label,
-      weight: bucket.weight,
-      summary: bucketSummary(bucket),
-      evidenceIds: bucket.articles
-        .slice(0, 6)
+      label: b.label,
+      weight: b.weight,
+      summary: bucketSummary(b),
+      evidenceIds: b.articles
+        .slice(0, 24)
         .map((a) => a.id ?? "")
         .filter(Boolean),
     });
   }
 
-  // Clusters pour l’UI
+  // Clusters pour l’UI : un cluster = 1 thème => listes d’articles
   const clusters: AiCluster[] = themes.map((th) => {
     const bucket = buckets.find((b) => b.label === th.label);
     let ids: string[];
 
     if (bucket) {
       ids = bucket.articles
-        .slice(0, 20)
+        .slice(0, 40)
         .map((a) => a.id ?? "")
         .filter(Boolean);
     } else {
@@ -403,14 +436,14 @@ function fallbackDeterministic(
         .toLowerCase()
         .split(/[()\s/,&-]+/)
         .filter(Boolean)
-        .slice(0, 3);
+        .slice(0, 4);
       ids = articles
         .filter((a) =>
           keys.some((k) =>
             (a.title + " " + (a.description || "")).toLowerCase().includes(k)
           )
         )
-        .slice(0, 20)
+        .slice(0, 40)
         .map((a) => a.id ?? "")
         .filter(Boolean);
     }
@@ -423,95 +456,31 @@ function fallbackDeterministic(
     };
   });
 
-  // Actions basées sur les signaux "durs"
+  // Actions « backup » uniquement si un cluster est vraiment massif (>= 12 news)
   const actions: AiAction[] = [];
-  for (const s of sigs.sort((a, b) => b.strength - a.strength)) {
-    if (s.strength <= 0) continue;
-    if ((s.evidences || []).length < 3) continue; // exige au moins 3 articles support
+  const big = buckets.filter((b) => b.articles.length >= 12);
 
-    const conf = Math.round(Math.max(25, Math.min(95, 25 + s.strength * 70)));
-
-    if (s.key === "dovish_us" && s.strength >= 0.35) {
+  if (big.length) {
+    const best = big[0];
+    const sym = symbolForCategory(best.key, pool);
+    if (sym) {
+      const text = best.articles
+        .slice(0, 20)
+        .map((a) => `${a.title} ${a.description || ""}`)
+        .join(" ");
+      const dir = guessDirectionFromText(text);
+      const conf = Math.round(best.weight * 100);
       actions.push({
-        symbol: pool.includes("US500") ? "US500" : pool[0],
-        direction: "BUY",
-        conviction: 6,
+        symbol: sym,
+        direction: dir,
+        conviction: 4,
         confidence: conf,
-        reason: "Assouplissement monétaire (US)",
-        evidenceIds: s.evidences
-          .map((e) => e.id!)
-          .filter(Boolean)
-          .slice(0, 3),
+        reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
+        evidenceIds: best.articles
+          .slice(0, 20)
+          .map((a) => a.id ?? "")
+          .filter(Boolean),
       });
-      actions.push({
-        symbol: pool.includes("EURUSD") ? "EURUSD" : pool[0],
-        direction: "BUY",
-        conviction: 5,
-        confidence: conf,
-        reason: "USD susceptible de se détendre",
-        evidenceIds: s.evidences
-          .map((e) => e.id!)
-          .filter(Boolean)
-          .slice(0, 3),
-      });
-    }
-
-    if (s.key === "hawkish_us" && s.strength >= 0.35) {
-      actions.push({
-        symbol: pool.includes("US500") ? "US500" : pool[0],
-        direction: "SELL",
-        conviction: 7,
-        confidence: conf,
-        reason: "Durcissement monétaire (US)",
-        evidenceIds: s.evidences
-          .map((e) => e.id!)
-          .filter(Boolean)
-          .slice(0, 3),
-      });
-    }
-
-    if (s.key === "tariffs_us" && s.strength >= 0.35) {
-      actions.push({
-        symbol: pool.includes("XAUUSD") ? "XAUUSD" : pool[0],
-        direction: "BUY",
-        conviction: 6,
-        confidence: conf,
-        reason: "Tarifs/sanctions → couverture or",
-        evidenceIds: s.evidences
-          .map((e) => e.id!)
-          .filter(Boolean)
-          .slice(0, 3),
-      });
-    }
-
-    if (actions.length >= 4) break;
-  }
-
-  // Dernier recours : action « soft » basée sur le thème le plus lourd,
-  // seulement si on a vraiment un cluster (>= 10 articles)
-  if (!actions.length && buckets.length) {
-    const best = buckets[0];
-    if (best.articles.length >= 10) {
-      const sym = symbolForCategory(best.key, pool);
-      if (sym) {
-        const text = best.articles
-          .slice(0, 10)
-          .map((a) => `${a.title} ${a.description || ""}`)
-          .join(" ");
-        const dir = guessDirectionFromText(text);
-        const conf = Math.round(best.weight * 100);
-        actions.push({
-          symbol: sym,
-          direction: dir,
-          conviction: 4,
-          confidence: conf,
-          reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
-          evidenceIds: best.articles
-            .slice(0, 6)
-            .map((a) => a.id ?? "")
-            .filter(Boolean),
-        });
-      }
     }
   }
 
@@ -523,54 +492,79 @@ function fallbackDeterministic(
   };
 }
 
-/* ---------- ANALYSE AVEC OPENAI + FALLBACK ---------- */
+/* -------------------------------------------------------------------------- */
+/*  Analyse OpenAI : on s’appuie sur le fallback pour les thèmes & clusters,  */
+/*  et l’IA sert surtout à construire des trades.                              */
+/* -------------------------------------------------------------------------- */
 
 export async function analyzeWithAI(
   articles: RawArticle[],
   opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] }
 ): Promise<AiOutputs> {
-  const topThemes = Math.max(1, Number(opts.topThemes || 3));
+  const topThemes = Math.max(3, Number(opts.topThemes || 5));
   const pool = defaultPool(opts.ftmoSymbols);
 
+  // Toujours construire un radar de thèmes déterministe d’abord.
+  const baseline = fallbackDeterministic(articles, pool, topThemes);
+
   if (!process.env.OPENAI_API_KEY) {
-    return fallbackDeterministic(articles, pool, topThemes);
+    return baseline;
   }
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
   const model = process.env.OPENAI_NEWS_MODEL || "gpt-4o-mini";
 
-  const payload = buildAiPayload(articles, 90);
+  const payload = buildAiPayload(articles, 150);
   const poolStr = pool.join(", ");
 
   const sys = `
-Tu es un analyste buy-side. Objectif: transformer un lot de titres en
-(1) thèmes clés, (2) clusters d'articles par thème, (3) idées de trade.
-Contraintes:
-- EXCLURE les publications de données brutes comme thème (CPI, PPI, NFP, PMI, GDP, calendriers).
-- Thèmes typiques attendus: politique monétaire (dovish/hawkish/pivot), tarifs/sanctions/export-controls,
-  M&A/antitrust/litiges, guidance/earnings, chocs d'offre énergie, cyber/supply-chain, politique US/UE avec impact marché.
-- Clusters: pour chaque thème retenu, sélectionne jusqu'à 12 ids d'articles pertinents (parmi ceux fournis).
-- Actions: uniquement sur ${poolStr}. Max 4.
-- Chaque action: {symbol, direction BUY/SELL, conviction 0..10, confidence 0..100, reason, evidenceIds[] (ids d'articles)}.
-- "confidence" = fonction de (redondance des titres) x (crédibilité source: Reuters/FT > CNBC > Yahoo/AP) x (fraîcheur).
-- Essaie TOUJOURS de proposer au moins 1 action quand il existe un thème ayant un impact plausible
-  sur macro, taux, FX, indices ou commodities. Tu peux utiliser une conviction faible (3-4/10) si le signal est modéré.
-- Tu ne laisses "actions" vide que si aucune news n'a d'impact de marché exploitable.
-- Réponds SEULEMENT au format JSON: {
-  "mainThemes":[{"label":string,"weight":number,"summary":string,"evidenceIds":[string]}],
-  "clusters":[{"label":string,"weight":number,"summary":string,"articleIds":[string]}],
-  "actions":[{...}]
-}.`;
+Tu es un analyste buy-side macro / multi-actifs.
+On t'envoie:
+- un pool d'instruments FTMO (${poolStr}),
+- une liste de thèmes de marché déjà identifiés (avec leur poids),
+- un échantillon de titres d'articles (avec id, source, score, ancienneté).
+
+Ta mission UNIQUE:
+→ Proposer jusqu'à 4 idées de trade très structurées.
+
+Règles:
+- Utilise uniquement les instruments dans le pool.
+- Chaque trade doit s'appuyer sur un ou plusieurs thèmes où il y a BEAUCOUP de news (cluster de >= 12 articles pertinents).
+- Pas de trade basé sur un seul titre isolé.
+- Structure d'une action:
+  {
+    "symbol": string (par ex. "US500", "XAUUSD", "USOIL"...),
+    "direction": "BUY" ou "SELL",
+    "conviction": entier 0..10 (5 = neutre, 7 = fort),
+    "confidence": entier 0..100,
+    "reason": texte court (<= 220 caractères, en français),
+    "evidenceIds": tableau de 10 à 20 ids d'articles parmi ceux fournis
+  }
+- "confidence" doit refléter le nombre d'articles alignés, la cohérence du narratif et la qualité des sources (Reuters/FT > CNBC > Yahoo/AP).
+- Si tu n'as PAS au moins 12 articles alignés pour un scénario donné, NE PROPOSE PAS de trade pour ce scénario.
+- Réponds STRICTEMENT au format JSON:
+  { "actions": [ ... ] }`;
 
   const user = JSON.stringify({
+    themes: baseline.mainThemes.map((t) => ({
+      label: t.label,
+      weight: t.weight,
+      summary: t.summary,
+    })),
+    clusters: baseline.clusters.map((c) => ({
+      label: c.label,
+      weight: c.weight,
+      size: c.articleIds.length,
+    })),
     articles: payload,
-    note: "Respecte strictement la structure JSON demandée. 'weight' 0..1.",
   });
+
+  let actions: AiAction[] = baseline.actions ?? [];
 
   try {
     const r = await client.chat.completions.create({
       model,
-      temperature: 0.15,
+      temperature: 0.1,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: sys },
@@ -578,77 +572,49 @@ Contraintes:
       ],
     });
 
-    let out: AiOutputs = {
-      generatedAt: new Date().toISOString(),
-      mainThemes: [],
-      actions: [],
-      clusters: [],
-    };
+    const raw = JSON.parse(r.choices[0]?.message?.content || "{}");
 
-    try {
-      const data = JSON.parse(r.choices[0]?.message?.content || "{}");
-      const themes: AiTheme[] = Array.isArray(data.mainThemes)
-        ? data.mainThemes.slice(0, topThemes)
-        : [];
-      const clusters: AiCluster[] = Array.isArray(data.clusters)
-        ? data.clusters.slice(0, 6)
-        : [];
-      const actions: AiAction[] = Array.isArray(data.actions)
-        ? data.actions.slice(0, 4).map((a: any) => ({
-            symbol: String(a.symbol || "").toUpperCase(),
-            direction:
-              String(a.direction || "BUY").toUpperCase() === "SELL"
-                ? "SELL"
-                : "BUY",
-            conviction: clamp(Number(a.conviction ?? 6), 0, 10),
-            confidence: clamp(Number(a.confidence ?? 50), 0, 100),
-            reason: String(a.reason || "").slice(0, 240),
-            evidenceIds: Array.isArray(a.evidenceIds)
-              ? a.evidenceIds.slice(0, 12).map(String)
-              : [],
-          }))
-        : [];
+    if (Array.isArray(raw.actions)) {
+      const parsed: AiAction[] = raw.actions.map((a: any) => ({
+        symbol: String(a.symbol || "").toUpperCase(),
+        direction:
+          String(a.direction || "BUY").toUpperCase() === "SELL"
+            ? "SELL"
+            : "BUY",
+        conviction: clamp(Number(a.conviction ?? 6), 0, 10),
+        confidence: clamp(Number(a.confidence ?? 50), 0, 100),
+        reason: String(a.reason || "").slice(0, 220),
+        evidenceIds: Array.isArray(a.evidenceIds)
+          ? a.evidenceIds.slice(0, 24).map(String)
+          : [],
+      }));
 
-      out = {
-        generatedAt: new Date().toISOString(),
-        mainThemes: themes,
-        actions,
-        clusters,
-      };
+      // On garde seulement les trades réellement supportés par au moins 10 news uniques.
+      const robust = parsed.filter((a) => {
+        const uniq = new Set(a.evidenceIds || []);
+        return uniq.size >= 10;
+      });
 
-      // Si l'IA est trop timide sur les actions / thèmes, on complète avec la logique dure.
-      if (
-        (!out.actions || !out.actions.length) ||
-        (!out.mainThemes || !out.mainThemes.length)
-      ) {
-        const fb = fallbackDeterministic(articles, pool, topThemes);
-        if ((!out.mainThemes || !out.mainThemes.length) && fb.mainThemes.length) {
-          out.mainThemes = fb.mainThemes;
-        }
-        if (!out.actions.length && fb.actions.length) {
-          out.actions = fb.actions;
-        }
-        if ((!out.clusters || !out.clusters.length) && fb.clusters) {
-          out.clusters = fb.clusters;
-        }
+      if (robust.length) {
+        actions = robust.slice(0, 4);
       }
-
-      if (
-        (!out.actions || !out.actions.length) &&
-        (!out.mainThemes || !out.mainThemes.length)
-      ) {
-        return fallbackDeterministic(articles, pool, topThemes);
-      }
-
-      return out;
-    } catch {
-      return fallbackDeterministic(articles, pool, topThemes);
     }
   } catch {
-    return fallbackDeterministic(articles, pool, topThemes);
+    // en cas d’erreur OpenAI → on garde simplement le baseline.actions
   }
+
+  return {
+    generatedAt: new Date().toISOString(),
+    mainThemes: baseline.mainThemes,
+    actions,
+    clusters: baseline.clusters,
+  };
 }
 
-export function persistAI(out: any, outFile: string) {
+/* -------------------------------------------------------------------------- */
+/*  Persistance                                                               */
+/* -------------------------------------------------------------------------- */
+
+export function persistAI(out: AiOutputs, outFile: string) {
   writeJSON(outFile, out);
 }

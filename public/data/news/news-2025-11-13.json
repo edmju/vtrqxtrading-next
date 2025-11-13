@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-13T04:39:19.082Z",
-  "total": 1,
+  "generatedAt": "2025-11-13T21:11:42.426Z",
+  "total": 2,
   "articles": [
     {
       "url": "https://www.ft.com/content/95c0f0e7-f736-4963-af8b-acc0ec9eee1b",
@@ -14,6 +14,19 @@
       "hits": [
         "fed",
         "antitrust"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/f6b34e71-2b3e-43ad-99a9-558a34f56853",
+      "title": "How Norway jeopardised its integrity overnight",
+      "publishedAt": "2025-11-13T11:00:03.000Z",
+      "description": "Oslo abruptly changed the ethics rules for the world’s largest sovereign wealth fund",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "e057f7361dfb2da512f111aef54d9074",
+      "score": 7,
+      "hits": [
+        "opa"
       ]
     }
   ]

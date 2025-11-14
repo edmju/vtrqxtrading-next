@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-14T22:15:05.528Z",
+  "generatedAt": "2025-11-14T22:27:05.156Z",
   "total": 60,
   "articles": [
     {
@@ -280,6 +280,20 @@
       ]
     },
     {
+      "url": "https://www.investing.com/news/sec-filings/spirit-aviation-holdings-reports-96-tender-of-senior-secured-notes-in-bankruptcy-process-93CH-4360760",
+      "title": "Spirit Aviation Holdings reports 96% tender of senior secured notes in bankruptcy process",
+      "publishedAt": "2025-11-14T22:23:43.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "101d91cb30c32481089328a2c66febaf",
+      "score": 10,
+      "hits": [
+        "bankruptcy",
+        "percent"
+      ]
+    },
+    {
       "url": "https://economictimes.indiatimes.com/markets/stocks/earnings/muthoot-finance-q2-profit-surges-88-as-gold-loan-demand-hits-new-highs/articleshow/125325704.cms",
       "title": "Muthoot Finance Q2 profit surges 88% as gold loan demand hits new highs",
       "publishedAt": "2025-11-14T11:15:26.000Z",
@@ -305,6 +319,19 @@
       "hits": [
         "ipo",
         "percent"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/repare-therapeutics-stock-soars-after-acquisition-deal-with-xenotherapeutics-93CH-4360732",
+      "title": "Repare Therapeutics stock soars after acquisition deal with XenoTherapeutics",
+      "publishedAt": "2025-11-14T22:18:25.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "aa020a27b977cf7dbaef167f6e6ddcdb",
+      "score": 9,
+      "hits": [
+        "acquisition"
       ]
     },
     {
@@ -788,32 +815,6 @@
       "source": "Telegraph Business",
       "lang": "en",
       "id": "309b724c0491d5903ea214f759991029",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/06/02/trump-tariffs-china-trade-deal-ftse-100-markets-latest/",
-      "title": "Pound closes in on three-year high as concerns over US tariffs mount",
-      "publishedAt": "2025-06-02T17:17:22.000Z",
-      "description": "Pound closes in on three-year high as concerns over US tariffs mount",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "431b7a79deb481bca37f5bdde7451830",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/29/stock-markets-surge-after-us-court-blocks-trump-tariffs/",
-      "title": "Trump wins right to keep tariffs after ‘activist judges’ ban",
-      "publishedAt": "2025-05-29T19:53:14.000Z",
-      "description": "Trump wins right to keep tariffs after ‘activist judges’ ban",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "1be028efdc6b504e859dafc4a01c8eaa",
       "score": 8,
       "hits": [
         "tariff"

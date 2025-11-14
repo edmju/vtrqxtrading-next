@@ -1,552 +1,635 @@
-// src/app/(terminal)/dashboard/news/NewsClient.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { RawArticle, AiOutputs, AiTheme, AiAction } from "@/lib/news/types";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
-type Article = {
-  id: string;
-  title: string;
-  url: string;
-  source: string;
-  publishedAt: string;
-  description?: string;
+/* -------------------------------------------------------------------------- */
+/*  Types locaux                                                              */
+/* -------------------------------------------------------------------------- */
+
+type Article = RawArticle & {
   score?: number;
-  hits?: string[];
+  impactScore?: number;
+  hot?: boolean;
 };
 
-type NewsBundle = {
-  generatedAt: string;
-  total: number;
-  articles: Article[];
+type Theme = AiTheme & {
+  summary?: string;
 };
 
-type AIAction = {
+type Action = AiAction & {
   symbol: string;
   direction: "BUY" | "SELL";
-  conviction: number; // 0..10
-  confidence: number; // 0..100
-  reason: string;
-  evidenceIds?: string[];
-};
-
-type AITheme = {
-  label: string;
-  weight: number; // 0..1
-  summary?: string;
-  evidenceIds?: string[];
-};
-
-type AICluster = {
-  label: string;
-  weight: number;
-  summary: string;
-  articleIds: string[];
-};
-
-type AIOutput = {
-  generatedAt: string;
-  mainThemes: AITheme[];
-  actions: AIAction[];
-  clusters?: AICluster[];
-};
-
-type Props = {
-  news: NewsBundle;
-  ai: AIOutput;
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Helpers visuels                                                           */
+/*  Helpers UI                                                                 */
 /* -------------------------------------------------------------------------- */
 
-function hoursSince(iso: string) {
-  if (!iso) return 9999;
-  return (Date.now() - new Date(iso).getTime()) / 36e5;
+function cls(...parts: (string | false | null | undefined)[]) {
+  return parts.filter(Boolean).join(" ");
 }
 
-function impactLabel(score?: number, publishedAt?: string) {
-  const s = score ?? 0;
-  const h = hoursSince(publishedAt || "");
-  if (s >= 15 && h <= 24) return "High";
-  if (s >= 8 && h <= 72) return "Medium";
-  if (s >= 4) return "Low";
-  return "Very low";
+function formatDate(d: string) {
+  try {
+    return format(new Date(d), "dd/MM/yyyy, HH:mm:ss", { locale: fr });
+  } catch {
+    return d;
+  }
 }
 
-function impactClass(label: string) {
-  switch (label) {
-    case "High":
-      return "bg-rose-500/20 text-rose-200 ring-1 ring-rose-500/50";
-    case "Medium":
-      return "bg-amber-500/20 text-amber-200 ring-1 ring-amber-500/40";
-    case "Low":
-      return "bg-sky-500/20 text-sky-200 ring-1 ring-sky-500/30";
+function impactLabel(score: number | undefined) {
+  if (score == null) return "Impact Low";
+  if (score >= 18) return "Impact High";
+  if (score >= 10) return "Impact Medium";
+  return "Impact Low";
+}
+
+function impactColor(score: number | undefined) {
+  if (score == null) return "bg-sky-900/40 text-sky-200 border-sky-500/40";
+  if (score >= 18) return "bg-rose-900/40 text-rose-100 border-rose-500/60";
+  if (score >= 10) return "bg-amber-900/40 text-amber-100 border-amber-500/60";
+  return "bg-sky-900/40 text-sky-200 border-sky-500/40";
+}
+
+function confidenceColor(c: number) {
+  if (c >= 80) return "bg-emerald-900/60 text-emerald-100 border-emerald-400/70";
+  if (c >= 60) return "bg-emerald-900/40 text-emerald-100 border-emerald-400/50";
+  if (c >= 40) return "bg-amber-900/40 text-amber-100 border-amber-400/60";
+  return "bg-rose-900/40 text-rose-100 border-rose-500/60";
+}
+
+function themeWeightColor(w: number) {
+  if (w >= 0.8) return "from-indigo-400 via-sky-400 to-emerald-300";
+  if (w >= 0.6) return "from-sky-400 via-emerald-400 to-lime-300";
+  if (w >= 0.4) return "from-emerald-400 via-lime-400 to-amber-300";
+  return "from-slate-500 via-slate-400 to-slate-300";
+}
+
+function timeframeLabel(tf?: string): string {
+  switch (tf) {
+    case "intraday-1j":
+      return "Intraday – 1 jour";
+    case "1-3j":
+      return "1 à 3 jours";
+    case "1-2sem":
+      return "1 à 2 semaines";
+    case "2-4sem":
+      return "2 à 4 semaines";
+    case "1-3mois":
+      return "1 à 3 mois";
     default:
-      return "bg-neutral-700/40 text-neutral-300 ring-1 ring-neutral-600/50";
+      return "Horizon non spécifié";
   }
 }
 
-function badgeDir(d: "BUY" | "SELL") {
-  return d === "BUY"
-    ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-600/40"
-    : "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
+function hoursSince(d: string) {
+  return (Date.now() - new Date(d).getTime()) / 36e5;
 }
 
-function badgeConf(c: number) {
-  if (c >= 80) return "bg-green-500/20 text-green-300 ring-1 ring-green-600/40";
-  if (c >= 60) return "bg-lime-500/20 text-lime-300 ring-1 ring-lime-600/40";
-  if (c >= 40) return "bg-amber-500/20 text-amber-300 ring-1 ring-amber-600/40";
-  return "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
-}
-
-function inferMarketRegime(themes: AITheme[], actions: AIAction[]) {
-  const text = (
-    themes.map((t) => t.label + " " + (t.summary || "")).join(" ") +
-    " " +
-    actions.map((a) => a.reason).join(" ")
-  ).toLowerCase();
-
-  const hasDovish =
-    text.includes("dovish") ||
-    text.includes("assouplissement") ||
-    text.includes("rate cut") ||
-    text.includes("pivot");
-  const hasHawkish =
-    text.includes("hawkish") ||
-    text.includes("durcissement") ||
-    text.includes("rate hike") ||
-    text.includes("tightening");
-  const hasRiskOff =
-    text.includes("tariff") ||
-    text.includes("sanction") ||
-    text.includes("embargo") ||
-    text.includes("crisis") ||
-    text.includes("shutdown") ||
-    text.includes("default");
-  const hasEnergyShock =
-    text.includes("opec") ||
-    text.includes("production cut") ||
-    text.includes("refinery") ||
-    text.includes("gas") ||
-    text.includes("oil");
-
-  if (hasDovish && !hasRiskOff && !hasHawkish) {
-    return "Tendance plutôt risk-on : narratif d’assouplissement monétaire dominant.";
-  }
-  if (hasHawkish && !hasRiskOff) {
-    return "Tendance plutôt risk-off : durcissement monétaire mis en avant.";
-  }
-  if (hasRiskOff || hasEnergyShock) {
-    return "Tendance prudente : focus sur risques politiques, tarifs ou chocs d’offre.";
-  }
-  return "Régime neutre : news dispersées sans driver macro évident.";
-}
-
-function inferFocus(themes: AITheme[]) {
-  if (!themes.length) return "Pas de cluster clair, flux de news dispersé.";
-  const names = themes.slice(0, 3).map((t) => t.label);
-  return `Focales du moment : ${names.join(" · ")}.`;
+/** heuristique si l’IA ne renvoie pas de timeframe */
+function inferTimeframeFromProofs(proofs: Article[]): string {
+  if (!proofs.length) return "1-2sem";
+  const ages = proofs.map((a) => hoursSince(a.publishedAt));
+  const minAge = Math.min(...ages, 72);
+  if (minAge <= 12) return "intraday-1j";
+  if (minAge <= 48) return "1-3j";
+  if (minAge <= 168) return "1-2sem";
+  if (minAge <= 336) return "2-4sem";
+  return "1-3mois";
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Cartes interactives                                                       */
+/*  Composants UI                                                             */
+/* -------------------------------------------------------------------------- */
+
+function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span
+      className={cls(
+        "inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium",
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function ProgressBar({
+  value,
+  className,
+}: {
+  value: number;
+  className?: string;
+}) {
+  const pct = Math.max(0, Math.min(100, value));
+  return (
+    <div className={cls("h-1.5 w-full rounded-full bg-slate-800/80", className)}>
+      <div
+        className={cls(
+          "h-full rounded-full bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 transition-all duration-500",
+        )}
+        style={{ width: `${pct}%` }}
+      />
+    </div>
+  );
+}
+
+function Card({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      layout
+      className={cls(
+        "relative rounded-2xl border border-white/5 bg-slate-900/70 p-4 shadow-[0_0_40px_rgba(15,23,42,0.9)] backdrop-blur-xl",
+        className
+      )}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Flux d’actualités                                                         */
+/* -------------------------------------------------------------------------- */
+
+function NewsList({
+  articles,
+}: {
+  articles: Article[];
+}) {
+  const [showAllNews, setShowAllNews] = useState(false);
+
+  const sortedNews = useMemo(
+    () =>
+      [...articles].sort((a, b) => {
+        const sA = a.impactScore ?? a.score ?? 0;
+        const sB = b.impactScore ?? b.score ?? 0;
+        return sB - sA;
+      }),
+    [articles]
+  );
+
+  const visibleNews = showAllNews ? sortedNews : sortedNews.slice(0, 6);
+
+  return (
+    <Card className="col-span-4 flex flex-col gap-2 lg:col-span-4 xl:col-span-4">
+      <div className="mb-1 flex items-baseline justify-between gap-2">
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-200">
+            Flux d’actualités tradables
+          </h3>
+          <p className="text-[11px] text-slate-400">
+            Impact estimé par score + fraîcheur
+          </p>
+        </div>
+      </div>
+
+      <div className="relative">
+        <ul
+          className={cls(
+            "space-y-3 pr-1 transition-all",
+            showAllNews ? "max-h-none" : "max-h-[620px]",
+            "overflow-y-auto"
+          )}
+        >
+          <AnimatePresence initial={false}>
+            {visibleNews.map((a) => (
+              <motion.li
+                key={a.id}
+                layout
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18 }}
+              >
+                <article className="group rounded-2xl border border-white/5 bg-gradient-to-br from-slate-900/80 via-slate-900/90 to-slate-950/90 p-4 shadow-[0_0_25px_rgba(15,23,42,0.65)]">
+                  <header className="mb-1 flex items-start justify-between gap-3">
+                    <h4 className="max-w-[75%] text-[13px] font-semibold leading-snug text-slate-100 group-hover:text-sky-100">
+                      <Link
+                        href={a.url}
+                        target="_blank"
+                        className="underline-offset-2 hover:underline"
+                      >
+                        {a.title}
+                      </Link>
+                    </h4>
+                    <Badge className={impactColor(a.impactScore ?? a.score)}>
+                      {impactLabel(a.impactScore ?? a.score)}
+                    </Badge>
+                  </header>
+
+                  <div className="mb-1.5 flex items-center gap-2 text-[11px] text-slate-400">
+                    <span className="font-medium text-slate-300">{a.source}</span>
+                    <span className="h-1 w-1 rounded-full bg-slate-500" />
+                    <span>{formatDate(a.publishedAt)}</span>
+                    <span className="h-1 w-1 rounded-full bg-slate-500" />
+                    <span className="rounded-full bg-slate-800/80 px-1.5 py-0.5 text-[10px] text-slate-300">
+                      score {a.score ?? 0}
+                    </span>
+                  </div>
+
+                  {a.description && (
+                    <p className="line-clamp-3 text-[12px] leading-relaxed text-slate-300">
+                      {a.description}
+                    </p>
+                  )}
+
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {(a.hits || []).slice(0, 3).map((h) => (
+                      <Badge
+                        key={h}
+                        className="border-sky-500/40 bg-sky-900/30 text-[10px] text-sky-100"
+                      >
+                        {h}
+                      </Badge>
+                    ))}
+                  </div>
+                </article>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+
+        {!showAllNews && sortedNews.length > visibleNews.length && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent" />
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setShowAllNews((s) => !s)}
+        className="mt-2 inline-flex items-center justify-center gap-2 self-center rounded-full border border-slate-600/60 bg-slate-900/80 px-3 py-1 text-[11px] font-medium text-slate-100 hover:border-sky-500/70 hover:text-sky-100"
+      >
+        {showAllNews ? "Réduire le flux" : "Dérouler toutes les news"}
+      </button>
+    </Card>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Radar de thèmes                                                           */
+/* -------------------------------------------------------------------------- */
+
+function ThemeCard({ theme }: { theme: Theme }) {
+  const pct = Math.round(theme.weight * 100);
+
+  return (
+    <Card className="flex flex-col gap-2">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h4 className="text-[13px] font-semibold text-slate-100">
+            {theme.label}
+          </h4>
+          <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-sky-300">
+            Synthèse IA du narratif
+          </p>
+        </div>
+        <div className="text-right text-[11px] text-slate-400">
+          <div className="font-semibold text-slate-100">
+            poids {pct}/100
+          </div>
+        </div>
+      </div>
+
+      <ProgressBar value={pct} className="mt-1" />
+
+      {theme.summary && (
+        <p className="mt-1 text-[12px] leading-relaxed text-slate-200">
+          {theme.summary}
+        </p>
+      )}
+    </Card>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Desk de trades (IA)                                                       */
 /* -------------------------------------------------------------------------- */
 
 function ActionCard({
   action,
   proofs,
 }: {
-  action: AIAction;
+  action: Action;
   proofs: Article[];
 }) {
-  const [open, setOpen] = useState(false);
-  const totalSources = proofs.length;
+  const proofCount = proofs.length;
+  const tfCode = action.timeframe || inferTimeframeFromProofs(proofs);
+  const tfLabel = timeframeLabel(tfCode);
 
   return (
-    <li className="p-4 rounded-2xl bg-neutral-900/80 ring-1 ring-neutral-700/60 shadow-sm shadow-black/40">
+    <Card className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <div
-          className={
-            "text-xs px-2 py-1 rounded-full font-semibold " +
-            badgeDir(action.direction)
-          }
-        >
-          {action.direction}
-        </div>
-        <div className="flex flex-col items-end gap-1">
-          <span className="text-xs px-2 py-1 rounded-full bg-neutral-800 text-neutral-100">
+        <div className="flex items-center gap-2">
+          <Badge
+            className={cls(
+              "px-3 py-1 text-xs font-semibold",
+              action.direction === "BUY"
+                ? "border-emerald-400/70 bg-emerald-900/60 text-emerald-100"
+                : "border-rose-400/70 bg-rose-900/60 text-rose-100"
+            )}
+          >
+            {action.direction}
+          </Badge>
+          <span className="rounded-full border border-sky-500/50 bg-sky-900/40 px-3 py-0.5 text-[11px] font-semibold text-sky-100">
             {action.symbol}
           </span>
-          <span
-            className={
-              "text-xs px-2 py-1 rounded-full font-medium " +
-              badgeConf(action.confidence)
-            }
-          >
-            Confiance {action.confidence}/100
+        </div>
+        <Badge className={confidenceColor(action.confidence)}>
+          Confiance {action.confidence}/100
+        </Badge>
+      </div>
+
+      <div className="mt-1 text-[12px] leading-relaxed text-slate-200">
+        <p className="font-semibold text-slate-100">
+          Conviction {action.conviction}/10
+        </p>
+        <p className="mt-1 text-slate-200">{action.reason}</p>
+        <p className="mt-1 text-[11px] text-slate-400">
+          Horizon indicatif&nbsp;: <span className="font-medium text-slate-100">{tfLabel}</span>
+        </p>
+      </div>
+
+      <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-slate-400">
+        <span>
+          Basé sur{" "}
+          <span className="font-semibold text-slate-100">
+            {proofCount} sources
           </span>
-        </div>
+        </span>
       </div>
 
-      <div className="mt-2 text-sm text-neutral-200">
-        Conviction {action.conviction}/10
-      </div>
-
-      <p className="mt-1 text-sm text-neutral-300">{action.reason}</p>
-
-      {totalSources > 0 && (
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700/80 transition"
-          >
-            <span>
-              Basé sur {totalSources} source{totalSources > 1 ? "s" : ""}
-            </span>
-            <span className="text-[10px] opacity-80">
-              {open ? "▲ cacher" : "▼ voir la liste"}
-            </span>
-          </button>
-
-          <div
-            className={
-              "mt-2 overflow-hidden transition-all duration-300 ease-out " +
-              (open ? "max-h-96 opacity-100" : "max-h-0 opacity-0")
-            }
-          >
-            <ul className="space-y-1 pl-1">
-              {proofs.map((p, idxProof) => (
-                <li key={idxProof} className="text-xs text-neutral-400">
-                  •{" "}
-                  <a
-                    className="underline hover:text-neutral-100"
-                    href={p.url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {p.source}: {p.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-    </li>
+      <details className="mt-1 group">
+        <summary className="flex cursor-pointer items-center justify-between rounded-full border border-slate-600/70 bg-slate-900/80 px-3 py-1 text-[11px] text-slate-200 transition-colors group-open:border-sky-500/70 group-open:text-sky-100">
+          <span>Voir la liste des sources</span>
+          <span className="text-xs opacity-70 group-open:rotate-180 transition-transform">
+            ▾
+          </span>
+        </summary>
+        <ul className="mt-2 space-y-1 text-[11px] text-slate-300">
+          {proofs.slice(0, 20).map((p) => (
+            <li key={p.id} className="flex gap-2">
+              <span className="mt-[2px] h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-500" />
+              <Link
+                href={p.url}
+                target="_blank"
+                className="underline-offset-2 hover:text-sky-200 hover:underline"
+              >
+                {p.title}{" "}
+                <span className="text-slate-400">
+                  ({p.source}, {formatDate(p.publishedAt)})
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </Card>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Client main component                                                     */
+/*  Composant principal                                                       */
 /* -------------------------------------------------------------------------- */
 
-export default function NewsClient({ news, ai }: Props) {
-  const index = useMemo(
-    () => new Map(news.articles.map((a) => [a.id, a] as const)),
-    [news.articles]
-  );
+export function NewsClient({
+  bundle,
+  ai,
+}: {
+  bundle: { generatedAt: string; total: number; articles: Article[] };
+  ai: AiOutputs | null;
+}) {
+  const articles = bundle.articles || [];
+  const mainThemes: Theme[] = ai?.mainThemes || [];
+  const actions: Action[] = (ai?.actions || []) as Action[];
 
-  const articleThemes = useMemo(() => {
-    const map = new Map<string, string[]>();
-    ai.mainThemes.forEach((t) => {
-      (t.evidenceIds || []).forEach((id) => {
-        if (!id) return;
-        if (!index.has(id)) return;
-        const list = map.get(id) || [];
-        if (!list.includes(t.label)) list.push(t.label);
-        map.set(id, list);
-      });
-    });
+  const clustersByLabel = useMemo(() => {
+    const map = new Map<string, Article[]>();
+    const clusters = ai?.clusters || [];
+    for (const c of clusters) {
+      map.set(
+        c.label,
+        c.articleIds
+          .map((id) => articles.find((a) => a.id === id))
+          .filter(Boolean) as Article[]
+      );
+    }
     return map;
-  }, [ai.mainThemes, index]);
+  }, [ai, articles]);
 
-  const themeCounts: Record<string, number> = useMemo(() => {
-    const counts: Record<string, number> = {};
-    ai.mainThemes.forEach((t) => {
-      const n = (t.evidenceIds || []).filter((id) => index.has(id)).length;
-      counts[t.label] = n;
-    });
-    return counts;
-  }, [ai.mainThemes, index]);
+  const marketStats = useMemo(() => {
+    const hotNews = articles.filter((a) => a.hot);
+    const themesCount = mainThemes.length;
+    const ideasCount = actions.length;
+    return {
+      hotCount: hotNews.length,
+      themesCount,
+      ideasCount,
+    };
+  }, [articles, mainThemes, actions]);
 
-  const totalNews = news.articles.length;
-  const totalThemes = ai.mainThemes.length;
-  const totalActions = ai.actions.length;
+  const regimeText = useMemo(() => {
+    if (!mainThemes.length) {
+      return "Régime neutre : flux de news dispersé, pas de thème dominant.";
+    }
+    const top = mainThemes[0];
+    if (top.weight >= 0.8) {
+      return `Marché très concentré sur « ${top.label} », narratif dominant clair.`;
+    }
+    if (top.weight >= 0.6) {
+      return `Narratif principal autour de « ${top.label} », mais avec quelques thèmes secondaires.`;
+    }
+    return "Régime plutôt neutre : plusieurs thèmes coexistent sans driver unique.";
+  }, [mainThemes]);
 
-  const regimeText = inferMarketRegime(ai.mainThemes, ai.actions);
-  const focusText = inferFocus(ai.mainThemes);
+  const focalesText = useMemo(() => {
+    if (!mainThemes.length) {
+      return "Pas de cluster clair, flux de news diversifié.";
+    }
+    const labels = mainThemes.map((t) => t.label);
+    if (!labels.length) return "Flux de news dispersé.";
+    if (labels.length === 1) {
+      return `Focale du moment : ${labels[0]}.`;
+    }
+    if (labels.length === 2) {
+      return `Focales du moment : ${labels[0]} & ${labels[1]}.`;
+    }
+    return `Focales du moment : ${labels
+      .slice(0, 3)
+      .join(" / ")}.`;
+  }, [mainThemes]);
 
-  const sortedNews = useMemo(
+  const firstGenerated =
+    articles.length > 0 ? articles[0].publishedAt : bundle.generatedAt;
+
+  const firstHot =
+    articles.find((a) => a.hot)?.publishedAt || bundle.generatedAt;
+
+  const generatedAt = ai?.generatedAt || bundle.generatedAt;
+
+  const actionsWithProofs = useMemo(
     () =>
-      [...news.articles].sort(
-        (a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt)
-      ),
-    [news.articles]
+      actions.map((a) => {
+        const ids = a.evidenceIds || [];
+        const proofs =
+          ids.length > 0
+            ? ids
+                .map((id) => articles.find((ar) => ar.id === id))
+                .filter(Boolean)
+            : articles.slice(0, 20);
+        return { action: a, proofs: proofs as Article[] };
+      }),
+    [actions, articles]
   );
-
-  const [showAllNews, setShowAllNews] = useState(false);
-  const visibleNews = showAllNews ? sortedNews : sortedNews.slice(0, 10);
 
   return (
-    <main className="p-6 space-y-6">
-      {/* BANDEAU MARKET BRIEFING */}
-      <section className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40">
-          <div className="text-sm uppercase tracking-wide text-sky-300/80">
+    <div className="flex flex-1 flex-col gap-5 overflow-hidden px-4 pb-6 pt-3 lg:px-6">
+      {/* Top summary row */}
+      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-3">
+        {/* Market briefing */}
+        <Card className="bg-gradient-to-br from-sky-900/70 via-slate-900/80 to-slate-950/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-200">
             Market briefing
-          </div>
-          <div className="mt-2 flex gap-6 text-sm text-sky-100">
-            <div>
-              <div className="text-2xl font-semibold">{totalNews}</div>
-              <div className="text-xs text-sky-300/80">news “hot” du jour</div>
-            </div>
-            <div>
-              <div className="text-2xl font-semibold">{totalThemes}</div>
-              <div className="text-xs text-sky-300/80">thèmes IA</div>
-            </div>
-            <div>
-              <div className="text-2xl font-semibold">{totalActions}</div>
-              <div className="text-xs text-sky-300/80">idées de trade</div>
-            </div>
-          </div>
-          <div className="mt-3 text-xs text-sky-200/80">
-            Dernière collecte :{" "}
-            {news.generatedAt
-              ? new Date(news.generatedAt).toLocaleString()
-              : "—"}
-          </div>
-        </div>
-
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40">
-          <div className="text-sm uppercase tracking-wide text-violet-300/80">
-            Régime de marché (vue IA)
-          </div>
-          <p className="mt-2 text-sm text-violet-50">{regimeText}</p>
-        </div>
-
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-emerald-900/70 via-emerald-800/40 to-emerald-600/20 ring-1 ring-emerald-500/40 shadow-md shadow-emerald-900/40">
-          <div className="text-sm uppercase tracking-wide text-emerald-300/80">
-            Focales du moment
-          </div>
-          <p className="mt-2 text-sm text-emerald-50">{focusText}</p>
-        </div>
-      </section>
-
-      {/* LAYOUT 3 COLONNES */}
-      <section className="grid gap-6 lg:grid-cols-[2.2fr,1.9fr,1.8fr]">
-        {/* COLONNE 1 : NEWS STREAM (déroulable) */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-neutral-100">
-              Flux d’actualités tradables
-            </h2>
-            <span className="text-xs text-neutral-400">
-              Impact estimé par score + fraîcheur
-            </span>
-          </div>
-
-          <div
-            className={
-              "relative overflow-hidden rounded-2xl border border-neutral-800/70 bg-neutral-950/60"
-            }
-          >
-            <ul
-              className={
-                "divide-y divide-neutral-800/80 transition-all duration-500 ease-out " +
-                (showAllNews ? "max-h-[2000px]" : "max-h-[620px]")
-              }
-            >
-              {visibleNews.map((a) => {
-                const impLabel = impactLabel(a.score, a.publishedAt);
-                const themesForArticle = articleThemes.get(a.id) || [];
-                return (
-                  <li
-                    key={a.id}
-                    className="p-4 hover:bg-neutral-900/70 transition-colors"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <a
-                          href={a.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-semibold text-neutral-100 hover:text-sky-200 hover:underline"
-                        >
-                          {a.title}
-                        </a>
-                        <div className="mt-1 text-xs text-neutral-400 flex flex-wrap items-center gap-2">
-                          <span>{a.source}</span>
-                          <span>
-                            —{" "}
-                            {new Date(a.publishedAt).toLocaleString(undefined, {
-                              hour12: false,
-                            })}
-                          </span>
-                          {typeof a.score === "number" && (
-                            <span className="px-1.5 py-0.5 rounded bg-neutral-800/80 text-neutral-200 ring-1 ring-neutral-600/60">
-                              score {a.score}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <span
-                        className={
-                          "text-xs px-2 py-1 rounded-full whitespace-nowrap " +
-                          impactClass(impLabel)
-                        }
-                      >
-                        Impact {impLabel}
-                      </span>
-                    </div>
-
-                    {themesForArticle.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {themesForArticle.map((label, idxTheme) => (
-                          <span
-                            key={idxTheme}
-                            className="text-[11px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-200 ring-1 ring-violet-600/40"
-                          >
-                            {label}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {a.hits && a.hits.length > 0 && (
-                      <div className="mt-1 flex flex-wrap gap-1">
-                        {a.hits.slice(0, 5).map((h, idxHit) => (
-                          <span
-                            key={idxHit}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-200 ring-1 ring-indigo-600/40"
-                          >
-                            {h}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {a.description && (
-                      <p className="mt-2 text-sm text-neutral-300 line-clamp-3">
-                        {a.description}
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
-
-              {sortedNews.length === 0 && (
-                <li className="p-4 text-sm text-neutral-400">
-                  Aucune actualité “hot” dans la fenêtre de temps actuelle.
-                </li>
-              )}
-            </ul>
-
-            {sortedNews.length > 10 && (
-              <div className="sticky bottom-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/80 to-transparent pt-4 flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => setShowAllNews((v) => !v)}
-                  className="mb-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-800/90 text-neutral-50 hover:bg-neutral-700/90 transition"
-                >
-                  {showAllNews
-                    ? "Réduire le flux"
-                    : `Afficher tout le flux (${sortedNews.length})`}
-                </button>
+          </p>
+          <div className="mt-3 flex items-end justify-between gap-4">
+            <div className="flex gap-6 text-slate-100">
+              <div>
+                <div className="text-2xl font-bold text-sky-100">
+                  {marketStats.hotCount}
+                </div>
+                <div className="text-[11px] text-slate-300">
+                  news “hot” du jour
+                </div>
               </div>
-            )}
+              <div>
+                <div className="text-2xl font-bold text-indigo-100">
+                  {marketStats.themesCount}
+                </div>
+                <div className="text-[11px] text-slate-300">thèmes IA</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-emerald-100">
+                  {marketStats.ideasCount}
+                </div>
+                <div className="text-[11px] text-slate-300">idées de trade</div>
+              </div>
+            </div>
           </div>
-        </section>
+          <p className="mt-3 text-[11px] text-slate-400">
+            Première news : {formatDate(firstGenerated)} • Dernière collecte :{" "}
+            {formatDate(bundle.generatedAt)} • IA : {formatDate(generatedAt)}
+          </p>
+        </Card>
 
-        {/* COLONNE 2 : RADAR DE THEMES (résumés IA) */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-neutral-100">
-              Radar de thèmes (IA)
-            </h2>
-            <span className="text-xs text-neutral-400">
-              Pondération 0–1 basée sur le flux de titres
-            </span>
+        {/* Regime de marché */}
+        <Card className="bg-gradient-to-br from-violet-900/70 via-slate-900/80 to-slate-950/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-200">
+            Régime de marché (vue IA)
+          </p>
+          <p className="mt-3 text-[13px] leading-relaxed text-slate-100">
+            {regimeText}
+          </p>
+          <p className="mt-3 text-[11px] text-slate-400">
+            Lecture basée sur la pondération des thèmes & la fraîcheur du flux.
+            Première news “hot” : {formatDate(firstHot)}.
+          </p>
+        </Card>
+
+        {/* Focales du moment */}
+        <Card className="bg-gradient-to-br from-emerald-900/70 via-slate-900/80 to-slate-950/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-200">
+            Focales du moment
+          </p>
+          <p className="mt-3 text-[13px] leading-relaxed text-slate-100">
+            {focalesText}
+          </p>
+          <p className="mt-3 text-[11px] text-slate-400">
+            Basé sur les thèmes IA les plus pondérés et le clustering des
+            articles liés.
+          </p>
+        </Card>
+      </div>
+
+      {/* Main content row */}
+      <div className="grid flex-1 grid-cols-12 gap-4 overflow-hidden">
+        {/* Flux d’actualités */}
+        <NewsList articles={articles} />
+
+        {/* Radar + desk de trades */}
+        <div className="col-span-8 grid grid-cols-1 gap-4 lg:grid-cols-5">
+          {/* Radar de thèmes */}
+          <div className="col-span-3 flex flex-col gap-3">
+            <div className="flex items-baseline justify-between">
+              <div>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-200">
+                  Radar de thèmes (IA)
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  Pondération 0–1 basée sur le flux de titres
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              {mainThemes.map((t) => {
+                const th = t as Theme;
+                return <ThemeCard key={th.label} theme={th} />;
+              })}
+              {!mainThemes.length && (
+                <p className="text-[12px] text-slate-400">
+                  Aucun thème clé détecté pour l’instant.
+                </p>
+              )}
+            </div>
           </div>
 
-          <ul className="space-y-2">
-            {ai.mainThemes.map((t, idxTheme) => {
-              const w = Math.max(0.05, Math.min(1, t.weight || 0));
-              const count = themeCounts[t.label] ?? 0;
-              return (
-                <li
-                  key={idxTheme}
-                  className="p-4 rounded-2xl bg-neutral-900/80 ring-1 ring-neutral-700/70 shadow-sm shadow-black/40"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-neutral-100 font-semibold">
-                        {t.label}
-                      </div>
-                      <div className="text-xs text-neutral-400">
-                        {count} article(s) liés
-                      </div>
-                    </div>
-                    <div className="text-xs text-neutral-300">
-                      poids {(w * 100).toFixed(0)}/100
-                    </div>
-                  </div>
+          {/* Desk de trades */}
+          <div className="col-span-2 flex flex-col gap-3">
+            <div className="flex items-baseline justify-between">
+              <div>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-200">
+                  Desk de trades (IA)
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  Propositions basées sur les thèmes et news ci-contre
+                </p>
+              </div>
+            </div>
 
-                  <div className="mt-2 h-2 bg-neutral-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-emerald-400 transition-all duration-500"
-                      style={{ width: `${w * 100}%` }}
-                    />
-                  </div>
-
-                  {t.summary && (
-                    <p className="mt-2 text-sm text-neutral-300">
-                      {t.summary}
-                    </p>
-                  )}
-                </li>
-              );
-            })}
-
-            {ai.mainThemes.length === 0 && (
-              <li className="text-sm text-neutral-400 px-1">
-                Aucun thème clé (hors datas macro brutes) détecté par l’IA.
-              </li>
-            )}
-          </ul>
-        </section>
-
-        {/* COLONNE 3 : DESK DE TRADES (IA) */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-neutral-100">
-              Desk de trades (IA)
-            </h2>
-            <span className="text-xs text-neutral-400">
-              Propositions basées sur les thèmes et news ci-contre
-            </span>
+            <div className="flex flex-col gap-3">
+              {actionsWithProofs.length ? (
+                actionsWithProofs.map(({ action, proofs }) => (
+                  <ActionCard
+                    key={`${action.symbol}-${action.direction}-${action.reason}`}
+                    action={action}
+                    proofs={proofs}
+                  />
+                ))
+              ) : (
+                <Card className="border-dashed bg-slate-950/60">
+                  <p className="text-[12px] leading-relaxed text-slate-300">
+                    Aucune action proposée aujourd’hui (pas de signal
+                    suffisamment robuste). Utilise quand même le radar de thèmes
+                    comme lecture rapide du narratif de marché.
+                  </p>
+                </Card>
+              )}
+            </div>
           </div>
-
-          <ul className="space-y-3">
-            {ai.actions.map((x, idxAction) => {
-              const proofs = (x.evidenceIds || [])
-                .map((id) => index.get(id))
-                .filter(Boolean) as Article[];
-
-              return <ActionCard key={idxAction} action={x} proofs={proofs} />;
-            })}
-
-            {ai.actions.length === 0 && (
-              <li className="text-sm text-neutral-400 px-1">
-                Aucune action proposée aujourd’hui (pas de signal
-                suffisamment robuste). Utilise quand même le radar de thèmes
-                comme lecture rapide du narratif de marché.
-              </li>
-            )}
-          </ul>
-        </section>
-      </section>
-    </main>
+        </div>
+      </div>
+    </div>
   );
 }

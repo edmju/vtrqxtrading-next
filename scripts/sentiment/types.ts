@@ -3,49 +3,49 @@
 export type AssetClass = "forex" | "stocks" | "commodities";
 
 export type SentimentPoint = {
-  id: string;
-  label: string;
-  provider: string;
+  source: string;
   assetClass: AssetClass;
-  score: number; // 0..100 (50 = neutre)
-  raw?: unknown;
+  score: number; // 0–100
+  meta?: Record<string, unknown>;
 };
 
-export type SentimentTheme = {
+export type ThemeSentiment = {
   id: AssetClass;
   label: string;
-  score: number; // 0..100
-  direction?: "risk-on" | "risk-off" | "neutral";
-  comment?: string;
+  score: number; // 0–100
+  direction: "bullish" | "bearish" | "neutral";
+  comment: string;
 };
 
 export type RiskIndicator = {
   id: string;
   label: string;
-  value: string;
-  score: number; // 0..100
-  direction: "up" | "down" | "neutral";
-  comment?: string;
+  score: number; // 0–100
+  comment: string;
 };
 
-export type AIFocusDriver = {
+export type FocusDriver = {
   label: string;
-  weight: number; // 0..1
+  weight: number; // 0–1
   description: string;
 };
 
-export type AIMarketRegime = {
+export type MarketRegime = {
   label: string;
   description: string;
-  confidence: number; // 0..100
+  confidence: number; // 0–100
 };
 
 export type SentimentSnapshot = {
   generatedAt: string;
-  globalScore: number; // 0..100
-  themes: SentimentTheme[]; // forex / stocks / commodities
+  globalScore: number; // 0–100
+  themes: ThemeSentiment[];
   riskIndicators: RiskIndicator[];
-  focusDrivers?: AIFocusDriver[];
-  marketRegime?: AIMarketRegime;
-  sources: string[]; // noms des providers utilisés
+  focusDrivers: FocusDriver[];
+  marketRegime: MarketRegime;
+  sources: {
+    name: string;
+    assetClass: AssetClass | "global";
+    weight: number;
+  }[];
 };

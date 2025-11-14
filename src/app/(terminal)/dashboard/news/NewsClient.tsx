@@ -202,13 +202,13 @@ function inferMarketRegime(
     text.includes("oil");
 
   if (hasDovish && !hasRiskOff && !hasHawkish) {
-    return "Tendance plutôt risk-on : narratif d’assouplissement monétaire dominant.";
+    return "Régime plutôt risk-on : narratif d’assouplissement monétaire dominant.";
   }
   if (hasHawkish && !hasRiskOff) {
-    return "Tendance plutôt risk-off : durcissement monétaire mis en avant.";
+    return "Régime plutôt risk-off : durcissement monétaire mis en avant.";
   }
   if (hasRiskOff || hasEnergyShock) {
-    return "Tendance prudente : focus sur risques politiques, tarifs ou chocs d’offre.";
+    return "Régime prudent : focus sur risques politiques, tarifs ou chocs d’offre.";
   }
   return "Régime neutre : news dispersées sans driver macro évident.";
 }
@@ -352,13 +352,13 @@ function ActionCard({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Page Client – Layout full-screen (1920x1080)                              */
+/*  Page Client – layout sans débordement horizontal                          */
 /* -------------------------------------------------------------------------- */
 
 export default function NewsClient({ news, ai }: Props) {
   const router = useRouter();
 
-  // auto-refresh toutes les heures (basé sur l'heure d'ouverture de la page)
+  // Refresh automatique toutes les 1h (basé sur l’heure d’ouverture)
   useEffect(() => {
     const id = setInterval(() => {
       router.refresh();
@@ -571,7 +571,7 @@ export default function NewsClient({ news, ai }: Props) {
         href={a.url}
         target="_blank"
         rel="noreferrer"
-        className="min-w-[220px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition"
+        className="inline-flex flex-col justify-between w-56 max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition mr-3"
       >
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-medium text-red-100 truncate">
@@ -596,11 +596,11 @@ export default function NewsClient({ news, ai }: Props) {
   });
 
   return (
-    <main className="w-full h-[calc(100vh-5rem)] overflow-hidden">
-      <div className="h-full flex flex-col rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
-        {/* Bandeau top (synthèse + régime + focales + super hot) */}
-        <div className="flex-none px-4 pt-4 pb-3 sm:px-5 lg:px-6 space-y-3">
-          <section className="grid gap-3 md:grid-cols-3 min-w-0">
+    <main className="py-6 lg:py-8 w-full max-w-full overflow-x-hidden">
+      <div className="w-full rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
+        <div className="p-4 sm:p-6 lg:p-7 space-y-5 lg:space-y-6">
+          {/* Bandeau de synthèse */}
+          <section className="grid gap-3 md:gap-4 md:grid-cols-3 min-w-0">
             <div className="rounded-2xl p-3.5 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <div className="text-[11px] font-semibold uppercase tracking-wide text-sky-300/80">
@@ -671,8 +671,9 @@ export default function NewsClient({ news, ai }: Props) {
             </div>
           </section>
 
+          {/* Ruban horizontal des super hot */}
           {superHotNews.length > 0 && (
-            <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40 overflow-hidden">
+            <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40">
               <div className="px-3 py-1.5 flex items-center justify-between border-b border-red-700/60">
                 <span className="text-[11px] font-semibold uppercase tracking-wide text-red-100">
                   Super hot du moment
@@ -681,29 +682,17 @@ export default function NewsClient({ news, ai }: Props) {
                   {superHotNews.length} news très sensibles
                 </span>
               </div>
-              <div className="overflow-hidden">
-                <div className="relative px-3 py-2 superhot-marquee-outer">
-                  <div className="superhot-marquee-track">
-                    {superHotCards}
-                  </div>
-                  <div
-                    className="superhot-marquee-track"
-                    aria-hidden="true"
-                  >
-                    {superHotCards}
-                  </div>
-                </div>
+              <div className="px-3 py-2 overflow-x-auto overflow-y-hidden whitespace-nowrap no-scrollbar">
+                {superHotCards}
               </div>
             </section>
           )}
-        </div>
 
-        {/* Corps principal – 3 colonnes scrollables à l'intérieur, page fixe */}
-        <div className="flex-1 px-4 pb-4 sm:px-5 lg:px-6 overflow-hidden">
-          <section className="h-full grid gap-4 lg:gap-5 xl:grid-cols-3 items-stretch min-w-0">
+          {/* Layout principal 3 colonnes (sans overflow horizontal) */}
+          <section className="grid gap-4 lg:gap-5 xl:grid-cols-3 items-start min-w-0">
             {/* Colonne 1 : flux de news */}
-            <section className="flex flex-col min-w-0 overflow-hidden">
-              <div className="flex-none px-1 flex items-baseline justify-between">
+            <section className="space-y-2 min-w-0">
+              <div className="px-1 flex items-baseline justify-between">
                 <div>
                   <h2 className="text-[15px] font-semibold text-neutral-100">
                     Flux d’actualités tradables
@@ -714,9 +703,9 @@ export default function NewsClient({ news, ai }: Props) {
                 </div>
               </div>
 
-              <div className="mt-2 flex-1 rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0 flex flex-col overflow-hidden">
+              <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0">
                 {/* Filtres */}
-                <div className="flex-none px-3 pt-2.5 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
+                <div className="px-3 pt-2.5 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
                   <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                     <span className="text-neutral-400 mr-1">
                       Température :
@@ -780,8 +769,8 @@ export default function NewsClient({ news, ai }: Props) {
                   </div>
                 </div>
 
-                {/* Liste scrollable */}
-                <ul className="flex-1 divide-y divide-neutral-800/80 overflow-y-auto scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
+                {/* Liste (scroll vertical via page, pas de scroll interne horizontal) */}
+                <ul className="divide-y divide-neutral-800/80">
                   {primaryNews.map((a) => renderNewsItem(a))}
 
                   {showAllNews &&
@@ -795,7 +784,7 @@ export default function NewsClient({ news, ai }: Props) {
                 </ul>
 
                 {extraNews.length > 0 && (
-                  <div className="flex-none border-t border-neutral-800/80 p-2.5 flex justify-center">
+                  <div className="border-t border-neutral-800/80 p-2.5 flex justify-center">
                     <button
                       type="button"
                       onClick={() => setShowAllNews((v) => !v)}
@@ -811,8 +800,8 @@ export default function NewsClient({ news, ai }: Props) {
             </section>
 
             {/* Colonne 2 : radar de thèmes IA */}
-            <section className="flex flex-col min-w-0 overflow-hidden">
-              <div className="flex-none px-1 flex items-baseline justify-between">
+            <section className="space-y-2 min-w-0">
+              <div className="px-1 flex items-baseline justify-between">
                 <div>
                   <h2 className="text-[15px] font-semibold text-neutral-100">
                     Radar de thèmes (IA)
@@ -823,8 +812,8 @@ export default function NewsClient({ news, ai }: Props) {
                 </div>
               </div>
 
-              <div className="mt-2 flex-1 rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0 overflow-hidden">
-                <ul className="h-full overflow-y-auto px-2.5 py-2 space-y-2.5 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
+              <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0">
+                <ul className="px-2.5 py-2 space-y-2.5">
                   {ai.mainThemes.map((t) => {
                     const w = Math.max(0.05, Math.min(1, t.weight || 0));
                     const count = themeCounts[t.label] ?? 0;
@@ -874,8 +863,8 @@ export default function NewsClient({ news, ai }: Props) {
             </section>
 
             {/* Colonne 3 : desk de trades IA */}
-            <section className="flex flex-col min-w-0 overflow-hidden">
-              <div className="flex-none px-1 flex items-baseline justify-between">
+            <section className="space-y-2 min-w-0">
+              <div className="px-1 flex items-baseline justify-between">
                 <div>
                   <h2 className="text-[15px] font-semibold text-neutral-100">
                     Desk de trades (IA)
@@ -886,8 +875,8 @@ export default function NewsClient({ news, ai }: Props) {
                 </div>
               </div>
 
-              <div className="mt-2 flex-1 rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0 overflow-hidden">
-                <ul className="h-full overflow-y-auto px-2.5 py-2 space-y-2.5 scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
+              <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0">
+                <ul className="px-2.5 py-2 space-y-2.5">
                   {ai.actions.map((action) => {
                     const proofs = (action.evidenceIds || [])
                       .map((id) => index.get(id))

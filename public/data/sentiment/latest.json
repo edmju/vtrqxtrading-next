@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-14T23:09:14.578Z",
-  "globalScore": 50,
+  "generatedAt": "2025-11-14T23:16:42.009Z",
+  "globalScore": 8,
   "themes": [
     {
       "id": "forex",
@@ -12,9 +12,9 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 50,
-      "direction": "neutral",
-      "comment": "Actions reste globalement neutre (50/100)."
+      "score": 8,
+      "direction": "bearish",
+      "comment": "Actions montre un biais plutôt baissier (8/100)."
     },
     {
       "id": "commodities",
@@ -25,11 +25,28 @@
     }
   ],
   "riskIndicators": [],
-  "focusDrivers": [],
+  "focusDrivers": [
+    {
+      "label": "Actions",
+      "weight": 1,
+      "description": "Actions montre un biais plutôt baissier (8/100)."
+    }
+  ],
   "marketRegime": {
-    "label": "Neutre",
-    "description": "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.",
-    "confidence": 50
+    "label": "Risk-off modéré",
+    "description": "Le sentiment agrégé penche vers un scénario risk-off, avec une recherche de sécurité accrue.",
+    "confidence": 94
   },
-  "sources": []
+  "sources": [
+    {
+      "name": "SENTIMENT_STOCKS_URL_3",
+      "assetClass": "stocks",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_STOCKS_URL_4",
+      "assetClass": "stocks",
+      "weight": 1
+    }
+  ]
 }

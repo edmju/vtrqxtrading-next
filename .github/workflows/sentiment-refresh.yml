@@ -39,7 +39,7 @@ jobs:
 
           SENTIMENT_FOREX_URL_1: ${{ secrets.SENTIMENT_FOREX_URL_1 }}
           SENTIMENT_FOREX_URL_2: ${{ secrets.SENTIMENT_FOREX_URL_2 }}
-          SENTIMENT_FOREX_URL_3: ${{ secrets_SENTIMENT_FOREX_URL_3 }}
+          SENTIMENT_FOREX_URL_3: ${{ secrets.SENTIMENT_FOREX_URL_3 }}
 
           SENTIMENT_STOCKS_URL_1: ${{ secrets.SENTIMENT_STOCKS_URL_1 }}
           SENTIMENT_STOCKS_URL_2: ${{ secrets.SENTIMENT_STOCKS_URL_2 }}

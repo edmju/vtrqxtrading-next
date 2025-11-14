@@ -20,22 +20,23 @@ export type NewsBundle = {
 export type AiAction = {
   symbol: string;
   direction: "BUY" | "SELL";
-  conviction: number;     // 0..10
-  confidence: number;     // 0..100
+  conviction: number; // 0..10
+  confidence: number; // 0..100
   reason: string;
+  timeframe?: string; // ex: "intraday-1j" | "1-3j" | "1-2sem" | "2-4sem" | "1-3mois"
   evidenceIds?: string[]; // ids d’articles support
 };
 
 export type AiTheme = {
   label: string;
-  weight: number;         // 0..1
-  summary?: string;       // ≤ ~30 mots
+  weight: number; // 0..1
+  summary?: string; // ≤ ~30 mots
   evidenceIds?: string[]; // ids d’articles pour ce thème
 };
 
 export type AiCluster = {
   label: string;
-  weight: number;         // 0..1
+  weight: number; // 0..1
   summary: string;
   articleIds: string[];
 };

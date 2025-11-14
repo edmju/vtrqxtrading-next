@@ -12,6 +12,8 @@
     "news:refresh": "tsx scripts/news/refresh.ts --stage=all && tsx scripts/news/enrichWithAI.ts",
     "cron:news:refresh": "node -e \"const { exec } = require('child_process'); const run = () => exec('npm run news:refresh', {stdio: 'inherit'}); run(); setInterval(run, 3600000);\"",
     "postinstall": "prisma generate"
+    "sentiment:refresh": "tsx scripts/sentiment/refresh.ts",
+    "cron:sentiment:refresh": "node -e \"const { exec } = require('child_process'); const run = () => exec('npm run sentiment:refresh', {stdio: 'inherit'}); run(); setInterval(run, 3600000);\""
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.0",

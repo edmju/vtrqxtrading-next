@@ -3,7 +3,7 @@ name: News & Sentiment Refresh
 on:
   schedule:
     - cron: "0 * * * *"   # toutes les heures
-  workflow_dispatch:       # déclenchement manuel possible
+  workflow_dispatch:       # déclenchement manuel
 
 jobs:
   refresh:
@@ -19,25 +19,30 @@ jobs:
           node-version: 22
           cache: "npm"
 
-      - name: Install deps
-        run: npm ci
+      - name: Install deps (tolère les conflits de peer deps)
+        run: npm install --legacy-peer-deps
 
       - name: Run news & sentiment refresh
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SENTIMENT_MODEL: gpt-4.1-mini
+
           SENTIMENT_FOREX_URL_1: ${{ secrets.SENTIMENT_FOREX_URL_1 }}
           SENTIMENT_FOREX_URL_2: ${{ secrets.SENTIMENT_FOREX_URL_2 }}
           SENTIMENT_FOREX_URL_3: ${{ secrets.SENTIMENT_FOREX_URL_3 }}
+
           SENTIMENT_STOCKS_URL_1: ${{ secrets.SENTIMENT_STOCKS_URL_1 }}
           SENTIMENT_STOCKS_URL_2: ${{ secrets.SENTIMENT_STOCKS_URL_2 }}
-          SENTIMENT_STOCKS_URL_3: ${{ secrets.SOCKTWITS_URL }}
+          SENTIMENT_STOCKS_URL_3: ${{ secrets.SENTIMENT_STOCKS_URL_3 }}
           SENTIMENT_STOCKS_URL_4: ${{ secrets.SENTIMENT_STOCKS_URL_4 }}
           SENTIMENT_STOCKS_KEY_4: ${{ secrets.SENTIMENT_STOCKS_KEY_4 }}
+
           SENTIMENT_COMMOD_URL_1: ${{ secrets.SENTIMENT_COMMOD_URL_1 }}
           SENTIMENT_COMMOD_URL_2: ${{ secrets.SENTIMENT_COMMOD_URL_2 }}
           SENTIMENT_COMMOD_URL_3: ${{ secrets.SENTIMENT_COMMOD_URL_3 }}
+
           SENTIMENT_OUTPUT_FILE: public/data/sentiment/latest.json
+
           NEWS_OUTPUT_FILE: public/data/news/latest.json
           AI_NEWS_OUTPUT_FILE: public/data/ai/latest.json
         run: |

@@ -1,37 +1,21 @@
 {
-  "generatedAt": "2025-11-14T12:55:50.609Z",
+  "generatedAt": "2025-11-14T15:49:04.002Z",
   "total": 60,
   "articles": [
     {
-      "url": "https://www.scmp.com/news/hong-kong/hong-kong-economy/article/3332811/hong-kong-raises-gdp-forecast-32-cent-amid-better-expected-growth?utm_source=rss_feed",
-      "title": "Hong Kong raises GDP growth forecast to 3.2% amid ‘robust’ economic performance",
-      "publishedAt": "2025-11-14T08:40:12.000Z",
-      "description": "The Hong Kong government has revised its gross domestic product (GDP) growth forecast for 2025 from 2 to 3 per cent to 3.2 per cent, with the finance chief attributing the higher projection to better-than-expected performance in the first three quarters and a positive outlook after a slight de-escalation of the US-China trade war. The Census and Statistics Department on Friday revealed that it upgraded the real GDP forecast for 2025 to 3.2 per cent, taking into account the actual outturn of 3.3...",
-      "source": "SCMP Markets",
-      "lang": "en",
-      "id": "05d15fda23cc9e7a48960ab964336fb9",
-      "score": 25,
-      "hits": [
-        "trade war",
-        "upgrade",
-        "gdp",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Energy/Crude-Oil/Diesel-Spreads-Hit-Near-Two-Year-Peak-After-India-Cuts-Russian-Crude-Purchases.html",
-      "title": "Diesel Spreads Hit Near Two-Year Peak After India Cuts Russian Crude Purchases",
-      "publishedAt": "2025-11-14T01:00:00.000Z",
-      "description": "Recently, Bloomberg reported that five of India&#039;s largest oil refiners have made no purchases of Russian crude for December delivery, instead turning to Saudi Arabia, UAE and Iraq for crude with similar properties to Urals. The move comes after Washington sanctioned Rosneft and Lukoil while the EU adopted its 19th package of sanctions. Only Indian Oil Corporation (IOC) and Nayara Energy, in which Rosneft holds a 49% stake, have purchased crude from Russia for December. Meanwhile, the diplomatic sensitivity of the ongoing trade talks between the…",
+      "url": "https://oilprice.com/Energy/Energy-General/Oil-Prices-Slump-as-Global-Stockpiles-Surge-and-OPEC-Flags-a-2026-Glut.html",
+      "title": "Oil Prices Slump as Global Stockpiles Surge and OPEC Flags a 2026 Glut",
+      "publishedAt": "2025-11-14T13:00:00.000Z",
+      "description": "Crude oil prices traded defensively this week as bearish fundamentals overshadowed short-term risk catalysts. While geopolitical tensions and the end of the U.S. government shutdown offered fleeting support, the market remained focused on rising global inventories, shifting supply-demand expectations from OPEC and the IEA, and a broader sense that supply continues to outpace demand. West Texas Intermediate (WTI) futures fell sharply midweek before stabilizing at $58.12, a level that may act as psychological support in the short term. Large U.S.…",
       "source": "OilPrice",
       "lang": "en",
-      "id": "1d1387baa23cc8f3757c0a30257f0e60",
-      "score": 25,
+      "id": "44b4634fda2caca034eb2ec6e7118897",
+      "score": 29,
       "hits": [
-        "sanction",
-        "fine",
-        "sanctions",
-        "percent"
+        "geopolitical tension",
+        "opec",
+        "government shutdown",
+        "shutdown"
       ]
     },
     {
@@ -47,53 +31,6 @@
         "fed",
         "tariff",
         "inflation"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Energy/Energy-General/The-Remarkable-Rise-of-Natural-Gas.html",
-      "title": "The Remarkable Rise of Natural Gas",
-      "publishedAt": "2025-11-13T19:00:00.000Z",
-      "description": "As oil prices struggle to find a footing in the wake of the latest OPEC moves, natural gas has stepped into a standout role in the global energy mix. This year, the demand and price trends for natural gas underscore both its resilience and its growing importance as an economic driver and transition fuel. Why Natural Gas Is Defying the Energy Downturn Global energy markets have been anything but stable in recent years. Geopolitical tensions, inflationary pressures, and the accelerating push toward decarbonization have made investors uneasy. Yet…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "6a613fe72fa70c03246d766627fc3a25",
-      "score": 22,
-      "hits": [
-        "geopolitical tension",
-        "opec",
-        "inflation"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Energy/Crude-Oil/New-President-Vows-to-End-Bolivias-Energy-Crisis.html",
-      "title": "New President Vows to End Bolivia’s Energy Crisis",
-      "publishedAt": "2025-11-14T01:00:00.000Z",
-      "description": "Rodrigo Paz, the centrist senator who won the presidential election in Bolivia last month, was sworn in this weekend and immediately set to work to undo the policies of 20 years of nearly-uninterrupted socialist rule. In the first round of the presidential election on 17 August, the left-wing Movimiento al Socialismo (MAS) suffered a historic defeat after nearly two decades in power. MAS nominee Eduardo del Castillo won only about 3% of the vote, while right-leaning Quiroga secured 27% and the more centrist Paz won 32%. Paz, who defeated conservative…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "c9aca628d72d91d817556a359347a7a1",
-      "score": 21,
-      "hits": [
-        "energy crisis",
-        "election",
-        "ism",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.theguardian.com/business/2025/nov/13/amid-disappointing-uk-growth-how-can-rachel-reeves-escape-the-doom-loop",
-      "title": "Amid disappointing UK growth, how can Rachel Reeves escape the doom loop?",
-      "publishedAt": "2025-11-13T09:01:34.000Z",
-      "description": "Stronger finances require a stronger economy, but budget tax rises and spending cuts could squeeze activity further• Business live – latest updates• Economy grew by just 0.1% in third quarter amid hit from JLR cyber-attackRachel Reeves’s autumn budget is not simple: Britain’s economy is misfiring and things need turning around fast. Yet a fiscal consolidation on the scale the chancellor is expected to require could push in exactly the opposite direction.The latest figures from the economy are hardly encouraging. Growth slowed from 0.3% in the second quarter to just 0.1% in the third, driven down in part by the cyber-attack on Jaguar Land Rover. Continue reading...",
-      "source": "The Guardian",
-      "lang": "en",
-      "id": "50d197c9853c7065f6bcee4c6d1e79e5",
-      "score": 21,
-      "hits": [
-        "cyber attack",
-        "spending cuts",
-        "budget",
-        "percent"
       ]
     },
     {
@@ -113,7 +50,7 @@
     {
       "url": "https://www.cnbc.com/2025/11/13/coatues-philippe-laffont-says-the-ipo-market-is-broken-beyond-repair.html",
       "title": "Coatue's Philippe Laffont says the IPO market is broken beyond repair",
-      "publishedAt": "2025-11-13T23:00:58.000Z",
+      "publishedAt": "2025-11-14T15:03:34.000Z",
       "description": "Coatue Management's founder and portfolio manager said the market today bears little resemblance to the vibrant IPO pipeline of prior decades.",
       "source": "CNBC",
       "lang": "en",
@@ -136,6 +73,20 @@
       "hits": [
         "rate cut",
         "tariff"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/swiss-machine-maker-feels-heat-from-auto-sector-slowdown-trumps-tariffs-4357703",
+      "title": "Swiss machine maker feels heat from auto sector slowdown, Trump’s tariffs",
+      "publishedAt": "2025-11-14T15:37:05.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "4cbc0cb394a3f4c016e5c90ac737222f",
+      "score": 15,
+      "hits": [
+        "tariff",
+        "slowdown"
       ]
     },
     {
@@ -223,42 +174,30 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/sec-filings/azul-posts-record-third-quarter-ebitda-but-reports-net-loss-amid-restructuring-93CH-4358775",
-      "title": "Azul posts record third quarter EBITDA but reports net loss amid restructuring",
-      "publishedAt": "2025-11-14T12:43:55.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://oilprice.com/Energy/Energy-General/Netanyahus-Government-Is-Teetering-on-the-Brink-of-Collapse.html",
+      "title": "Netanyahu’s Government Is Teetering on the Brink of Collapse",
+      "publishedAt": "2025-11-14T13:00:00.000Z",
+      "description": "Netanyahu’s position is increasingly precarious. The coalition has thinned to a one-seat margin after United Torah Judaism’s withdrawal over the draft dispute, and the 2026 budget deadline now hangs over him as the next trigger point. The Supreme Court’s end to Haredi draft exemptions forced the army to begin issuing call-ups this year, igniting mass protests and exposing a structural fault line that no version of the bill can bridge. Any compromise risks splitting either the ultra-Orthodox or nationalist wings. That tension…",
+      "source": "OilPrice",
       "lang": "en",
-      "id": "84b47bac4c6344dfee02ceb8410e07d2",
-      "score": 9,
+      "id": "cc11f3f24ae90c2c3138c0eaba454921",
+      "score": 14,
       "hits": [
-        "restructuring"
+        "ism",
+        "budget"
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/enbridge-approves-14-billion-project-to-boost-canadian-oil-flows-to-us-refiners-4358705",
-      "title": "Enbridge approves $1.4 billion project to boost Canadian oil flows to U.S. refiners",
-      "publishedAt": "2025-11-14T12:37:05.000Z",
+      "url": "https://www.investing.com/news/stock-market-news/jefferies-upgrades-gap-to-buy-citing-momentum-across-brands-and-margin-upside-4359582",
+      "title": "Jefferies upgrades Gap to Buy, citing momentum across brands and margin upside",
+      "publishedAt": "2025-11-14T15:41:00.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "5120cc7ee15bc73c14dc32cab4793555",
+      "id": "a63355ec180666617f7c9eed0191f896",
       "score": 9,
       "hits": [
-        "fine"
-      ]
-    },
-    {
-      "url": "https://www.investing.com/news/stock-market-news/bhp-liable-for-2015-brazil-dam-collapse-uk-court-rules-in-mammoth-lawsuit-4358161",
-      "title": "BHP liable for 2015 Brazil dam collapse, UK court rules in mammoth lawsuit",
-      "publishedAt": "2025-11-14T12:31:35.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "d91dbf792c1ea1ab231fd4d76a12d64d",
-      "score": 9,
-      "hits": [
-        "lawsuit"
+        "upgrade"
       ]
     },
     {
@@ -315,42 +254,69 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/commodities-news/gold-prices-rise-on-economic-uncertainty-cooling-rate-cut-bets-limit-upside-4357693",
-      "title": "Gold prices fall on waning Fed rate cut bets; weekly gains still likely",
-      "publishedAt": "2025-11-14T12:45:24.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Iran-Seizes-Oil-Tanker-in-Gulf-of-Oman.html",
+      "title": "Iran Seizes Oil Tanker in Gulf of Oman",
+      "publishedAt": "2025-11-14T15:30:00.000Z",
+      "description": "Iran seized on Friday an oil tanker en route to Singapore after it passed the critical Strait of Hormuz in the Middle East in the first major escalation of the tensions in the region since the Iran-Israel war in June. The Marshall Islands-flagged oil tanker Talara was seized by Iranian forces in the Gulf of Oman after having passed the Strait of Hormuz from Ajman in the United Arab Emirates (UAE), heading to Singapore. Iran’s forces diverted the ship from the international waters to the Iranian territorial waters, a U.S. defense…",
+      "source": "OilPrice",
       "lang": "en",
-      "id": "6d07f804a8203522166aa47463c5ce14",
+      "id": "bbf768baa4ddc0440c2c10a587b983dd",
+      "score": 8,
+      "hits": [
+        "escalation"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/business/2025/nov/14/thames-water-court-mp-pay-legal-bills-charlie-maynard",
+      "title": "Thames Water tried to make MP pay its legal fees of up to £1,400 an hour",
+      "publishedAt": "2025-11-14T15:00:42.000Z",
+      "description": "Exclusive: Charlie Maynard accuses the utility of ‘retaliation’ over his push for government to gain control of companyThames Water argued that an MP should be forced to pay its hefty legal costs after he represented the interests of the British public in court, a move he described as “retaliation” for pushing for government control of the crisis-hit utility, the Guardian can reveal.The UK’s highest court this week rejected Thames Water’s arguments that the Liberal Democrat MP Charlie Maynard should pay legal fees as high as £1,400 per hour. Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "878dc032bf78f0375020320635a9316a",
+      "score": 8,
+      "hits": [
+        "retaliation"
+      ]
+    },
+    {
+      "url": "https://www.fxstreet.com/news/eur-cad-steady-amid-ecb-caution-canadian-dollar-strength-from-oil-202511141459",
+      "title": "EUR/CAD steady amid ECB caution, Canadian Dollar strength from Oil",
+      "publishedAt": "2025-11-14T14:59:27.000Z",
+      "description": "EUR/CAD trades with minimal movement on Friday, holding near 1.6310 at the time of writing, as investors assess the impact of a more cautious tone from the European Central Bank (ECB).",
+      "source": "FXStreet",
+      "lang": "en",
+      "id": "6923e07e5a53841a61361912fea750d3",
+      "score": 8,
+      "hits": [
+        "ecb"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
+      "title": "US stocks sink as global tech rout deepens",
+      "publishedAt": "2025-11-14T14:43:55.000Z",
+      "description": "Doubts over December interest rate cut from Federal Reserve exacerbate worries about high valuations",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "0aad6611f04ff5fd9a7777d63c18caef",
       "score": 8,
       "hits": [
         "rate cut"
       ]
     },
     {
-      "url": "https://www.investing.com/news/analyst-ratings/boeing-stock-price-target-lowered-to-267-by-bernstein-socgen-on-cash-flow-concerns-93CH-4358776",
-      "title": "Boeing stock price target lowered to $267 by Bernstein SocGen on cash flow concerns",
-      "publishedAt": "2025-11-14T12:43:58.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://www.ft.com/content/2cda31af-1a6d-496f-91a4-9f6581d5d72d",
+      "title": "Meloni’s government eyes Italian family gold in hunt for budget funds",
+      "publishedAt": "2025-11-14T14:13:47.000Z",
+      "description": "Lawmakers propose scheme to encourage citizens to declare undocumented bullion and pay 12.5% tax on its value",
+      "source": "Financial Times",
       "lang": "en",
-      "id": "ac579174758ea68f92f1bf6aa1fe85d2",
+      "id": "d6b31175d63ae1c7180a8e9acb89a33c",
       "score": 8,
       "hits": [
-        "boe"
-      ]
-    },
-    {
-      "url": "https://www.investing.com/news/stock-market-news/cartierowner-richemont-beats-quarterly-sales-forecast-as-sales-jump-14-4357710",
-      "title": "Cartier-owner Richemont shrugs off tariffs, high gold prices as China improves",
-      "publishedAt": "2025-11-14T12:30:51.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "d1f51b18f5bfaead10e29b6cffde0b4f",
-      "score": 8,
-      "hits": [
-        "tariff"
+        "budget",
+        "percent"
       ]
     },
     {
@@ -380,20 +346,6 @@
       ]
     },
     {
-      "url": "https://www.fxstreet.com/news/usd-inr-ticks-lower-amid-caution-ahead-of-us-economic-data-releases-202511140502",
-      "title": "USD/INR edges down as US Dollar drops, India's WPI inflation declines 1.21%",
-      "publishedAt": "2025-11-14T11:03:27.000Z",
-      "description": "The Indian Rupee (INR) ticks up against the US Dollar (USD) at open on Friday. The USD/INR pair edges lower to near 88.85 as the US Dollar extends its downside.",
-      "source": "FXStreet",
-      "lang": "en",
-      "id": "4ca89189e41837ec21ad09f8bc453e4b",
-      "score": 8,
-      "hits": [
-        "inflation",
-        "percent"
-      ]
-    },
-    {
       "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Prices-Jump-as-Ukraine-Hits-One-of-Russias-Biggest-Export-Hubs.html",
       "title": "Oil Prices Soar 2.75% After Ukraine Strike On Major Russian Export Hub",
       "publishedAt": "2025-11-14T10:30:00.000Z",
@@ -408,16 +360,17 @@
       ]
     },
     {
-      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
-      "title": "Global stock sell-off deepens over tech fears and US rate cut doubts",
-      "publishedAt": "2025-11-14T09:53:00.000Z",
-      "description": "Investors are worried about the high valuation of companies and boom in AI spending",
-      "source": "Financial Times",
+      "url": "https://www.theguardian.com/business/2025/nov/14/uk-borrowing-costs-up-after-markets-spooked-by-reeves-income-tax-u-turn",
+      "title": "UK borrowing costs up after markets spooked by Reeves’s income tax U-turn",
+      "publishedAt": "2025-11-14T09:54:15.000Z",
+      "description": "Pound down 0.5% against dollar in early trading after chancellor drops plans for upcoming budgetUK politics live – latest updatesBritain’s borrowing costs have jumped while the pound has dropped after the chancellor’s extraordinary last-minute decision to ditch tax-raising plans in the upcoming budget.Interest rates on government bonds rose by more than 10 basis points in early trading, putting them on track for their worst day since 2 July, when investors responded to a tearful appearance by Rachel Reeves in the House of Commons chamber. The pound, meanwhile, dropped 0.5% against the dollar. Continue reading...",
+      "source": "The Guardian",
       "lang": "en",
-      "id": "b34ff6d8a12b1de94bfd2c035743d056",
+      "id": "b8e579b1cb1059d85b09de1e625fe860",
       "score": 8,
       "hits": [
-        "rate cut"
+        "budget",
+        "percent"
       ]
     },
     {
@@ -806,6 +759,45 @@
       "source": "Telegraph Business",
       "lang": "en",
       "id": "7b1b985d9152048c3b542d8b3a087739",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/03/trump-tariffs-eu-cars-ftse-100-markets-latest-news/",
+      "title": "Trump says tariffs going ‘very well’ as stocks sink",
+      "publishedAt": "2025-04-03T21:52:26.000Z",
+      "description": "Trump says tariffs going ‘very well’ as stocks sink",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "33bba78be824e13d59a2e909ab0ff703",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/02/trump-tariffs-liberation-day-ftse-100-markets-latest-news/",
+      "title": "Brexit dividend saves Britain from worst of Trump’s tariffs",
+      "publishedAt": "2025-04-03T01:07:08.000Z",
+      "description": "Brexit dividend saves Britain from worst of Trump’s tariffs",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "78fc6d26542efdfe6aa78f578f4d429d",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/01/ftse-100-markets-latest-trump-tariffs-liberation-day-gold/",
+      "title": "Trump ‘open’ to negotiation even after tariffs announced",
+      "publishedAt": "2025-04-02T06:27:49.000Z",
+      "description": "Trump ‘open’ to negotiation even after tariffs announced",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "6d42ab9229d07d990ab486475672f35f",
       "score": 8,
       "hits": [
         "tariff"

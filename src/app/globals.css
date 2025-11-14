@@ -88,3 +88,28 @@ html, body {
 .terminal-chip:hover { border-color: rgba(255,213,74,0.5); color: var(--primary); }
 
 a, button { -webkit-tap-highlight-color: transparent; }
+
+@keyframes superhot-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.superhot-marquee-outer {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.superhot-marquee-track {
+  display: inline-flex;
+  gap: 0.75rem;
+  padding-right: 1.5rem;
+  animation: superhot-marquee 45s linear infinite;
+}
+
+.superhot-marquee-track:hover {
+  animation-play-state: paused;
+}

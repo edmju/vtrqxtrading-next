@@ -671,21 +671,25 @@ export default function NewsClient({ news, ai }: Props) {
             </div>
           </section>
 
-          {/* Ruban horizontal des super hot */}
           {superHotNews.length > 0 && (
-            <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40">
-              <div className="px-3 py-1.5 flex items-center justify-between border-b border-red-700/60">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-red-100">
-                  Super hot du moment
-                </span>
-                <span className="text-[10px] text-red-100/80">
-                  {superHotNews.length} news très sensibles
-                </span>
-              </div>
-              <div className="px-3 py-2 overflow-x-auto overflow-y-hidden whitespace-nowrap no-scrollbar">
+            <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40 overflow-hidden">
+            <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
+              <span className="text-xs font-semibold uppercase tracking-wide text-red-100">
+                Super hot du moment
+              </span>
+              <span className="text-[10px] text-red-100/80">
+                {superHotNews.length} news très sensibles
+              </span>
+            </div>
+
+            <div className="superhot-marquee-outer py-3">
+              <div className="superhot-marquee-track">
+                {superHotCards}
                 {superHotCards}
               </div>
-            </section>
+            </div>
+          </section>
+
           )}
 
           {/* Layout principal 3 colonnes (sans overflow horizontal) */}

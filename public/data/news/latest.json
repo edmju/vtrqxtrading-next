@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-14T18:58:22.839Z",
+  "generatedAt": "2025-11-14T21:59:06.216Z",
   "total": 60,
   "articles": [
     {
@@ -50,21 +50,6 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/economic-indicators/details-of-swissus-trade-deal-could-emerge-on-friday-4358228",
-      "title": "Switzerland wins US tariff rate cut to 15%, pledges $200 billion in US investments",
-      "publishedAt": "2025-11-14T18:48:28.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "4204c199cc6a84d4ef8fe70e2584e02c",
-      "score": 17,
-      "hits": [
-        "rate cut",
-        "tariff",
-        "percent"
-      ]
-    },
-    {
       "url": "https://www.telegraph.co.uk/business/2025/06/18/trump-lashes-out-at-stupid-powell-ahead-of-fed-decision/",
       "title": "Fed downgrades growth in fresh blow for Trump",
       "publishedAt": "2025-06-19T06:20:26.000Z",
@@ -76,20 +61,6 @@
       "hits": [
         "fed",
         "downgrade"
-      ]
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/13/coatues-philippe-laffont-says-the-ipo-market-is-broken-beyond-repair.html",
-      "title": "Coatue's Philippe Laffont says the IPO market is broken beyond repair",
-      "publishedAt": "2025-11-14T15:03:34.000Z",
-      "description": "Coatue Management's founder and portfolio manager said the market today bears little resemblance to the vibrant IPO pipeline of prior decades.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "8248e8875fd2a66e62b77890dee67970",
-      "score": 16,
-      "hits": [
-        "pipeline",
-        "ipo"
       ]
     },
     {
@@ -205,16 +176,42 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/filings/form-10q-lake-superior-acquisition-corp-unit-for-14-november-93CH-4360070",
-      "title": "Form 10Q Lake Superior Acquisition Corp Unit For: 14 November",
-      "publishedAt": "2025-11-14T18:47:20.000Z",
+      "url": "https://www.investing.com/news/sec-filings/sonder-holdings-files-for-chapter-7-bankruptcy-and-expects-nasdaq-delisting-93CH-4360376",
+      "title": "Sonder Holdings files for Chapter 7 bankruptcy and expects Nasdaq delisting",
+      "publishedAt": "2025-11-14T21:04:14.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "108fa3c423941c9e53cf335025509214",
+      "id": "92d3e04ebae874008657d70877ac9f4b",
       "score": 9,
       "hits": [
-        "acquisition"
+        "bankruptcy"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/xyj-technology-files-for-1m-share-ipo-2sh-432SI-4360341",
+      "title": "XYJ Technology files for 1M share IPO $2/sh",
+      "publishedAt": "2025-11-14T20:53:03.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "8b4c532703b856b878a58805484977d1",
+      "score": 9,
+      "hits": [
+        "ipo"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Enbridge-Moves-to-Rewrite-North-Americas-Heavy-Crude-Map.html",
+      "title": "Enbridge Moves to Rewrite North America’s Heavy-Crude Map",
+      "publishedAt": "2025-11-14T20:00:00.000Z",
+      "description": "Enbridge has approved a $1.4 billion expansion across its Mainline and Flanagan South systems that will push more Canadian heavy crude into the U.S. Midwest and down to the Gulf Coast—right where coking refineries are built to run it. Phase 1 of the Mainline Optimization (MLO1) adds 150,000 bpd on the Mainline and 100,000 bpd on Flanagan South, with in-service targeted for 2027. The uplift comes through pump and terminal expansions on Flanagan South and upstream optimizations on the Mainline, backed by long-term take-or-pay commitments from…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "dc7126813ec9345d75725a6196c4c866",
+      "score": 9,
+      "hits": [
+        "fine"
       ]
     },
     {
@@ -285,15 +282,54 @@
     },
     {
       "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
-      "title": "US stocks gain ground after global tech rout",
-      "publishedAt": "2025-11-14T17:47:42.000Z",
+      "title": "US stocks steady after global tech rout",
+      "publishedAt": "2025-11-14T21:14:01.000Z",
       "description": "Doubts over December interest rate cut from Federal Reserve exacerbate jitters about high valuations",
       "source": "Financial Times",
       "lang": "en",
-      "id": "652e317f0e363f0785f54f8e68e0de5f",
+      "id": "a6b543944f58b0f39470adf6a9d8f099",
       "score": 8,
       "hits": [
         "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/company-news/nuvalent-to-share-pivotal-data-for-alk-inhibitor-in-lung-cancer-93CH-4360381",
+      "title": "Nuvalent to share pivotal data for ALK inhibitor in lung cancer",
+      "publishedAt": "2025-11-14T21:05:05.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "00e1edb524e8bff3b6cbe2752b0732e2",
+      "score": 8,
+      "hits": [
+        "pivot"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Energy/Energy-General/Armenia-Announces-2026-Start-Date-for-Key-Middle-Corridor-Trade-Route.html",
+      "title": "Armenia Announces 2026 Start Date for Key Middle Corridor Trade Route",
+      "publishedAt": "2025-11-14T21:00:00.000Z",
+      "description": "Construction of a key cog in the Middle Corridor trade network known as TRIPP should begin during the second half of 2026, according to Armenian Prime Minister Nikol Pashinyan. TRIPP, or the Trump Route for International Peace and Prosperity, is a central feature of a provisional peace deal between Armenia and Azerbaijan signed in Washington in August. The corridor would connect Azerbaijan to its Nakhchivan exclave across Armenian territory. In his most expansive comments to date concerning a construction timeline, Pashinyan told MPs that…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "e893715165e1180dc92bffcc6811604e",
+      "score": 8,
+      "hits": [
+        "rba"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/basketballbritish-basketball-federation-to-enter-liquidation-amid-financial-crisis-4360344",
+      "title": "Basketball-British Basketball Federation to enter liquidation amid financial crisis",
+      "publishedAt": "2025-11-14T20:55:08.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "69520079aab2405b982364fbe9aed759",
+      "score": 8,
+      "hits": [
+        "fed"
       ]
     },
     {
@@ -347,19 +383,6 @@
       "hits": [
         "budget",
         "percent"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Canada-and-India-to-Partner-in-Critical-Minerals-Supply-Chain.html",
-      "title": "Canada and India to Partner in Critical Minerals Supply Chain",
-      "publishedAt": "2025-11-14T12:30:00.000Z",
-      "description": "Faced with difficult trade negotiations with the United States and American tariffs on their products, Canada and India pledged to encourage long-term supply chain partnerships in critical minerals and clean energy. At a trade summit in India, Canada and the host country agreed to revive their stalled bilateral relations and “reiterated their commitment to deepening bilateral cooperation through sustained dialogue, mutual respect, and forward-looking initiatives,” the countries said in a joint statement. Canada and India…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "b79897b791cf2fbd73f121986bac4efb",
-      "score": 8,
-      "hits": [
-        "tariff"
       ]
     },
     {
@@ -777,32 +800,6 @@
       "score": 8,
       "hits": [
         "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/03/28/uk-economy-nears-stagnation-rachel-reeves-markets-live/",
-      "title": "Stock markets sink as Trump tariffs trigger price rise fears",
-      "publishedAt": "2025-03-28T18:13:42.000Z",
-      "description": "Stock markets sink as Trump tariffs trigger price rise fears",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "3c561a3491941f01c2ff0a96164b46a2",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.ft.com/content/1d2b6b1d-44e3-47cf-b009-8dde14a23557",
-      "title": "Borrowing costs jump as investors lose faith in Reeves’ Budget",
-      "publishedAt": "2025-11-14T18:39:31.000Z",
-      "description": "Gilts sell off after government ditches plan to increase income tax rates",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "bfaf14b3b64d7a30a073b2acc806050b",
-      "score": 7,
-      "hits": [
-        "budget"
       ]
     }
   ]

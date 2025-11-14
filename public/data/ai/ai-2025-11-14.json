@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2025-11-14T18:58:22.851Z",
+  "generatedAt": "2025-11-14T21:59:06.230Z",
   "mainThemes": [
     {
       "label": "Banques centrales / Taux",
-      "weight": 0.89,
-      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Investing.com, Financial Times, FXStreet).",
+      "weight": 0.87,
+      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, Investing.com, FXStreet).",
       "evidenceIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
-        "4204c199cc6a84d4ef8fe70e2584e02c",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "652e317f0e363f0785f54f8e68e0de5f",
+        "a6b543944f58b0f39470adf6a9d8f099",
+        "69520079aab2405b982364fbe9aed759",
         "6923e07e5a53841a61361912fea750d3",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
@@ -29,14 +29,13 @@
     {
       "label": "Tarifs / Géopolitique commerciale",
       "weight": 0.81,
-      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 29 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian, OilPrice).",
+      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 27 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian).",
       "evidenceIds": [
         "2b4431e4ba0e095d33cc769e2a277e78",
         "2f3ed7555a2cbbdeda19b970f057aa7d",
         "61c6dca015d8090cb496b9eed67f6fbe",
         "e75f1c826fea84445ef03c27d9ad0a7a",
         "878dc032bf78f0375020320635a9316a",
-        "b79897b791cf2fbd73f121986bac4efb",
         "88b66c3678c038ac5768f199506acf42",
         "27dc3a9299dc7dc12fd0520d8462a95f",
         "179b501f380e55b9999e257b69530d99",
@@ -54,16 +53,17 @@
         "b8aabfa4916e75f37a58c2ab3763a92b",
         "45df0ec6d1299a14692c22b9cfd787bf",
         "21df40ae1c1baaf0775b11ef5c3dca34",
-        "019ab3f5d60cc181ad3d258caecbe1a3"
+        "019ab3f5d60cc181ad3d258caecbe1a3",
+        "7b1b985d9152048c3b542d8b3a087739"
       ]
     },
     {
       "label": "Énergie & Commodities",
       "weight": 0.75,
-      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice, CNBC).",
+      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice).",
       "evidenceIds": [
         "44b4634fda2caca034eb2ec6e7118897",
-        "8248e8875fd2a66e62b77890dee67970",
+        "dc7126813ec9345d75725a6196c4c866",
         "95ea881b0df4f5eeeb2fef37f2755928",
         "ba7b307891b2b1430647b66148da1e9b",
         "bbf768baa4ddc0440c2c10a587b983dd"
@@ -75,17 +75,17 @@
       "symbol": "US500",
       "direction": "BUY",
       "conviction": 4,
-      "confidence": 89,
+      "confidence": 87,
       "reason": "Signal basé sur le thème « Banques centrales / Taux » (18 article(s)).",
       "evidenceIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
-        "4204c199cc6a84d4ef8fe70e2584e02c",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "652e317f0e363f0785f54f8e68e0de5f",
+        "a6b543944f58b0f39470adf6a9d8f099",
+        "69520079aab2405b982364fbe9aed759",
         "6923e07e5a53841a61361912fea750d3",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
@@ -105,17 +105,17 @@
   "clusters": [
     {
       "label": "Banques centrales / Taux",
-      "weight": 0.89,
-      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Investing.com, Financial Times, FXStreet).",
+      "weight": 0.87,
+      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, Investing.com, FXStreet).",
       "articleIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
-        "4204c199cc6a84d4ef8fe70e2584e02c",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "652e317f0e363f0785f54f8e68e0de5f",
+        "a6b543944f58b0f39470adf6a9d8f099",
+        "69520079aab2405b982364fbe9aed759",
         "6923e07e5a53841a61361912fea750d3",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
@@ -131,14 +131,13 @@
     {
       "label": "Tarifs / Géopolitique commerciale",
       "weight": 0.81,
-      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 29 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian, OilPrice).",
+      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 27 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian).",
       "articleIds": [
         "2b4431e4ba0e095d33cc769e2a277e78",
         "2f3ed7555a2cbbdeda19b970f057aa7d",
         "61c6dca015d8090cb496b9eed67f6fbe",
         "e75f1c826fea84445ef03c27d9ad0a7a",
         "878dc032bf78f0375020320635a9316a",
-        "b79897b791cf2fbd73f121986bac4efb",
         "88b66c3678c038ac5768f199506acf42",
         "27dc3a9299dc7dc12fd0520d8462a95f",
         "179b501f380e55b9999e257b69530d99",
@@ -160,17 +159,16 @@
         "7b1b985d9152048c3b542d8b3a087739",
         "33bba78be824e13d59a2e909ab0ff703",
         "78fc6d26542efdfe6aa78f578f4d429d",
-        "6d42ab9229d07d990ab486475672f35f",
-        "3c561a3491941f01c2ff0a96164b46a2"
+        "6d42ab9229d07d990ab486475672f35f"
       ]
     },
     {
       "label": "Énergie & Commodities",
       "weight": 0.75,
-      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice, CNBC).",
+      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice).",
       "articleIds": [
         "44b4634fda2caca034eb2ec6e7118897",
-        "8248e8875fd2a66e62b77890dee67970",
+        "dc7126813ec9345d75725a6196c4c866",
         "95ea881b0df4f5eeeb2fef37f2755928",
         "ba7b307891b2b1430647b66148da1e9b",
         "bbf768baa4ddc0440c2c10a587b983dd"
@@ -180,18 +178,18 @@
   "focusDrivers": [
     {
       "label": "Banques centrales / Taux",
-      "weight": 0.89,
-      "description": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Investing.com, Financial Times, FXStreet)."
+      "weight": 0.87,
+      "description": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 18 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, Investing.com, FXStreet)."
     },
     {
       "label": "Tarifs / Géopolitique commerciale",
       "weight": 0.81,
-      "description": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 29 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian, OilPrice)."
+      "description": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 27 article(s) sur les dernières 24h (sources: Telegraph Business, Financial Times, The Guardian)."
     },
     {
       "label": "Énergie & Commodities",
       "weight": 0.75,
-      "description": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice, CNBC)."
+      "description": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 5 article(s) sur les dernières 24h (sources: OilPrice)."
     }
   ],
   "marketRegime": {

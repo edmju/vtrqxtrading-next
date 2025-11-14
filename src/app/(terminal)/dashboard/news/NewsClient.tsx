@@ -1,7 +1,8 @@
 // src/app/(terminal)/dashboard/news/NewsClient.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Article = {
   id: string;
@@ -28,7 +29,6 @@ type AIAction = {
   reason: string;
   evidenceIds?: string[];
 
-  // Champs optionnels renvoyés par ton backend
   explanation?: string;
   horizon?: string;
   themeLabel?: string;
@@ -106,6 +106,46 @@ function badgeConf(c: number) {
   return "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
 }
 
+type HeatLevel = "superhot" | "hot" | "medium" | "low";
+
+function getHeatLevel(article: Article): HeatLevel {
+  const score = article.score ?? 0;
+  const h = hoursSince(article.publishedAt);
+  const imp = impactLabel(score, article.publishedAt);
+
+  if ((imp === "High" && h <= 12) || score >= 20) return "superhot";
+  if (imp === "High" || (imp === "Medium" && h <= 48) || score >= 10)
+    return "hot";
+  if (imp === "Medium" || score >= 4) return "medium";
+  return "low";
+}
+
+function heatLabel(level: HeatLevel) {
+  switch (level) {
+    case "superhot":
+      return "Super hot";
+    case "hot":
+      return "Hot";
+    case "medium":
+      return "Medium";
+    case "low":
+      return "Low";
+  }
+}
+
+function heatPillClass(level: HeatLevel) {
+  switch (level) {
+    case "superhot":
+      return "bg-red-600 text-white";
+    case "hot":
+      return "bg-orange-500 text-white";
+    case "medium":
+      return "bg-amber-400 text-black";
+    case "low":
+      return "bg-neutral-500 text-white";
+  }
+}
+
 function inferMarketRegime(themes: AITheme[], actions: AIAction[]) {
   const text = (
     themes.map((t) => t.label + " " + (t.summary || "")).join(" ") +
@@ -156,7 +196,7 @@ function inferFocus(themes: AITheme[]) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Explication IA courte par trade                                           */
+/*  Explication IA courte et causale par trade                                */
 /* -------------------------------------------------------------------------- */
 
 function buildActionExplanation(action: AIAction, proofsCount: number) {
@@ -164,20 +204,24 @@ function buildActionExplanation(action: AIAction, proofsCount: number) {
   const bias =
     action.direction === "BUY" ? "biais haussier" : "biais baissier";
   const horizon = action.horizon || "court terme";
+  const theme = action.themeLabel || "le thème principal suivi par l’IA";
+  const articlesPart =
+    proofsCount > 0 || action.articleCount
+      ? `${action.articleCount ?? proofsCount} article(s) poussent dans le même sens`
+      : "plusieurs signaux convergent dans le même sens";
   const core =
     (action.explanation || action.reason || "").replace(/\s+/g, " ").trim();
 
-  const header = `IA → ${verb} ${action.symbol} (${bias}, ${horizon}, conv. ${action.conviction}/10, conf. ${action.confidence}/100).`;
+  const sentence1 = `Il se passe trois choses en même temps : 1) ${theme} ressort nettement dans le flux, 2) ${articlesPart}, 3) l’IA détecte un ${bias} avec conviction ${action.conviction}/10 et confiance ${action.confidence}/100.`;
+  const sentence2 = `Donc ces trois blocs pointent dans la même direction : on privilégie ${verb.toUpperCase()} ${action.symbol}, car ce contexte augmente la probabilité d’un mouvement ${
+    action.direction === "BUY" ? "haussier" : "baissier"
+  } et réduit la probabilité du scénario inverse.`;
 
   if (core) {
-    return `${header} ${core}`;
+    return `IA : ${sentence1} En plus, elle résume le setup ainsi : ${core}. ${sentence2}`;
   }
 
-  if (proofsCount > 0) {
-    return `${header} Signal appuyé par ${proofsCount} news convergentes.`;
-  }
-
-  return header;
+  return `IA : ${sentence1} ${sentence2}`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -291,6 +335,16 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
 /* -------------------------------------------------------------------------- */
 
 export default function NewsClient({ news, ai }: Props) {
+  const router = useRouter();
+
+  // Refresh auto toutes les heures
+  useEffect(() => {
+    const id = setInterval(() => {
+      router.refresh();
+    }, 60 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [router]);
+
   const index = useMemo(
     () => new Map(news.articles.map((a) => [a.id, a] as const)),
     [news.articles]
@@ -310,6 +364,11 @@ export default function NewsClient({ news, ai }: Props) {
     return map;
   }, [ai.mainThemes, index]);
 
+  const themeOptions = useMemo(() => {
+    const labels = ai.mainThemes.map((t) => t.label).filter(Boolean);
+    return Array.from(new Set(labels));
+  }, [ai.mainThemes]);
+
   const themeCounts: Record<string, number> = useMemo(() => {
     const counts: Record<string, number> = {};
     ai.mainThemes.forEach((t) => {
@@ -326,26 +385,181 @@ export default function NewsClient({ news, ai }: Props) {
   const regimeText = inferMarketRegime(ai.mainThemes, ai.actions);
   const focusText = inferFocus(ai.mainThemes);
 
-  const sortedNews = useMemo(
+  const superHotNews = useMemo(
     () =>
-      [...news.articles].sort(
-        (a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt)
-      ),
+      news.articles
+        .filter((a) => getHeatLevel(a) === "superhot")
+        .sort(
+          (a, b) =>
+            +new Date(b.publishedAt) - +new Date(a.publishedAt)
+        )
+        .slice(0, 15),
     [news.articles]
   );
 
-  // Pas de scrollbar interne : on affiche par blocs, la page scrolle elle-même
-  const [visibleCount, setVisibleCount] = useState(15);
-  const visibleNews = sortedNews.slice(0, visibleCount);
-  const hasMoreNews = visibleCount < sortedNews.length;
+  // Filtres utilisateur
+  const [heatFilter, setHeatFilter] = useState<
+    "all" | HeatLevel
+  >("all");
+  const [sortOrder, setSortOrder] = useState<"recent" | "oldest">(
+    "recent"
+  );
+  const [themeFilter, setThemeFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showAllNews, setShowAllNews] = useState(false);
+
+  const filteredNews = useMemo(() => {
+    let items = [...news.articles];
+
+    if (heatFilter !== "all") {
+      items = items.filter((a) => getHeatLevel(a) === heatFilter);
+    }
+
+    if (themeFilter !== "all") {
+      items = items.filter((a) => {
+        const t = articleThemes.get(a.id) || [];
+        return t.includes(themeFilter);
+      });
+    }
+
+    if (searchTerm.trim()) {
+      const q = searchTerm.trim().toLowerCase();
+      items = items.filter((a) => {
+        if (a.title.toLowerCase().includes(q)) return true;
+        if (a.source.toLowerCase().includes(q)) return true;
+        if (a.description && a.description.toLowerCase().includes(q))
+          return true;
+        return false;
+      });
+    }
+
+    items.sort((a, b) => {
+      const da = +new Date(a.publishedAt);
+      const db = +new Date(b.publishedAt);
+      return sortOrder === "recent" ? db - da : da - db;
+    });
+
+    return items;
+  }, [
+    news.articles,
+    heatFilter,
+    themeFilter,
+    searchTerm,
+    sortOrder,
+    articleThemes,
+  ]);
+
+  const previewCount = 6;
+  const primaryNews = filteredNews.slice(0, previewCount);
+  const extraNews = filteredNews.slice(previewCount);
+
+  const renderNewsItem = (a: Article) => {
+    const impLabel = impactLabel(a.score, a.publishedAt);
+    const themesForArticle = articleThemes.get(a.id) || [];
+    const heat = getHeatLevel(a);
+
+    return (
+      <li
+        key={a.id}
+        className="p-4 hover:bg-neutral-900/70 transition-colors"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1">
+            <a
+              href={a.url}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-neutral-100 hover:text-sky-200 hover:underline"
+            >
+              {a.title}
+            </a>
+            <div className="text-xs text-neutral-400 flex flex-wrap items-center gap-2">
+              <span>{a.source}</span>
+              <span>
+                •{" "}
+                {new Date(a.publishedAt).toLocaleString(undefined, {
+                  hour12: false,
+                })}
+              </span>
+              {typeof a.score === "number" && (
+                <span className="px-1.5 py-0.5 rounded bg-neutral-800/80 text-neutral-200 ring-1 ring-neutral-600/60">
+                  score {a.score}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col items-end gap-1">
+            <span
+              className={
+                "text-xs px-2 py-1 rounded-full whitespace-nowrap " +
+                impactClass(impLabel)
+              }
+            >
+              Impact {impLabel}
+            </span>
+            <span
+              className={
+                "text-[10px] px-1.5 py-0.5 rounded-full " +
+                heatPillClass(heat)
+              }
+            >
+              {heatLabel(heat)}
+            </span>
+          </div>
+        </div>
+
+        {themesForArticle.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {themesForArticle.map((label) => (
+              <span
+                key={label}
+                className="text-[11px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-200 ring-1 ring-violet-600/40"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {a.hits && a.hits.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {a.hits.slice(0, 5).map((h, idxHit) => (
+              <span
+                key={idxHit}
+                className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-200 ring-1 ring-indigo-600/40"
+              >
+                {h}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {a.description && (
+          <p className="mt-2 text-sm text-neutral-300 line-clamp-3">
+            {a.description}
+          </p>
+        )}
+      </li>
+    );
+  };
 
   return (
     <main className="p-6 lg:p-8 space-y-6 lg:space-y-8">
       {/* Bandeau de synthèse */}
       <section className="grid gap-4 lg:gap-6 lg:grid-cols-3">
         <div className="rounded-2xl p-4 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40">
-          <div className="text-xs font-semibold uppercase tracking-wide text-sky-300/80">
-            Flux d’actualités tradables
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-xs font-semibold uppercase tracking-wide text-sky-300/80">
+              Flux d’actualités tradables
+            </div>
+            <button
+              type="button"
+              onClick={() => router.refresh()}
+              className="text-[11px] px-2 py-0.5 rounded-full bg-sky-900/70 text-sky-100 hover:bg-sky-800/80 transition"
+            >
+              Refresh
+            </button>
           </div>
           <div className="mt-3 flex gap-6 text-sm text-sky-100">
             <div>
@@ -369,6 +583,9 @@ export default function NewsClient({ news, ai }: Props) {
               ? new Date(news.generatedAt).toLocaleString()
               : "—"}
           </div>
+          <div className="mt-1 text-[10px] text-sky-300/80">
+            Auto-refresh : toutes les 1h (tant que la page reste ouverte).
+          </div>
         </div>
 
         <div className="rounded-2xl p-4 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40">
@@ -390,9 +607,55 @@ export default function NewsClient({ news, ai }: Props) {
         </div>
       </section>
 
+      {/* Ruban horizontal des super hot news */}
+      {superHotNews.length > 0 && (
+        <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/70 via-red-800/60 to-orange-700/60 shadow-sm shadow-black/40">
+          <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
+            <span className="text-xs font-semibold uppercase tracking-wide text-red-100">
+              Super hot du moment
+            </span>
+            <span className="text-[10px] text-red-100/80">
+              {superHotNews.length} news très sensibles
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <div className="flex gap-3 px-4 py-3 min-w-max">
+              {superHotNews.map((a) => (
+                <a
+                  key={a.id}
+                  href={a.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="min-w-[220px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/50 transition"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-medium text-red-100">
+                      {a.source}
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
+                      Super hot
+                    </span>
+                  </div>
+                  <div className="mt-1 text-xs font-semibold text-neutral-50 line-clamp-2">
+                    {a.title}
+                  </div>
+                  <div className="mt-1 text-[10px] text-red-100/80">
+                    {new Date(a.publishedAt).toLocaleTimeString(undefined, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Layout principal 3 colonnes */}
       <section className="grid gap-6 lg:gap-8 lg:grid-cols-[2.3fr,2fr,2fr]">
-        {/* Colonne 1 : flux de news (sans scrollbar interne) */}
+        {/* Colonne 1 : flux de news avec filtres et liste déroulante */}
         <section className="space-y-3">
           <div className="px-1 flex items-baseline justify-between">
             <div>
@@ -406,107 +669,93 @@ export default function NewsClient({ news, ai }: Props) {
           </div>
 
           <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/60 shadow-sm shadow-black/40">
-            <ul className="divide-y divide-neutral-800/80">
-              {visibleNews.map((a) => {
-                const impLabel = impactLabel(a.score, a.publishedAt);
-                const themesForArticle = articleThemes.get(a.id) || [];
-                return (
-                  <li
-                    key={a.id}
-                    className="p-4 hover:bg-neutral-900/70 transition-colors"
+            {/* Filtres */}
+            <div className="px-4 pt-3 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-neutral-400 mr-1">Température :</span>
+                {[
+                  { key: "all", label: "Tous" as const },
+                  { key: "superhot", label: "Super hot" as const },
+                  { key: "hot", label: "Hot" as const },
+                  { key: "medium", label: "Medium" as const },
+                  { key: "low", label: "Low" as const },
+                ].map((opt) => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() =>
+                      setHeatFilter(opt.key as "all" | HeatLevel)
+                    }
+                    className={
+                      "px-2 py-0.5 rounded-full border text-[11px] " +
+                      (heatFilter === opt.key
+                        ? "border-amber-400 bg-amber-500/20 text-amber-100"
+                        : "border-neutral-700 bg-neutral-900 text-neutral-300 hover:border-neutral-500")
+                    }
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <a
-                          href={a.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-semibold text-neutral-100 hover:text-sky-200 hover:underline"
-                        >
-                          {a.title}
-                        </a>
-                        <div className="text-xs text-neutral-400 flex flex-wrap items-center gap-2">
-                          <span>{a.source}</span>
-                          <span>
-                            •{" "}
-                            {new Date(a.publishedAt).toLocaleString(undefined, {
-                              hour12: false,
-                            })}
-                          </span>
-                          {typeof a.score === "number" && (
-                            <span className="px-1.5 py-0.5 rounded bg-neutral-800/80 text-neutral-200 ring-1 ring-neutral-600/60">
-                              score {a.score}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
 
-                      <span
-                        className={
-                          "text-xs px-2 py-1 rounded-full whitespace-nowrap " +
-                          impactClass(impLabel)
-                        }
-                      >
-                        Impact {impLabel}
-                      </span>
-                    </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <select
+                  value={sortOrder}
+                  onChange={(e) =>
+                    setSortOrder(e.target.value as "recent" | "oldest")
+                  }
+                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none"
+                >
+                  <option value="recent">Plus récentes d’abord</option>
+                  <option value="oldest">Plus anciennes d’abord</option>
+                </select>
 
-                    {themesForArticle.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {themesForArticle.map((label) => (
-                          <span
-                            key={label}
-                            className="text-[11px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-200 ring-1 ring-violet-600/40"
-                          >
-                            {label}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                <select
+                  value={themeFilter}
+                  onChange={(e) => setThemeFilter(e.target.value)}
+                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none max-w-[180px]"
+                >
+                  <option value="all">Tous les thèmes</option>
+                  {themeOptions.map((label) => (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
 
-                    {a.hits && a.hits.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {a.hits.slice(0, 5).map((h, idxHit) => (
-                          <span
-                            key={idxHit}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-200 ring-1 ring-indigo-600/40"
-                          >
-                            {h}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Filtrer par mot-clé…"
+                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none w-[140px]"
+                />
+              </div>
+            </div>
 
-                    {a.description && (
-                      <p className="mt-2 text-sm text-neutral-300 line-clamp-3">
-                        {a.description}
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
+            {/* Liste (preview + déroulante) */}
+            <ul className="divide-y divide-neutral-800/80">
+              {primaryNews.map((a) => renderNewsItem(a))}
 
-              {sortedNews.length === 0 && (
+              {showAllNews &&
+                extraNews.map((a) => renderNewsItem(a))}
+
+              {filteredNews.length === 0 && (
                 <li className="p-4 text-sm text-neutral-400">
-                  Aucune actualité “hot” dans la fenêtre de temps actuelle.
+                  Aucune actualité ne correspond aux filtres actifs.
                 </li>
               )}
             </ul>
 
-            {hasMoreNews && (
+            {extraNews.length > 0 && (
               <div className="border-t border-neutral-800/80 p-3 flex justify-center">
                 <button
                   type="button"
-                  onClick={() =>
-                    setVisibleCount((prev) =>
-                      Math.min(prev + 15, sortedNews.length)
-                    )
-                  }
+                  onClick={() => setShowAllNews((v) => !v)}
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-800/90 text-neutral-50 hover:bg-neutral-700/90 transition"
                 >
-                  Afficher plus de news (
-                  {sortedNews.length - visibleCount}
-                  )
+                  {showAllNews
+                    ? "Réduire la liste"
+                    : `Dérouler la liste complète (${extraNews.length} news)`}
                 </button>
               </div>
             )}
@@ -591,13 +840,13 @@ export default function NewsClient({ news, ai }: Props) {
               const proofs = (action.evidenceIds || [])
                 .map((id) => index.get(id))
                 .filter(Boolean) as Article[];
-              return (
-                <ActionCard
-                  key={`${action.symbol}-${action.direction}-${action.confidence}-${action.conviction}`}
-                  action={action}
-                  proofs={proofs}
-                />
-              );
+            return (
+              <ActionCard
+                key={`${action.symbol}-${action.direction}-${action.confidence}-${action.conviction}`}
+                action={action}
+                proofs={proofs}
+              />
+            );
             })}
 
             {ai.actions.length === 0 && (

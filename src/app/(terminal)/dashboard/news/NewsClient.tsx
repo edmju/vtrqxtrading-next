@@ -1,3 +1,4 @@
+// src/app/(terminal)/dashboard/news/NewsClient.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -24,6 +25,17 @@ type Theme = AiTheme & {
 type Action = AiAction & {
   symbol: string;
   direction: "BUY" | "SELL";
+};
+
+type NewsBundle = {
+  generatedAt: string;
+  total: number;
+  articles: Article[];
+};
+
+type NewsClientProps = {
+  news: NewsBundle;
+  ai: AiOutputs | null;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -404,13 +416,8 @@ function ActionCard({
 /*  Composant principal                                                       */
 /* -------------------------------------------------------------------------- */
 
-export function NewsClient({
-  bundle,
-  ai,
-}: {
-  bundle: { generatedAt: string; total: number; articles: Article[] };
-  ai: AiOutputs | null;
-}) {
+export default function NewsClient({ news, ai }: NewsClientProps) {
+  const bundle = news;
   const articles = bundle.articles || [];
   const mainThemes: Theme[] = ai?.mainThemes || [];
   const actions: Action[] = (ai?.actions || []) as Action[];
@@ -466,9 +473,7 @@ export function NewsClient({
     if (labels.length === 2) {
       return `Focales du moment : ${labels[0]} & ${labels[1]}.`;
     }
-    return `Focales du moment : ${labels
-      .slice(0, 3)
-      .join(" / ")}.`;
+    return `Focales du moment : ${labels.slice(0, 3).join(" / ")}.`;
   }, [mainThemes]);
 
   const firstGenerated =

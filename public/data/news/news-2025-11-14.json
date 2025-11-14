@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-14T15:49:04.002Z",
+  "generatedAt": "2025-11-14T18:58:22.839Z",
   "total": 60,
   "articles": [
     {
@@ -31,6 +31,37 @@
         "fed",
         "tariff",
         "inflation"
+      ]
+    },
+    {
+      "url": "https://www.theguardian.com/business/2025/nov/13/amid-disappointing-uk-growth-how-can-rachel-reeves-escape-the-doom-loop",
+      "title": "Amid disappointing UK growth, how can Rachel Reeves escape the doom loop?",
+      "publishedAt": "2025-11-13T09:01:34.000Z",
+      "description": "Stronger finances require a stronger economy, but budget tax rises and spending cuts could squeeze activity further• Business live – latest updates• Economy grew by just 0.1% in third quarter amid hit from JLR cyber-attackRachel Reeves’s autumn budget is not simple: Britain’s economy is misfiring and things need turning around fast. Yet a fiscal consolidation on the scale the chancellor is expected to require could push in exactly the opposite direction.The latest figures from the economy are hardly encouraging. Growth slowed from 0.3% in the second quarter to just 0.1% in the third, driven down in part by the cyber-attack on Jaguar Land Rover. Continue reading...",
+      "source": "The Guardian",
+      "lang": "en",
+      "id": "50d197c9853c7065f6bcee4c6d1e79e5",
+      "score": 21,
+      "hits": [
+        "cyber attack",
+        "spending cuts",
+        "budget",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/economic-indicators/details-of-swissus-trade-deal-could-emerge-on-friday-4358228",
+      "title": "Switzerland wins US tariff rate cut to 15%, pledges $200 billion in US investments",
+      "publishedAt": "2025-11-14T18:48:28.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "4204c199cc6a84d4ef8fe70e2584e02c",
+      "score": 17,
+      "hits": [
+        "rate cut",
+        "tariff",
+        "percent"
       ]
     },
     {
@@ -73,20 +104,6 @@
       "hits": [
         "rate cut",
         "tariff"
-      ]
-    },
-    {
-      "url": "https://www.investing.com/news/stock-market-news/swiss-machine-maker-feels-heat-from-auto-sector-slowdown-trumps-tariffs-4357703",
-      "title": "Swiss machine maker feels heat from auto sector slowdown, Trump’s tariffs",
-      "publishedAt": "2025-11-14T15:37:05.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "4cbc0cb394a3f4c016e5c90ac737222f",
-      "score": 15,
-      "hits": [
-        "tariff",
-        "slowdown"
       ]
     },
     {
@@ -188,26 +205,39 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/jefferies-upgrades-gap-to-buy-citing-momentum-across-brands-and-margin-upside-4359582",
-      "title": "Jefferies upgrades Gap to Buy, citing momentum across brands and margin upside",
-      "publishedAt": "2025-11-14T15:41:00.000Z",
+      "url": "https://www.investing.com/news/filings/form-10q-lake-superior-acquisition-corp-unit-for-14-november-93CH-4360070",
+      "title": "Form 10Q Lake Superior Acquisition Corp Unit For: 14 November",
+      "publishedAt": "2025-11-14T18:47:20.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "a63355ec180666617f7c9eed0191f896",
+      "id": "108fa3c423941c9e53cf335025509214",
       "score": 9,
       "hits": [
-        "upgrade"
+        "acquisition"
       ]
     },
     {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Carlyle-Eyes-Lukoil-Assets-After-Gunvors-22-Billion-Deal-Collapses.html",
-      "title": "Carlyle Eyes Lukoil Assets After Gunvor&#039;s $22 Billion Deal Collapses",
-      "publishedAt": "2025-11-14T07:00:00.000Z",
-      "description": "Carlyle is in talks with Lukoil for the potential acquisition of the latter’s international operations, Reuters has reported, citing unnamed sources. The news follows Gunvor’s attempt to buy the assets, only to change its mind after the Trump administration called it a “Kremlin puppet” and said it would block the deal. The private equity major is still in the early stage of the negotiations, but it has applied for a license that would clear the way to an acquisition, one of the Reuters sources told the publication. The next…",
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Indias-Refiners-Turn-to-the-US-in-Break-from-the-Gulf.html",
+      "title": "India’s Refiners Turn to the U.S. in Break from the Gulf",
+      "publishedAt": "2025-11-14T17:45:00.000Z",
+      "description": "India’s state-run refiners have locked in their first-ever long-term deal to import U.S. liquefied petroleum gas (LPG), awarding tenders to Chevron, Phillips 66, and TotalEnergies Trading for delivery beginning in 2026—a move that marks a geopolitical and commercial break from the Middle East and a step toward appeasing Washington. The deal covers around 2 million metric tons of LPG—some 48 very large gas carrier cargoes—jointly purchased by Indian Oil, Bharat Petroleum, and Hindustan Petroleum. It’s the first time…",
       "source": "OilPrice",
       "lang": "en",
-      "id": "7b94a76d485262f6ec6ca5306be002a8",
+      "id": "95ea881b0df4f5eeeb2fef37f2755928",
+      "score": 9,
+      "hits": [
+        "fine"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Energy/Energy-General/EC-Conditionally-Approves-ADNOCs-17-Billion-Acquisition-of-Covestro.html",
+      "title": "EC Conditionally Approves ADNOC’s $17-Billion Acquisition of Covestro",
+      "publishedAt": "2025-11-14T17:00:00.000Z",
+      "description": "The European Commission has approved with conditions the $17-billion acquisition by Abu Dhabi National Oil Company (ADNOC) of Germany’s chemicals giant Covestro, the EU’s executive arm said on Friday, following an investigation into foreign subsidies it feared would distort competition. At the end of last year, Abu Dhabi’s oil company agreed to buy Covestro in a deal worth $17 billion (14.7 billion euros) including debt. The deal was one of the largest cash transactions in the chemicals industry ever, as well as the first time…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "ba7b307891b2b1430647b66148da1e9b",
       "score": 9,
       "hits": [
         "acquisition"
@@ -254,6 +284,19 @@
       ]
     },
     {
+      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
+      "title": "US stocks gain ground after global tech rout",
+      "publishedAt": "2025-11-14T17:47:42.000Z",
+      "description": "Doubts over December interest rate cut from Federal Reserve exacerbate jitters about high valuations",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "652e317f0e363f0785f54f8e68e0de5f",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
       "url": "https://oilprice.com/Latest-Energy-News/World-News/Iran-Seizes-Oil-Tanker-in-Gulf-of-Oman.html",
       "title": "Iran Seizes Oil Tanker in Gulf of Oman",
       "publishedAt": "2025-11-14T15:30:00.000Z",
@@ -293,19 +336,6 @@
       ]
     },
     {
-      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
-      "title": "US stocks sink as global tech rout deepens",
-      "publishedAt": "2025-11-14T14:43:55.000Z",
-      "description": "Doubts over December interest rate cut from Federal Reserve exacerbate worries about high valuations",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "0aad6611f04ff5fd9a7777d63c18caef",
-      "score": 8,
-      "hits": [
-        "rate cut"
-      ]
-    },
-    {
       "url": "https://www.ft.com/content/2cda31af-1a6d-496f-91a4-9f6581d5d72d",
       "title": "Meloni’s government eyes Italian family gold in hunt for budget funds",
       "publishedAt": "2025-11-14T14:13:47.000Z",
@@ -330,60 +360,6 @@
       "score": 8,
       "hits": [
         "tariff"
-      ]
-    },
-    {
-      "url": "https://www.scmp.com/economy/china-economy/article/3332847/china-signals-patience-nexperia-row-escalation-seen-possible-talks-loom?utm_source=rss_feed",
-      "title": "China patient in Nexperia row – but escalation seen as possible as talks loom",
-      "publishedAt": "2025-11-14T11:30:19.000Z",
-      "description": "As China and the Netherlands prepare to hold talks next week over the Nexperia chipmaker dispute, Beijing has the patience to resolve the issue through multiple rounds of negotiations to ensure the case remains isolated, analysts said. On Thursday, Dutch Economy Minister Vincent Karremans said a senior government delegation would visit Beijing “to continue our efforts to find a mutually agreeable solution”. The Dutch government took the unusual step of seizing control of Nexperia from its...",
-      "source": "SCMP Markets",
-      "lang": "en",
-      "id": "a815bd740886be6a3bca8513854f28bd",
-      "score": 8,
-      "hits": [
-        "escalation"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Prices-Jump-as-Ukraine-Hits-One-of-Russias-Biggest-Export-Hubs.html",
-      "title": "Oil Prices Soar 2.75% After Ukraine Strike On Major Russian Export Hub",
-      "publishedAt": "2025-11-14T10:30:00.000Z",
-      "description": "Oil prices jumped in early Asian trade on Friday morning as markets responded to renewed Ukrainian attacks on Russia&#039;s energy infrastructure. A Ukrainian drone attack on the Russian Black Sea port of Novorossiysk, one of the country’s most significant oil export hubs, triggered renewed fears of supply disruptions. At the time of writing, WTI had risen 2.71% to $60.28... While Brent was trading at $64.54. The attacks damaged a ship, nearby apartment buildings, and an oil depot, injuring three crew members aboard the vessel, Russian regional…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "a887e23ccbea568bf224c2d30fcf439a",
-      "score": 8,
-      "hits": [
-        "supply disruption",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.theguardian.com/business/2025/nov/14/uk-borrowing-costs-up-after-markets-spooked-by-reeves-income-tax-u-turn",
-      "title": "UK borrowing costs up after markets spooked by Reeves’s income tax U-turn",
-      "publishedAt": "2025-11-14T09:54:15.000Z",
-      "description": "Pound down 0.5% against dollar in early trading after chancellor drops plans for upcoming budgetUK politics live – latest updatesBritain’s borrowing costs have jumped while the pound has dropped after the chancellor’s extraordinary last-minute decision to ditch tax-raising plans in the upcoming budget.Interest rates on government bonds rose by more than 10 basis points in early trading, putting them on track for their worst day since 2 July, when investors responded to a tearful appearance by Rachel Reeves in the House of Commons chamber. The pound, meanwhile, dropped 0.5% against the dollar. Continue reading...",
-      "source": "The Guardian",
-      "lang": "en",
-      "id": "b8e579b1cb1059d85b09de1e625fe860",
-      "score": 8,
-      "hits": [
-        "budget",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/13/markets-rethink-december-rate-cut-amid-fed-doubts.html",
-      "title": "Markets no longer view the December rate cut as a sure bet, with Fed officials casting doubts",
-      "publishedAt": "2025-11-13T19:36:39.000Z",
-      "description": "Fed Chair Jerome Powell wasn't kidding a couple weeks ago when he said a December rate cut wasn't in the bag.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "2d2029dab1f2bc9a56f55be6f86f6d27",
-      "score": 8,
-      "hits": [
-        "rate cut"
       ]
     },
     {
@@ -801,6 +777,32 @@
       "score": 8,
       "hits": [
         "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/03/28/uk-economy-nears-stagnation-rachel-reeves-markets-live/",
+      "title": "Stock markets sink as Trump tariffs trigger price rise fears",
+      "publishedAt": "2025-03-28T18:13:42.000Z",
+      "description": "Stock markets sink as Trump tariffs trigger price rise fears",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "3c561a3491941f01c2ff0a96164b46a2",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/1d2b6b1d-44e3-47cf-b009-8dde14a23557",
+      "title": "Borrowing costs jump as investors lose faith in Reeves’ Budget",
+      "publishedAt": "2025-11-14T18:39:31.000Z",
+      "description": "Gilts sell off after government ditches plan to increase income tax rates",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "bfaf14b3b64d7a30a073b2acc806050b",
+      "score": 7,
+      "hits": [
+        "budget"
       ]
     }
   ]

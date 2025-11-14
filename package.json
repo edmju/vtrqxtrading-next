@@ -8,15 +8,12 @@
     "start": "next start",
     "lint": "next lint",
 
-    /* --- NEWS ENGINE --- */
     "news:refresh": "tsx scripts/news/refresh.ts --stage=all",
     "news:reset-cache": "tsx scripts/news/resetCache.ts",
 
-    /* --- DATA FETCHING / CRON --- */
     "update:data": "tsx scripts/update/fetchData.ts",
     "cron:update:data": "node -e \"setInterval(() => require('child_process').exec('pnpm run update:data'), 3600000)\"",
 
-    /* Prisma */
     "postinstall": "prisma generate"
   },
   "dependencies": {

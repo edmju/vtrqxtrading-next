@@ -5,6 +5,9 @@ on:
     - cron: "0 * * * *"   # toutes les heures
   workflow_dispatch:       # déclenchement manuel
 
+permissions:
+  contents: write   # IMPORTANT : autorise le push
+
 jobs:
   refresh:
     runs-on: ubuntu-latest

@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2025-11-14T22:15:06.979Z",
+  "globalScore": 50,
+  "themes": [
+    {
+      "id": "forex",
+      "label": "Forex",
+      "score": 50,
+      "direction": "neutral",
+      "comment": "Forex reste globalement neutre (50/100)."
+    },
+    {
+      "id": "stocks",
+      "label": "Actions",
+      "score": 50,
+      "direction": "neutral",
+      "comment": "Actions reste globalement neutre (50/100)."
+    },
+    {
+      "id": "commodities",
+      "label": "Commodities",
+      "score": 50,
+      "direction": "neutral",
+      "comment": "Commodities reste globalement neutre (50/100)."
+    }
+  ],
+  "riskIndicators": [],
+  "focusDrivers": [],
+  "marketRegime": {
+    "label": "Neutre",
+    "description": "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.",
+    "confidence": 50
+  },
+  "sources": []
+}

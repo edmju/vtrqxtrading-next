@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-14T21:59:06.216Z",
+  "generatedAt": "2025-11-14T22:15:05.528Z",
   "total": 60,
   "articles": [
     {
@@ -19,6 +19,22 @@
       ]
     },
     {
+      "url": "https://www.scmp.com/news/hong-kong/hong-kong-economy/article/3332811/hong-kong-raises-gdp-forecast-32-cent-amid-better-expected-growth?utm_source=rss_feed",
+      "title": "Hong Kong raises GDP growth forecast to 3.2% amid ‘robust’ economic performance",
+      "publishedAt": "2025-11-14T08:40:12.000Z",
+      "description": "The Hong Kong government has revised its gross domestic product (GDP) growth forecast for 2025 from 2 to 3 per cent to 3.2 per cent, with the finance chief attributing the higher projection to better-than-expected performance in the first three quarters and a positive outlook after a slight de-escalation of the US-China trade war. The Census and Statistics Department on Friday revealed that it upgraded the real GDP forecast for 2025 to 3.2 per cent, taking into account the actual outturn of 3.3...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "05d15fda23cc9e7a48960ab964336fb9",
+      "score": 25,
+      "hits": [
+        "trade war",
+        "upgrade",
+        "gdp",
+        "percent"
+      ]
+    },
+    {
       "url": "https://www.telegraph.co.uk/business/2025/04/16/trump-tariffs-us-china-nvidia-ftse-100-markets-latest-news/",
       "title": "Fed chairman defies Trump to warn tariffs will stoke inflation",
       "publishedAt": "2025-04-16T19:01:40.000Z",
@@ -31,6 +47,36 @@
         "fed",
         "tariff",
         "inflation"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/commodities/gold-plunges-rs-5000/10-gram-silver-tanks-rs-8700/kg-2-reasons-for-yellow-metals-sharpest-intraday-slide/articleshow/125330314.cms",
+      "title": "Gold plunges Rs 5,000/10 gram, silver tanks Rs 8,700/kg. 2 reasons for yellow metal's sharpest intraday slide",
+      "publishedAt": "2025-11-14T14:58:08.000Z",
+      "description": "Gold and silver prices saw a significant drop on Friday. This decline was driven by hawkish remarks from U.S. Federal Reserve officials, impacting expectations for a December rate cut. Additionally, the conclusion of the U.S. government shutdown reduced the safe-haven appeal of gold. Experts suggest this weakness in bullion may continue in the near term.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "c2afb471925abde316ac00e7ccce8112",
+      "score": 22,
+      "hits": [
+        "rate cut",
+        "government shutdown",
+        "shutdown"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/imf-warns-of-rising-strains-in-the-us-economy/slideshow/125320142.cms",
+      "title": "IMF warns of rising strains in the US economy",
+      "publishedAt": "2025-11-14T06:47:45.000Z",
+      "description": "The IMF highlights growing strains in the U.S. economy as the prolonged government shutdown disrupts data and delays its annual review. Moderating demand, slower job growth, and tariff pressures cloud the outlook, though a rebound is expected early next year. Inflation risks persist, while U.S. engagement in G20 discussions remains critical.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "fe3776472038a46975a3ea75f1393985",
+      "score": 22,
+      "hits": [
+        "tariff",
+        "inflation",
+        "shutdown"
       ]
     },
     {
@@ -61,6 +107,64 @@
       "hits": [
         "fed",
         "downgrade"
+      ]
+    },
+    {
+      "url": "https://cointelegraph.com/news/bitcoin-falls-6-month-low-etf-demand-collapses-finance-redefined?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "title": "Bitcoin falls to 6-month low as ETF demand collapses: Finance Redefined",
+      "publishedAt": "2025-11-14T19:00:00.000Z",
+      "description": "Bitcoin drops to a six-month low as spot ETF outflows resume despite the US shutdown ending, signaling weak demand and renewed pressure on crypto markets.",
+      "source": "Cointelegraph",
+      "lang": "en",
+      "id": "103cd9b36558074f1f0428211f70e531",
+      "score": 16,
+      "hits": [
+        "fine",
+        "shutdown"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/stocks/earnings/tata-motors-pv-q2-profit-surges-on-one-time-gain-jlr-hit-hard-by-cyberattack-guidance-cut/articleshow/125330626.cms",
+      "title": "Tata Motors PV Q2 profit surges on one-time Gain; JLR hit hard by cyberattack, guidance cut",
+      "publishedAt": "2025-11-14T15:34:02.000Z",
+      "description": "Tata Motors Passenger Vehicles Ltd saw a huge profit rise in the September quarter. This was mainly due to a large one-time gain. However, Jaguar Land Rover faced production issues after a cyberattack. The Indian passenger vehicle business showed resilience. Demand strengthened during the festive season. Tata Motors expects a strong second half of the financial year.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "03fbba84ecdfbf6bf5f459fd50687618",
+      "score": 16,
+      "hits": [
+        "guidance cut",
+        "cyberattack"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/expert-view/india-can-surprise-on-the-upside-in-202526-if-exports-revive-inflation-stays-low-christian-de-guzman-moodys/articleshow/125324376.cms",
+      "title": "India can surprise on the upside in 2025–26 if exports revive, inflation stays low: Christian de Guzman, Moody’s",
+      "publishedAt": "2025-11-14T10:23:03.000Z",
+      "description": "India’s GDP could outperform Moody’s 6.5% growth forecast for 2025–26 if tariff tensions with the US ease and private-sector investment accelerates, says Moody’s Senior VP Christian de Guzman. Strong domestic demand, low inflation, tax reforms and sustained public capex remain key growth drivers, while consumer-focused sectors may deliver upside despite global uncertainty.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "2228b56755e883ec3f465b61c8c99e52",
+      "score": 16,
+      "hits": [
+        "tariff",
+        "inflation",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/cryptocurrency/crypto-news/bitcoin-crashes-below-100000-triggering-market-panic-as-sell-offs-intensify/articleshow/125319725.cms",
+      "title": "Bitcoin crashes below $100,000, triggering market panic as sell-offs intensify",
+      "publishedAt": "2025-11-14T06:46:57.000Z",
+      "description": "Bitcoin tumbled below $100,000, dropping over 4% to $97,451 and triggering broad market panic as sell-offs intensified. Ethereum and major altcoins also slid sharply, pushing sentiment toward extreme fear. Analysts say uncertainty over U.S. economic data and Fed policy is adding pressure, though long-term accumulation by whales signals underlying support.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "74c478196f34bbc215cfc6268711ca91",
+      "score": 16,
+      "hits": [
+        "fed",
+        "ppi",
+        "percent"
       ]
     },
     {
@@ -176,29 +280,31 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/sec-filings/sonder-holdings-files-for-chapter-7-bankruptcy-and-expects-nasdaq-delisting-93CH-4360376",
-      "title": "Sonder Holdings files for Chapter 7 bankruptcy and expects Nasdaq delisting",
-      "publishedAt": "2025-11-14T21:04:14.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/earnings/muthoot-finance-q2-profit-surges-88-as-gold-loan-demand-hits-new-highs/articleshow/125325704.cms",
+      "title": "Muthoot Finance Q2 profit surges 88% as gold loan demand hits new highs",
+      "publishedAt": "2025-11-14T11:15:26.000Z",
+      "description": "Muthoot Finance posted an 88% jump in Q2 profit to Rs 2,345 crore, driven by strong gold loan demand, a 42% loan book expansion, improved asset quality, and upgraded FY26 growth guidance to 30–35%.",
+      "source": "Economic Times India",
       "lang": "en",
-      "id": "92d3e04ebae874008657d70877ac9f4b",
-      "score": 9,
+      "id": "01ae09fa18302b6ee2cd4d35712b1799",
+      "score": 10,
       "hits": [
-        "bankruptcy"
+        "upgrade",
+        "percent"
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/xyj-technology-files-for-1m-share-ipo-2sh-432SI-4360341",
-      "title": "XYJ Technology files for 1M share IPO $2/sh",
-      "publishedAt": "2025-11-14T20:53:03.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/pine-labs-shares-soar-17-after-strong-listing-ipo-investors-sit-at-28-gains-should-you-enter-now/articleshow/125318911.cms",
+      "title": "Pine Labs shares soar 17% after strong listing, IPO investors sit at 28% gains. Should you enter now?",
+      "publishedAt": "2025-11-14T06:06:20.000Z",
+      "description": "Pine Labs delivered a strong market debut, listing at a 9.5% premium and rallying further to give IPO investors gains of nearly 30% from the IPO price. Brokerages remain positive on the company’s long-term prospects but advise allotted investors to hold.",
+      "source": "Economic Times India",
       "lang": "en",
-      "id": "8b4c532703b856b878a58805484977d1",
-      "score": 9,
+      "id": "17f0473f375613f2759795f00257dee5",
+      "score": 10,
       "hits": [
-        "ipo"
+        "ipo",
+        "percent"
       ]
     },
     {
@@ -212,6 +318,19 @@
       "score": 9,
       "hits": [
         "fine"
+      ]
+    },
+    {
+      "url": "https://www.coindesk.com/policy/2025/11/14/u-s-doj-pursues-north-korea-s-illicit-money-machine-seizes-more-crypto",
+      "title": "U.S. DOJ Pursues North Korea's Illicit Money Machine, Seizes More Crypto",
+      "publishedAt": "2025-11-14T17:46:49.000Z",
+      "description": "U.S. authorities secured several criminal convictions and gathered another $15 million in proceeds from North Korean crypto heists, the Justice Department said.",
+      "source": "Coindesk",
+      "lang": "en",
+      "id": "3fe843917955c585155d35c8f4eca17c",
+      "score": 9,
+      "hits": [
+        "doj"
       ]
     },
     {
@@ -238,6 +357,60 @@
       "score": 9,
       "hits": [
         "acquisition"
+      ]
+    },
+    {
+      "url": "https://cointelegraph.com/news/how-square-s-new-bitcoin-payments-could-change-how-merchants-accept-money-online?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+      "title": "How Square’s new Bitcoin payments could change how merchants accept money online",
+      "publishedAt": "2025-11-14T16:15:07.000Z",
+      "description": "Square’s new Bitcoin payments may redefine how merchants accept money online with faster settlement, lower costs and greater financial control.",
+      "source": "Cointelegraph",
+      "lang": "en",
+      "id": "8c006bca81b348757179724753d1f950",
+      "score": 9,
+      "hits": [
+        "fine"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/dow-jones-crashes-500-points-sp-500-nasdaq-plunge-over-1-as-tech-selloff-extends-rate-cut-hopes-fade/articleshow/125330117.cms",
+      "title": "Dow Jones crashes 500 points, S&P 500, Nasdaq plunge over 1% as tech selloff extends, rate cut hopes fade",
+      "publishedAt": "2025-11-14T14:43:20.000Z",
+      "description": "Wall Street's main indexes dipped on Friday, driven by a renewed selloff in technology stocks, while hawkish commentary from Federal Reserve officials added to doubts about an interest rate cut in December.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "372d18315f3034e0a89127420cf93bea",
+      "score": 9,
+      "hits": [
+        "rate cut",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/sun-tv-q2-pat-down-13-4-pc-to-rs-354-7-cr/articleshow/125328062.cms",
+      "title": "Cricket lifts Sun TV Network’s Q2 earnings as core advertising softens; Rs 3.75/share dividend declared",
+      "publishedAt": "2025-11-14T12:55:57.000Z",
+      "description": "Sun TV Network saw strong second-quarter results driven by its cricket ventures. Contributions from its expanded team portfolio helped counter lower advertising revenue and increased operating expenses. Cricket income significantly boosted performance, with the acquisition of Sunrisers Leeds adding to the revenue stream. Subscription revenue also showed growth, contributing to overall income.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "56c2a308666f77da3ee3a77a28646fcc",
+      "score": 9,
+      "hits": [
+        "acquisition"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/cryptocurrency/crypto-news/bitcoin-slides-to-six-month-low-as-risk-off-tone-grips-markets/articleshow/125327396.cms",
+      "title": "Bitcoin slides to six-month low as risk off tone grips markets",
+      "publishedAt": "2025-11-14T12:29:48.000Z",
+      "description": "Bitcoin has fallen below $96,000, its lowest in six months. This happened as risky assets faced pressure. Expectations for a December rate cut by the U.S. Federal Reserve have decreased. Markets now see a 50% chance for a cut. Ether also saw a decline. This marks Bitcoin's third weekly fall.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "3ef7ef12e1a92e26c781fe962852a345",
+      "score": 9,
+      "hits": [
+        "rate cut",
+        "percent"
       ]
     },
     {
@@ -294,19 +467,6 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/company-news/nuvalent-to-share-pivotal-data-for-alk-inhibitor-in-lung-cancer-93CH-4360381",
-      "title": "Nuvalent to share pivotal data for ALK inhibitor in lung cancer",
-      "publishedAt": "2025-11-14T21:05:05.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "00e1edb524e8bff3b6cbe2752b0732e2",
-      "score": 8,
-      "hits": [
-        "pivot"
-      ]
-    },
-    {
       "url": "https://oilprice.com/Energy/Energy-General/Armenia-Announces-2026-Start-Date-for-Key-Middle-Corridor-Trade-Route.html",
       "title": "Armenia Announces 2026 Start Date for Key Middle Corridor Trade Route",
       "publishedAt": "2025-11-14T21:00:00.000Z",
@@ -320,19 +480,6 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/basketballbritish-basketball-federation-to-enter-liquidation-amid-financial-crisis-4360344",
-      "title": "Basketball-British Basketball Federation to enter liquidation amid financial crisis",
-      "publishedAt": "2025-11-14T20:55:08.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "69520079aab2405b982364fbe9aed759",
-      "score": 8,
-      "hits": [
-        "fed"
-      ]
-    },
-    {
       "url": "https://oilprice.com/Latest-Energy-News/World-News/Iran-Seizes-Oil-Tanker-in-Gulf-of-Oman.html",
       "title": "Iran Seizes Oil Tanker in Gulf of Oman",
       "publishedAt": "2025-11-14T15:30:00.000Z",
@@ -343,6 +490,19 @@
       "score": 8,
       "hits": [
         "escalation"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/forex/forex-news/rbi-conducts-rs-12000-crore-omo-purchase-in-secondary-market/articleshow/125330484.cms",
+      "title": "RBI conducts Rs 12,000 crore OMO purchase in secondary market",
+      "publishedAt": "2025-11-14T15:15:55.000Z",
+      "description": "The central bank bought bonds worth Rs 12,470 crore to boost banking liquidity. This action comes as bond yields are increasing. Market participants believe these purchases may not be enough to lower yields. They suggest the central bank needs to signal support for longer-term bonds. System liquidity remains in surplus due to CRR cuts.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "a2e42a54313b9e54f6180bf52e040ab1",
+      "score": 8,
+      "hits": [
+        "central bank"
       ]
     },
     {
@@ -383,6 +543,58 @@
       "hits": [
         "budget",
         "percent"
+      ]
+    },
+    {
+      "url": "https://www.coindesk.com/business/2025/11/14/tom-lee-s-ethereum-treasury-firm-bitmine-immersion-appoints-chi-tsang-as-ceo",
+      "title": "Tom Lee's Ethereum Treasury Firm BitMine Immersion Appoints Chi Tsang as CEO",
+      "publishedAt": "2025-11-14T14:11:35.000Z",
+      "description": "Tsang has replaced Jonathan Bates, who led the former bitcoin mining firm from its early days through its pivot to an Ethereum treasury strategy.",
+      "source": "Coindesk",
+      "lang": "en",
+      "id": "c3f162daaa4d8563f8c102f2e35be8dc",
+      "score": 8,
+      "hits": [
+        "pivot"
+      ]
+    },
+    {
+      "url": "https://www.scmp.com/economy/china-economy/article/3332847/china-signals-patience-nexperia-row-escalation-seen-possible-talks-loom?utm_source=rss_feed",
+      "title": "China patient in Nexperia row – but escalation seen as possible as talks loom",
+      "publishedAt": "2025-11-14T11:30:19.000Z",
+      "description": "As China and the Netherlands prepare to hold talks next week over the Nexperia chipmaker dispute, Beijing has the patience to resolve the issue through multiple rounds of negotiations to ensure the case remains isolated, analysts said. On Thursday, Dutch Economy Minister Vincent Karremans said a senior government delegation would visit Beijing “to continue our efforts to find a mutually agreeable solution”. The Dutch government took the unusual step of seizing control of Nexperia from its...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "a815bd740886be6a3bca8513854f28bd",
+      "score": 8,
+      "hits": [
+        "escalation"
+      ]
+    },
+    {
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/european-shares-fall-as-us-rate-cut-expectations-wane/articleshow/125322358.cms",
+      "title": "European shares fall as US rate cut expectations wane",
+      "publishedAt": "2025-11-14T08:45:43.000Z",
+      "description": "European stock markets experienced a decline on Friday. This was influenced by cautious remarks from US policymakers regarding interest rate cuts. Despite this dip, the main European index was on track for its best weekly gain since late September. Luxury group Richemont and Siemens Energy saw significant gains. UK stocks lagged due to rising gilt yields.",
+      "source": "Economic Times India",
+      "lang": "en",
+      "id": "6dbc7b7ad1fd8a67613d0ad07f34ab5f",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.scmp.com/news/asia/southeast-asia/article/3332782/malaysian-economys-hot-run-continues-despite-trumps-tariff-squeeze?utm_source=rss_feed",
+      "title": "Malaysian economy’s hot run continues despite Trump’s tariff squeeze",
+      "publishedAt": "2025-11-14T07:03:12.000Z",
+      "description": "Malaysia predicts growth this year is likely to approach 4.8 per cent after a resurgent exports sector defied the impact of US tariffs in the third quarter. The nation’s growth rate in 2025 is set to be “closer to” the upper range of the official forecast of 4 per cent to 4.8 per cent, and may even exceed it, Bank Negara Malaysia Governor Abdul Rasheed Ghaffour said at a briefing in Kuala Lumpur on Friday. An expansion in household spending and sustained investment activity will drive the...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "d2ec7f5fc0d84ebc79336c98a9aff877",
+      "score": 8,
+      "hits": [
+        "tariff"
       ]
     },
     {
@@ -602,201 +814,6 @@
       "source": "Telegraph Business",
       "lang": "en",
       "id": "1be028efdc6b504e859dafc4a01c8eaa",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/27/markets-26052025/",
-      "title": "US tariffs could fall below 10pc, says Trump adviser",
-      "publishedAt": "2025-05-27T16:03:06.000Z",
-      "description": "US tariffs could fall below 10pc, says Trump adviser",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "a2d86b30917523a3effbec356b062a6a",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/26/trump-delays-plans-to-hit-eu-50pc-tariffs/",
-      "title": "Trump delays plans to hit EU with 50pc tariffs",
-      "publishedAt": "2025-05-25T23:25:14.000Z",
-      "description": "US president extends EU’s deadline to agree a trade deal to Jul 9 as initially planned under the 90-day tariff pause",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "e398f1a724cfa4a29d926f5cb952ef79",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/22/reeves-borrowing-economy-ftse-100-markets-uk-latest-news/",
-      "title": "FTSE falls as economists push back bets on rate cuts",
-      "publishedAt": "2025-05-22T17:24:52.000Z",
-      "description": "FTSE falls as economists push back bets on rate cuts",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "075b3ec00f60120831ca9491d281bc66",
-      "score": 8,
-      "hits": [
-        "rate cut"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/09/trump-tariffs-trade-uk-us-eu-andrew-bailey-ftse-100-markets/",
-      "title": "Trump prepares to lower tariffs on China",
-      "publishedAt": "2025-05-09T17:19:42.000Z",
-      "description": "Trump prepares to lower tariffs on China",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "887c76eab27001a0c97ee82c39514873",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/07/trump-tariffs-us-china-talks-fed-interest-rates-markets/",
-      "title": "Fed defies Trump as it declines to lower rates",
-      "publishedAt": "2025-05-07T20:07:21.000Z",
-      "description": "Fed defies Trump as it declines to lower rates",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "495622ba5572a2284adbc978c98be5f1",
-      "score": 8,
-      "hits": [
-        "fed"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/05/01/trump-tariffs-us-china-talks-ftse-100-markets-latest-news/",
-      "title": "Apple warns of $900m hit from Trump’s trade war",
-      "publishedAt": "2025-05-01T22:22:23.000Z",
-      "description": "Apple warns of $900m hit from Trump’s trade war",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "59189ae3404d6645ad5298e1c3c0de60",
-      "score": 8,
-      "hits": [
-        "trade war"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/17/donald-trump-tariffs-latest-ftse-100-gold-ecb-interest-rate/",
-      "title": "Fed chairman in fight to save job as Trump rages",
-      "publishedAt": "2025-04-17T20:17:46.000Z",
-      "description": "Fed chairman in fight to save job as Trump rages",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "cc4f4c3d643f8b1948c702e4da5ef9e1",
-      "score": 8,
-      "hits": [
-        "fed"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/15/trump-tariffs-business-confidence-ftse-100-markets-latest/",
-      "title": "EU faces higher tariffs as US talks break down",
-      "publishedAt": "2025-04-15T18:57:47.000Z",
-      "description": "EU faces higher tariffs as US talks break down",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "b8aabfa4916e75f37a58c2ab3763a92b",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/14/trump-tariffs-china-semiconductor-chips-markets-latest/",
-      "title": "Trump vows tariffs on pharma imports",
-      "publishedAt": "2025-04-14T18:28:16.000Z",
-      "description": "Trump vows tariffs on pharma imports",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "45df0ec6d1299a14692c22b9cfd787bf",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/10/trump-tariffs-climbdown-stocks-surge-markets-latest/",
-      "title": "Wall Street plunges after China hit with 145pc tariff",
-      "publishedAt": "2025-04-10T20:31:19.000Z",
-      "description": "Wall Street plunges after China hit with 145pc tariff",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "21df40ae1c1baaf0775b11ef5c3dca34",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/08/trump-tariffs-china-trade-war-ftse-100-markets-latest-news/",
-      "title": "US stocks fall after Trump confirms 104pc tariffs on China",
-      "publishedAt": "2025-04-09T00:57:48.000Z",
-      "description": "US stocks fall after Trump confirms 104pc tariffs on China",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "019ab3f5d60cc181ad3d258caecbe1a3",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/07/donald-trump-tariffs-market-reaction-live/",
-      "title": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
-      "publishedAt": "2025-04-07T21:36:30.000Z",
-      "description": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "7b1b985d9152048c3b542d8b3a087739",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/03/trump-tariffs-eu-cars-ftse-100-markets-latest-news/",
-      "title": "Trump says tariffs going ‘very well’ as stocks sink",
-      "publishedAt": "2025-04-03T21:52:26.000Z",
-      "description": "Trump says tariffs going ‘very well’ as stocks sink",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "33bba78be824e13d59a2e909ab0ff703",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/02/trump-tariffs-liberation-day-ftse-100-markets-latest-news/",
-      "title": "Brexit dividend saves Britain from worst of Trump’s tariffs",
-      "publishedAt": "2025-04-03T01:07:08.000Z",
-      "description": "Brexit dividend saves Britain from worst of Trump’s tariffs",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "78fc6d26542efdfe6aa78f578f4d429d",
-      "score": 8,
-      "hits": [
-        "tariff"
-      ]
-    },
-    {
-      "url": "https://www.telegraph.co.uk/business/2025/04/01/ftse-100-markets-latest-trump-tariffs-liberation-day-gold/",
-      "title": "Trump ‘open’ to negotiation even after tariffs announced",
-      "publishedAt": "2025-04-02T06:27:49.000Z",
-      "description": "Trump ‘open’ to negotiation even after tariffs announced",
-      "source": "Telegraph Business",
-      "lang": "en",
-      "id": "6d42ab9229d07d990ab486475672f35f",
       "score": 8,
       "hits": [
         "tariff"

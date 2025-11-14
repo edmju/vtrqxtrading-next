@@ -2,222 +2,253 @@
 
 import OpenAI from "openai";
 import {
-  SentimentPoint,
-  SentimentSnapshot,
-  SentimentTheme,
-  RiskIndicator,
-  AIFocusDriver,
-  AIMarketRegime
+  type AssetClass,
+  type SentimentPoint,
+  type SentimentSnapshot,
+  type ThemeSentiment,
+  type FocusDriver,
+  type MarketRegime,
 } from "./types";
 
-function clamp(n: number, a: number, b: number) {
-  return Math.max(a, Math.min(b, n));
+function mean(nums: number[]): number {
+  if (!nums.length) return 50;
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
 }
 
-function buildThemes(points: SentimentPoint[]): SentimentTheme[] {
-  const defs: { id: SentimentTheme["id"]; label: string }[] = [
-    { id: "forex", label: "Forex" },
-    { id: "stocks", label: "Actions" },
-    { id: "commodities", label: "Commodities" }
-  ];
+function directionFromScore(score: number): "bullish" | "bearish" | "neutral" {
+  if (score >= 60) return "bullish";
+  if (score <= 40) return "bearish";
+  return "neutral";
+}
 
-  return defs.map(({ id, label }) => {
-    const ps = points.filter((p) => p.assetClass === id);
-    const avg =
-      ps.length === 0
-        ? 50
-        : ps.reduce((s, p) => s + p.score, 0) / ps.length;
+function labelForAssetClass(id: AssetClass): string {
+  switch (id) {
+    case "forex":
+      return "Forex";
+    case "stocks":
+      return "Actions";
+    case "commodities":
+      return "Commodities";
+    default:
+      return id;
+  }
+}
 
-    let direction: SentimentTheme["direction"] = "neutral";
-    if (avg >= 55) direction = "risk-on";
-    else if (avg <= 45) direction = "risk-off";
+function commentForTheme(id: AssetClass, score: number): string {
+  const label = labelForAssetClass(id);
+  const rounded = Math.round(score);
 
-    const comment =
-      avg >= 55
-        ? `${label} penche vers le risk-on (${Math.round(avg)}/100).`
-        : avg <= 45
-        ? `${label} penche vers le risk-off (${Math.round(avg)}/100).`
-        : `${label} reste globalement neutre (${Math.round(avg)}/100).`;
+  if (score >= 60)
+    return `${label} montre un biais plutôt haussier (${rounded}/100).`;
+  if (score <= 40)
+    return `${label} montre un biais plutôt baissier (${rounded}/100).`;
+  return `${label} reste globalement neutre (${rounded}/100).`;
+}
 
+function deterministicMarketRegime(globalScore: number): MarketRegime {
+  const s = Math.round(globalScore);
+  if (s >= 60) {
     return {
-      id,
-      label,
-      score: Math.round(avg),
-      direction,
-      comment
+      label: "Risk-on modéré",
+      description:
+        "Le sentiment agrégé penche vers un scénario risk-on, avec un biais haussier sur les actifs risqués.",
+      confidence: Math.min(100, 30 + (s - 60) * 2),
     };
-  });
-}
-
-function buildRiskIndicators(points: SentimentPoint[]): RiskIndicator[] {
-  const out: RiskIndicator[] = [];
-
-  const cnn = points.find((p) => p.id === "stocks_cnn_fng");
-  if (cnn) {
-    out.push({
-      id: "risk_cnn_fng",
-      label: "CNN Fear & Greed (actions US)",
-      value: `${cnn.score}/100`,
-      score: cnn.score,
-      direction:
-        cnn.score > 55 ? "up" : cnn.score < 45 ? "down" : "neutral",
-      comment:
-        "Indice agrégé basé sur plusieurs indicateurs de marché (volatilité, breadth, options…)."
-    });
   }
-
-  const oil = points.find((p) => p.id === "commod_oilprice");
-  if (oil) {
-    out.push({
-      id: "risk_oil",
-      label: "Sentiment pétrole",
-      value: `${oil.score}/100`,
-      score: oil.score,
-      direction:
-        oil.score > 55 ? "up" : oil.score < 45 ? "down" : "neutral",
-      comment:
-        "Lecture synthétique du biais sur le complexe énergie (pétrole)."
-    });
+  if (s <= 40) {
+    return {
+      label: "Risk-off modéré",
+      description:
+        "Le sentiment agrégé penche vers un scénario risk-off, avec une recherche de sécurité accrue.",
+      confidence: Math.min(100, 30 + (40 - s) * 2),
+    };
   }
-
-  return out;
-}
-
-function deterministicRegime(
-  globalScore: number,
-  themes: SentimentTheme[]
-): { focusDrivers: AIFocusDriver[]; marketRegime: AIMarketRegime } {
-  const drivers: AIFocusDriver[] = [];
-
-  for (const t of themes) {
-    const delta = t.score - 50;
-    const abs = Math.abs(delta);
-    if (abs < 8) continue;
-
-    const dir = delta > 0 ? "risk-on" : "risk-off";
-    const label =
-      dir === "risk-on"
-        ? `${t.label} en risk-on`
-        : `${t.label} en risk-off`;
-
-    drivers.push({
-      label,
-      weight: clamp(abs / 30, 0.2, 1),
-      description: t.comment || ""
-    });
-  }
-
-  let label = "Neutre";
-  let desc =
-    "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.";
-  let conf = 50;
-
-  if (globalScore >= 60) {
-    label = "Bullish / Risk-on";
-    desc =
-      "Régime plutôt risk-on : la majorité des signaux agrégés pointent vers un appétit pour le risque.";
-    conf = clamp(40 + (globalScore - 60) * 2, 60, 95);
-  } else if (globalScore <= 40) {
-    label = "Bearish / Risk-off";
-    desc =
-      "Régime plutôt risk-off : les signaux agrégés reflètent une aversion au risque accrue.";
-    conf = clamp(40 + (40 - globalScore) * 2, 60, 95);
-  }
-
   return {
-    focusDrivers: drivers.slice(0, 3),
-    marketRegime: {
-      label,
-      description: desc,
-      confidence: conf
-    }
+    label: "Neutre",
+    description:
+      "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.",
+    confidence: 50,
   };
 }
 
-export async function analyzeSentimentWithAI(
+function deterministicFocusDrivers(
+  themes: ThemeSentiment[]
+): FocusDriver[] {
+  const spreadSorted = [...themes].sort(
+    (a, b) => Math.abs(b.score - 50) - Math.abs(a.score - 50)
+  );
+
+  const drivers: FocusDriver[] = [];
+  for (const t of spreadSorted) {
+    const delta = Math.abs(t.score - 50);
+    if (delta < 5) continue; // trop proche de neutre
+    const weight = Math.min(1, delta / 30);
+    drivers.push({
+      label: t.label,
+      weight,
+      description: t.comment,
+    });
+    if (drivers.length >= 3) break;
+  }
+  return drivers;
+}
+
+/**
+ * Enrichit la vue avec OpenAI si la clé est dispo.
+ * Si l'appel échoue, on garde les valeurs déterministes.
+ */
+async function enrichWithAI(
+  snapshot: SentimentSnapshot,
   points: SentimentPoint[]
 ): Promise<SentimentSnapshot> {
-  const themes = buildThemes(points);
-  const riskIndicators = buildRiskIndicators(points);
-
-  const allScores = points.length
-    ? points.map((p) => p.score)
-    : [50];
-
-  const globalScore =
-    allScores.reduce((s, v) => s + v, 0) / allScores.length;
-
-  const base = deterministicRegime(globalScore, themes);
-
-  let snapshot: SentimentSnapshot = {
-    generatedAt: new Date().toISOString(),
-    globalScore: Math.round(globalScore),
-    themes,
-    riskIndicators,
-    focusDrivers: base.focusDrivers,
-    marketRegime: base.marketRegime,
-    sources: Array.from(new Set(points.map((p) => p.label))).sort()
-  };
-
-  if (!process.env.OPENAI_API_KEY) {
-    return snapshot;
-  }
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return snapshot;
 
   try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const client = new OpenAI({ apiKey });
     const model = process.env.SENTIMENT_MODEL || "gpt-4.1-mini";
 
     const payload = {
       globalScore: snapshot.globalScore,
-      themes: snapshot.themes,
-      riskIndicators: snapshot.riskIndicators
+      themes: snapshot.themes.map((t) => ({
+        id: t.id,
+        label: t.label,
+        score: t.score,
+        direction: t.direction,
+      })),
+      rawPoints: points.slice(0, 80).map((p) => ({
+        source: p.source,
+        assetClass: p.assetClass,
+        score: p.score,
+      })),
     };
 
-    const sys =
-      "Tu es un stratégiste macro buy-side. " +
-      "On te donne un score global de sentiment (0..100, 50 neutre) et trois thèmes (forex, actions, commodities). " +
-      "Tu dois proposer des focus drivers clairs et un régime de marché. " +
-      "Réponds STRICTEMENT en JSON: { \"focusDrivers\": [...], \"marketRegime\": { ... } }";
+    const sys = `
+Tu es un stratégiste macro multi-actifs.
+On te donne des scores de sentiment agrégés (0–100) par grande classe d'actifs (forex, actions, commodities) et un score global.
 
-    const user = JSON.stringify(payload);
+Ta mission:
+1) Reformuler un régime de marché synthétique (1 phrase).
+2) Identifier 1 à 3 "focus drivers" logiques (par ex. "appétit pour le risque sur actions", "aversion au risque sur commodities", etc.)
+3) Donner une confiance globale 0–100.
 
-    const r = await client.chat.completions.create({
+Réponds en JSON strict:
+{
+  "marketRegime": { "label": string, "description": string, "confidence": number },
+  "focusDrivers": [
+    { "label": string, "description": string, "weight": number }
+  ]
+}
+`;
+
+    const res = await client.chat.completions.create({
       model,
       temperature: 0.2,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: sys },
-        { role: "user", content: user }
-      ]
+        { role: "user", content: JSON.stringify(payload) },
+      ],
     });
 
-    const raw = JSON.parse(r.choices[0]?.message?.content || "{}");
+    const raw = JSON.parse(res.choices[0]?.message?.content || "{}");
 
-    if (Array.isArray(raw.focusDrivers)) {
-      snapshot.focusDrivers = raw.focusDrivers.map((d: any) => ({
-        label: String(d.label || ""),
-        weight: clamp(Number(d.weight ?? 0.5), 0, 1),
-        description: String(d.description || "")
-      }));
-    }
+    const next: SentimentSnapshot = { ...snapshot };
 
     if (raw.marketRegime) {
-      snapshot.marketRegime = {
-        label: String(raw.marketRegime.label || base.marketRegime.label),
+      const mr = raw.marketRegime;
+      next.marketRegime = {
+        label: String(mr.label || snapshot.marketRegime.label),
         description:
-          String(raw.marketRegime.description || base.marketRegime.description),
-        confidence: clamp(
-          Number(
-            raw.marketRegime.confidence ?? base.marketRegime.confidence
-          ),
-          0,
-          100
-        )
+          String(mr.description || snapshot.marketRegime.description),
+        confidence:
+          typeof mr.confidence === "number"
+            ? Math.max(0, Math.min(100, Math.round(mr.confidence)))
+            : snapshot.marketRegime.confidence,
       };
     }
+
+    if (Array.isArray(raw.focusDrivers) && raw.focusDrivers.length) {
+      next.focusDrivers = raw.focusDrivers
+        .slice(0, 3)
+        .map((d: any) => ({
+          label: String(d.label || "Driver"),
+          description: String(d.description || "").slice(0, 280),
+          weight:
+            typeof d.weight === "number"
+              ? Math.max(0, Math.min(1, d.weight))
+              : 0.5,
+        }));
+    }
+
+    return next;
   } catch (err) {
-    console.error("[sentiment] Erreur OpenAI, fallback déterministe utilisé :", err);
+    console.warn("[sentiment] OpenAI enrichment failed", err);
+    return snapshot;
   }
+}
+
+/**
+ * Point d'entrée principal: transforme des points bruts en snapshot
+ * consommable par la page Sentiment.
+ */
+export async function buildSentimentSnapshot(
+  points: SentimentPoint[]
+): Promise<SentimentSnapshot> {
+  const perClass: Record<AssetClass, number[]> = {
+    forex: [],
+    stocks: [],
+    commodities: [],
+  };
+
+  for (const p of points) {
+    if (p.score >= 0 && p.score <= 100) {
+      perClass[p.assetClass]?.push(p.score);
+    }
+  }
+
+  const themes: ThemeSentiment[] = (["forex", "stocks", "commodities"] as AssetClass[]).map(
+    (id) => {
+      const scores = perClass[id];
+      const score = mean(scores);
+      return {
+        id,
+        label: labelForAssetClass(id),
+        score: Math.round(score),
+        direction: directionFromScore(score),
+        comment: commentForTheme(id, score),
+      };
+    }
+  );
+
+  const allScores = points.map((p) => p.score);
+  const globalScore = Math.round(mean(allScores));
+
+  let snapshot: SentimentSnapshot = {
+    generatedAt: new Date().toISOString(),
+    globalScore,
+    themes,
+    riskIndicators: [],
+    focusDrivers: deterministicFocusDrivers(themes),
+    marketRegime: deterministicMarketRegime(globalScore),
+    sources: points.length
+      ? Array.from(
+          new Map(
+            points.map((p) => [
+              `${p.source}-${p.assetClass}`,
+              {
+                name: p.source,
+                assetClass: p.assetClass,
+                weight: 1,
+              },
+            ])
+          ).values()
+        )
+      : [],
+  };
+
+  // Enrichissement IA si possible
+  snapshot = await enrichWithAI(snapshot, points);
 
   return snapshot;
 }

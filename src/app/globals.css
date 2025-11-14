@@ -113,3 +113,20 @@ a, button { -webkit-tap-highlight-color: transparent; }
 .superhot-marquee-track:hover {
   animation-play-state: paused;
 }
+
+.superhot-marquee-outer {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.superhot-marquee-track {
+  display: flex;
+  gap: 12px;
+  animation: superhot-scroll 25s linear infinite;
+}
+
+@keyframes superhot-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

@@ -29,6 +29,7 @@ type AIAction = {
   reason: string;
   evidenceIds?: string[];
 
+  // Enrichi par le backend / scripts OpenAI
   explanation?: string;
   horizon?: string;
   themeLabel?: string;
@@ -195,33 +196,15 @@ function inferFocus(themes: AITheme[]) {
   return `Focales du moment : ${names.join(" · ")}.`;
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Explication IA courte et causale par trade                                */
-/* -------------------------------------------------------------------------- */
-
-function buildActionExplanation(action: AIAction, proofsCount: number) {
+function fallbackExplanation(action: AIAction, proofsCount: number) {
   const verb = action.direction === "BUY" ? "acheter" : "vendre";
   const bias =
     action.direction === "BUY" ? "biais haussier" : "biais baissier";
-  const horizon = action.horizon || "court terme";
   const theme = action.themeLabel || "le thème principal suivi par l’IA";
-  const articlesPart =
-    proofsCount > 0 || action.articleCount
-      ? `${action.articleCount ?? proofsCount} article(s) poussent dans le même sens`
-      : "plusieurs signaux convergent dans le même sens";
-  const core =
-    (action.explanation || action.reason || "").replace(/\s+/g, " ").trim();
-
-  const sentence1 = `Il se passe trois choses en même temps : 1) ${theme} ressort nettement dans le flux, 2) ${articlesPart}, 3) l’IA détecte un ${bias} avec conviction ${action.conviction}/10 et confiance ${action.confidence}/100.`;
-  const sentence2 = `Donc ces trois blocs pointent dans la même direction : on privilégie ${verb.toUpperCase()} ${action.symbol}, car ce contexte augmente la probabilité d’un mouvement ${
-    action.direction === "BUY" ? "haussier" : "baissier"
-  } et réduit la probabilité du scénario inverse.`;
-
-  if (core) {
-    return `IA : ${sentence1} En plus, elle résume le setup ainsi : ${core}. ${sentence2}`;
-  }
-
-  return `IA : ${sentence1} ${sentence2}`;
+  const articles = action.articleCount ?? proofsCount;
+  return `Setup synthèse : ${theme}, ${articles} article(s) alignés, ${bias} (conviction ${action.conviction}/10, confiance ${action.confidence}/100) → idée : ${verb.toUpperCase()} ${
+    action.symbol
+  }.`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -231,7 +214,9 @@ function buildActionExplanation(action: AIAction, proofsCount: number) {
 function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] }) {
   const [open, setOpen] = useState(false);
   const totalSources = proofs.length;
-  const explanation = buildActionExplanation(action, totalSources);
+  const shortText =
+    (action.explanation || "").split("\n")[0]?.slice(0, 260) ||
+    fallbackExplanation(action, totalSources);
   const horizon = action.horizon;
   const themeLabel = action.themeLabel;
   const articleCount = action.articleCount ?? totalSources;
@@ -242,7 +227,7 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
         <div className="flex flex-col gap-2">
           <div
             className={
-              "inline-flex items-center justify-center text-xs px-2 py-1 rounded-full font-semibold " +
+              "inline-flex items-center justify-center text-xs px-3 py-1 rounded-full font-semibold " +
               badgeDir(action.direction)
             }
           >
@@ -252,16 +237,22 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
             <span className="font-medium text-neutral-100">
               Conviction {action.conviction}/10
             </span>
+            {horizon && (
+              <>
+                <span className="opacity-50">•</span>
+                <span>{horizon}</span>
+              </>
+            )}
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-1">
-          <span className="text-xs px-2 py-1 rounded-full bg-neutral-800 text-neutral-100">
+          <span className="text-xs px-3 py-1 rounded-full bg-neutral-800 text-neutral-100">
             {action.symbol}
           </span>
           <span
             className={
-              "text-xs px-2 py-1 rounded-full font-medium " +
+              "text-xs px-3 py-1 rounded-full font-medium " +
               badgeConf(action.confidence)
             }
           >
@@ -270,47 +261,41 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
         </div>
       </header>
 
-      <div className="mt-3 space-y-1 text-xs text-neutral-300">
+      <div className="mt-3 grid grid-cols-[auto,1fr] gap-x-2 gap-y-1 text-[11px] text-neutral-300">
         {themeLabel && (
-          <p>
-            Signal basé sur le thème{" "}
-            <span className="font-semibold text-neutral-100">
-              « {themeLabel} »
+          <>
+            <span className="text-neutral-400">Thème</span>
+            <span className="font-medium text-neutral-100">
+              {themeLabel}
+              {articleCount
+                ? ` · ${articleCount} article(s) alignés`
+                : ""}
             </span>
-            {articleCount ? ` (${articleCount} article(s)).` : "."}
-          </p>
+          </>
         )}
-        {horizon && (
-          <p className="text-neutral-400">
-            Horizon indicatif : <span className="font-medium">{horizon}</span>
-          </p>
-        )}
+        <span className="text-neutral-400">Lecture IA</span>
+        <span className="text-neutral-100">{shortText}</span>
       </div>
-
-      <p className="mt-3 text-sm leading-relaxed text-neutral-200">
-        <span className="font-semibold text-neutral-50">Explication IA : </span>
-        {explanation}
-      </p>
 
       {totalSources > 0 && (
         <div className="mt-4 border-t border-neutral-800/80 pt-3">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700/80 transition"
+            className="text-[11px] inline-flex items-center gap-1 px-3 py-1 rounded-full bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700/80 transition"
           >
             <span>
               Basé sur {totalSources} source{totalSources > 1 ? "s" : ""}
             </span>
-            <span className="text-[10px] opacity-80">
-              {open ? "▲ cacher les sources" : "▼ voir la liste des sources"}
+            <span className="text-[9px] opacity-80">
+              {open ? "▲ cacher" : "▼ voir la liste"}
             </span>
           </button>
 
           {open && (
             <ul className="mt-2 space-y-1 pl-1">
               {proofs.map((p) => (
-                <li key={p.id} className="text-xs text-neutral-400">
+                <li key={p.id} className="text-[11px] text-neutral-400">
                   •{" "}
                   <a
                     className="underline hover:text-neutral-100"
@@ -337,7 +322,7 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
 export default function NewsClient({ news, ai }: Props) {
   const router = useRouter();
 
-  // Refresh auto toutes les heures
+  // Refresh client toutes les heures (décalé à partir de l’ouverture)
   useEffect(() => {
     const id = setInterval(() => {
       router.refresh();
@@ -393,17 +378,13 @@ export default function NewsClient({ news, ai }: Props) {
           (a, b) =>
             +new Date(b.publishedAt) - +new Date(a.publishedAt)
         )
-        .slice(0, 15),
+        .slice(0, 12),
     [news.articles]
   );
 
-  // Filtres utilisateur
-  const [heatFilter, setHeatFilter] = useState<
-    "all" | HeatLevel
-  >("all");
-  const [sortOrder, setSortOrder] = useState<"recent" | "oldest">(
-    "recent"
-  );
+  // Filtres
+  const [heatFilter, setHeatFilter] = useState<"all" | HeatLevel>("all");
+  const [sortOrder, setSortOrder] = useState<"recent" | "oldest">("recent");
   const [themeFilter, setThemeFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [showAllNews, setShowAllNews] = useState(false);
@@ -469,11 +450,11 @@ export default function NewsClient({ news, ai }: Props) {
               href={a.url}
               target="_blank"
               rel="noreferrer"
-              className="font-semibold text-neutral-100 hover:text-sky-200 hover:underline"
+              className="font-semibold text-[15px] text-neutral-100 hover:text-sky-200 hover:underline"
             >
               {a.title}
             </a>
-            <div className="text-xs text-neutral-400 flex flex-wrap items-center gap-2">
+            <div className="text-[11px] text-neutral-400 flex flex-wrap items-center gap-2">
               <span>{a.source}</span>
               <span>
                 •{" "}
@@ -492,7 +473,7 @@ export default function NewsClient({ news, ai }: Props) {
           <div className="flex flex-col items-end gap-1">
             <span
               className={
-                "text-xs px-2 py-1 rounded-full whitespace-nowrap " +
+                "text-[11px] px-2 py-1 rounded-full whitespace-nowrap " +
                 impactClass(impLabel)
               }
             >
@@ -536,7 +517,7 @@ export default function NewsClient({ news, ai }: Props) {
         )}
 
         {a.description && (
-          <p className="mt-2 text-sm text-neutral-300 line-clamp-3">
+          <p className="mt-2 text-[13px] text-neutral-300 line-clamp-3">
             {a.description}
           </p>
         )}
@@ -545,320 +526,328 @@ export default function NewsClient({ news, ai }: Props) {
   };
 
   return (
-    <main className="p-6 lg:p-8 space-y-6 lg:space-y-8">
-      {/* Bandeau de synthèse */}
-      <section className="grid gap-4 lg:gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40">
-          <div className="flex items-center justify-between gap-2">
-            <div className="text-xs font-semibold uppercase tracking-wide text-sky-300/80">
-              Flux d’actualités tradables
+    <main className="py-6 lg:py-8">
+      <div className="space-y-6 lg:space-y-8">
+        {/* Bandeau de synthèse */}
+        <section className="grid gap-4 lg:gap-6 lg:grid-cols-3">
+          <div className="rounded-2xl p-4 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-xs font-semibold uppercase tracking-wide text-sky-300/80">
+                Flux d’actualités tradables
+              </div>
+              <button
+                type="button"
+                onClick={() => router.refresh()}
+                className="text-[11px] px-2 py-0.5 rounded-full bg-sky-900/70 text-sky-100 hover:bg-sky-800/80 transition"
+              >
+                Refresh
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => router.refresh()}
-              className="text-[11px] px-2 py-0.5 rounded-full bg-sky-900/70 text-sky-100 hover:bg-sky-800/80 transition"
-            >
-              Refresh
-            </button>
-          </div>
-          <div className="mt-3 flex gap-6 text-sm text-sky-100">
-            <div>
-              <div className="text-2xl font-semibold">{totalNews}</div>
-              <div className="text-xs text-sky-300/80">
-                news “hot” dans la fenêtre
+            <div className="mt-3 flex gap-6 text-sm text-sky-100">
+              <div>
+                <div className="text-2xl font-semibold">{totalNews}</div>
+                <div className="text-xs text-sky-300/80">
+                  news “hot” dans la fenêtre
+                </div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold">{totalThemes}</div>
+                <div className="text-xs text-sky-300/80">thèmes IA</div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold">{totalActions}</div>
+                <div className="text-xs text-sky-300/80">idées de trades</div>
               </div>
             </div>
-            <div>
-              <div className="text-2xl font-semibold">{totalThemes}</div>
-              <div className="text-xs text-sky-300/80">thèmes IA</div>
+            <div className="mt-3 text-[11px] text-sky-200/80 space-y-1">
+              <div>
+                Dernière collecte :{" "}
+                {news.generatedAt
+                  ? new Date(news.generatedAt).toLocaleString()
+                  : "—"}
+              </div>
+              <div className="text-[10px] text-sky-200/70">
+                Auto-refresh client : toutes les 1h (tant que la page reste
+                ouverte).
+              </div>
             </div>
-            <div>
-              <div className="text-2xl font-semibold">{totalActions}</div>
-              <div className="text-xs text-sky-300/80">idées de trades</div>
+          </div>
+
+          <div className="rounded-2xl p-4 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40">
+            <div className="text-xs font-semibold uppercase tracking-wide text-violet-300/80">
+              Régime de marché (vue IA)
             </div>
+            <p className="mt-3 text-sm text-violet-50 leading-relaxed">
+              {regimeText}
+            </p>
           </div>
-          <div className="mt-3 text-xs text-sky-200/80">
-            Dernière collecte :{" "}
-            {news.generatedAt
-              ? new Date(news.generatedAt).toLocaleString()
-              : "—"}
-          </div>
-          <div className="mt-1 text-[10px] text-sky-300/80">
-            Auto-refresh : toutes les 1h (tant que la page reste ouverte).
-          </div>
-        </div>
 
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40">
-          <div className="text-xs font-semibold uppercase tracking-wide text-violet-300/80">
-            Régime de marché (vue IA)
-          </div>
-          <p className="mt-3 text-sm text-violet-50 leading-relaxed">
-            {regimeText}
-          </p>
-        </div>
-
-        <div className="rounded-2xl p-4 bg-gradient-to-br from-emerald-900/70 via-emerald-800/40 to-emerald-600/20 ring-1 ring-emerald-500/40 shadow-md shadow-emerald-900/40">
-          <div className="text-xs font-semibold uppercase tracking-wide text-emerald-300/80">
-            Focales du moment
-          </div>
-          <p className="mt-3 text-sm text-emerald-50 leading-relaxed">
-            {focusText}
-          </p>
-        </div>
-      </section>
-
-      {/* Ruban horizontal des super hot news */}
-      {superHotNews.length > 0 && (
-        <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/70 via-red-800/60 to-orange-700/60 shadow-sm shadow-black/40">
-          <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
-            <span className="text-xs font-semibold uppercase tracking-wide text-red-100">
-              Super hot du moment
-            </span>
-            <span className="text-[10px] text-red-100/80">
-              {superHotNews.length} news très sensibles
-            </span>
-          </div>
-          <div className="overflow-x-auto">
-            <div className="flex gap-3 px-4 py-3 min-w-max">
-              {superHotNews.map((a) => (
-                <a
-                  key={a.id}
-                  href={a.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="min-w-[220px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/50 transition"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-medium text-red-100">
-                      {a.source}
-                    </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
-                      Super hot
-                    </span>
-                  </div>
-                  <div className="mt-1 text-xs font-semibold text-neutral-50 line-clamp-2">
-                    {a.title}
-                  </div>
-                  <div className="mt-1 text-[10px] text-red-100/80">
-                    {new Date(a.publishedAt).toLocaleTimeString(undefined, {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
-                  </div>
-                </a>
-              ))}
+          <div className="rounded-2xl p-4 bg-gradient-to-br from-emerald-900/70 via-emerald-800/40 to-emerald-600/20 ring-1 ring-emerald-500/40 shadow-md shadow-emerald-900/40">
+            <div className="text-xs font-semibold uppercase tracking-wide text-emerald-300/80">
+              Focales du moment
             </div>
+            <p className="mt-3 text-sm text-emerald-50 leading-relaxed">
+              {focusText}
+            </p>
           </div>
         </section>
-      )}
 
-      {/* Layout principal 3 colonnes */}
-      <section className="grid gap-6 lg:gap-8 lg:grid-cols-[2.3fr,2fr,2fr]">
-        {/* Colonne 1 : flux de news avec filtres et liste déroulante */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-baseline justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-neutral-100">
-                Flux d’actualités tradables
-              </h2>
-              <p className="text-xs text-neutral-400">
-                Impact estimé par score + fraîcheur
-              </p>
+        {/* Ruban horizontal des super hot news */}
+        {superHotNews.length > 0 && (
+          <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40">
+            <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
+              <span className="text-xs font-semibold uppercase tracking-wide text-red-100">
+                Super hot du moment
+              </span>
+              <span className="text-[10px] text-red-100/80">
+                {superHotNews.length} news très sensibles
+              </span>
             </div>
-          </div>
-
-          <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/60 shadow-sm shadow-black/40">
-            {/* Filtres */}
-            <div className="px-4 pt-3 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-neutral-400 mr-1">Température :</span>
-                {[
-                  { key: "all", label: "Tous" as const },
-                  { key: "superhot", label: "Super hot" as const },
-                  { key: "hot", label: "Hot" as const },
-                  { key: "medium", label: "Medium" as const },
-                  { key: "low", label: "Low" as const },
-                ].map((opt) => (
-                  <button
-                    key={opt.key}
-                    type="button"
-                    onClick={() =>
-                      setHeatFilter(opt.key as "all" | HeatLevel)
-                    }
-                    className={
-                      "px-2 py-0.5 rounded-full border text-[11px] " +
-                      (heatFilter === opt.key
-                        ? "border-amber-400 bg-amber-500/20 text-amber-100"
-                        : "border-neutral-700 bg-neutral-900 text-neutral-300 hover:border-neutral-500")
-                    }
+            <div className="overflow-x-auto">
+              <div className="flex gap-3 px-4 py-3 min-w-max">
+                {superHotNews.map((a) => (
+                  <a
+                    key={a.id}
+                    href={a.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="min-w-[230px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition"
                   >
-                    {opt.label}
-                  </button>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-medium text-red-100">
+                        {a.source}
+                      </span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
+                        Super hot
+                      </span>
+                    </div>
+                    <div className="mt-1 text-[12px] font-semibold text-neutral-50 line-clamp-2">
+                      {a.title}
+                    </div>
+                    <div className="mt-1 text-[10px] text-red-100/80">
+                      {new Date(a.publishedAt).toLocaleTimeString(
+                        undefined,
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        }
+                      )}
+                    </div>
+                  </a>
                 ))}
               </div>
+            </div>
+          </section>
+        )}
 
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <select
-                  value={sortOrder}
-                  onChange={(e) =>
-                    setSortOrder(e.target.value as "recent" | "oldest")
-                  }
-                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none"
-                >
-                  <option value="recent">Plus récentes d’abord</option>
-                  <option value="oldest">Plus anciennes d’abord</option>
-                </select>
-
-                <select
-                  value={themeFilter}
-                  onChange={(e) => setThemeFilter(e.target.value)}
-                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none max-w-[180px]"
-                >
-                  <option value="all">Tous les thèmes</option>
-                  {themeOptions.map((label) => (
-                    <option key={label} value={label}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Filtrer par mot-clé…"
-                  className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none w-[140px]"
-                />
+        {/* Layout principal 3 colonnes */}
+        <section className="grid gap-6 lg:gap-8 xl:grid-cols-[minmax(0,2.2fr)_minmax(0,1.8fr)_minmax(0,2fr)] items-start">
+          {/* Colonne 1 : flux de news avec filtres et listing */}
+          <section className="space-y-3">
+            <div className="px-1 flex items-baseline justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-neutral-100">
+                  Flux d’actualités tradables
+                </h2>
+                <p className="text-xs text-neutral-400">
+                  Impact estimé par score + fraîcheur
+                </p>
               </div>
             </div>
 
-            {/* Liste (preview + déroulante) */}
-            <ul className="divide-y divide-neutral-800/80">
-              {primaryNews.map((a) => renderNewsItem(a))}
+            <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/70 shadow-sm shadow-black/40">
+              {/* Filtres */}
+              <div className="px-4 pt-3 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="text-neutral-400 mr-1">Température :</span>
+                  {[
+                    { key: "all", label: "Tous" as const },
+                    { key: "superhot", label: "Super hot" as const },
+                    { key: "hot", label: "Hot" as const },
+                    { key: "medium", label: "Medium" as const },
+                    { key: "low", label: "Low" as const },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() =>
+                        setHeatFilter(opt.key as "all" | HeatLevel)
+                      }
+                      className={
+                        "px-2 py-0.5 rounded-full border text-[11px] " +
+                        (heatFilter === opt.key
+                          ? "border-amber-400 bg-amber-500/20 text-amber-100"
+                          : "border-neutral-700 bg-neutral-900 text-neutral-300 hover:border-neutral-500")
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
 
-              {showAllNews &&
-                extraNews.map((a) => renderNewsItem(a))}
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <select
+                    value={sortOrder}
+                    onChange={(e) =>
+                      setSortOrder(e.target.value as "recent" | "oldest")
+                    }
+                    className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none"
+                  >
+                    <option value="recent">Plus récentes d’abord</option>
+                    <option value="oldest">Plus anciennes d’abord</option>
+                  </select>
 
-              {filteredNews.length === 0 && (
-                <li className="p-4 text-sm text-neutral-400">
-                  Aucune actualité ne correspond aux filtres actifs.
+                  <select
+                    value={themeFilter}
+                    onChange={(e) => setThemeFilter(e.target.value)}
+                    className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none max-w-[180px]"
+                  >
+                    <option value="all">Tous les thèmes</option>
+                    {themeOptions.map((label) => (
+                      <option key={label} value={label}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <input
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Filtrer par mot-clé…"
+                    className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none w-[150px]"
+                  />
+                </div>
+              </div>
+
+              {/* Liste (preview + déroulante) */}
+              <ul className="divide-y divide-neutral-800/80">
+                {primaryNews.map((a) => renderNewsItem(a))}
+
+                {showAllNews &&
+                  extraNews.map((a) => renderNewsItem(a))}
+
+                {filteredNews.length === 0 && (
+                  <li className="p-4 text-sm text-neutral-400">
+                    Aucune actualité ne correspond aux filtres actifs.
+                  </li>
+                )}
+              </ul>
+
+              {extraNews.length > 0 && (
+                <div className="border-t border-neutral-800/80 p-3 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowAllNews((v) => !v)}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-800/90 text-neutral-50 hover:bg-neutral-700/90 transition"
+                  >
+                    {showAllNews
+                      ? "Réduire la liste"
+                      : `Dérouler la liste complète (${extraNews.length} news)`}
+                  </button>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Colonne 2 : radar de thèmes IA */}
+          <section className="space-y-3">
+            <div className="px-1 flex items-baseline justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-neutral-100">
+                  Radar de thèmes (IA)
+                </h2>
+                <p className="text-xs text-neutral-400">
+                  Pondération 0–100 basée sur le flux de titres
+                </p>
+              </div>
+            </div>
+
+            <ul className="space-y-3">
+              {ai.mainThemes.map((t) => {
+                const w = Math.max(0.05, Math.min(1, t.weight || 0));
+                const count = themeCounts[t.label] ?? 0;
+                return (
+                  <li
+                    key={t.label}
+                    className="p-4 rounded-2xl bg-neutral-900/80 ring-1 ring-neutral-700/70 shadow-sm shadow-black/40 hover:ring-violet-500/70 transition"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-neutral-100 font-semibold">
+                          {t.label}
+                        </div>
+                        <div className="text-xs text-neutral-400">
+                          {count} article(s) liés
+                        </div>
+                      </div>
+                      <div className="text-xs text-neutral-300">
+                        poids {(w * 100).toFixed(0)}/100
+                      </div>
+                    </div>
+
+                    <div className="mt-2 h-2 bg-neutral-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-emerald-400 transition-all duration-500"
+                        style={{ width: `${w * 100}%` }}
+                      />
+                    </div>
+
+                    {t.summary && (
+                      <p className="mt-2 text-sm text-neutral-300">
+                        {t.summary}
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+
+              {ai.mainThemes.length === 0 && (
+                <li className="text-sm text-neutral-400 px-1">
+                  Aucun thème clé détecté par l’IA sur la fenêtre actuelle.
                 </li>
               )}
             </ul>
+          </section>
 
-            {extraNews.length > 0 && (
-              <div className="border-t border-neutral-800/80 p-3 flex justify-center">
-                <button
-                  type="button"
-                  onClick={() => setShowAllNews((v) => !v)}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-800/90 text-neutral-50 hover:bg-neutral-700/90 transition"
-                >
-                  {showAllNews
-                    ? "Réduire la liste"
-                    : `Dérouler la liste complète (${extraNews.length} news)`}
-                </button>
+          {/* Colonne 3 : desk de trades IA */}
+          <section className="space-y-3">
+            <div className="px-1 flex items-baseline justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-neutral-100">
+                  Desk de trades (IA)
+                </h2>
+                <p className="text-xs text-neutral-400">
+                  Propositions basées sur les thèmes &amp; news ci-contre
+                </p>
               </div>
-            )}
-          </div>
-        </section>
-
-        {/* Colonne 2 : radar de thèmes IA */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-baseline justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-neutral-100">
-                Radar de thèmes (IA)
-              </h2>
-              <p className="text-xs text-neutral-400">
-                Pondération 0–100 basée sur le flux de titres
-              </p>
             </div>
-          </div>
 
-          <ul className="space-y-3">
-            {ai.mainThemes.map((t) => {
-              const w = Math.max(0.05, Math.min(1, t.weight || 0));
-              const count = themeCounts[t.label] ?? 0;
-              return (
-                <li
-                  key={t.label}
-                  className="p-4 rounded-2xl bg-neutral-900/80 ring-1 ring-neutral-700/70 shadow-sm shadow-black/40 hover:ring-violet-500/70 transition"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-neutral-100 font-semibold">
-                        {t.label}
-                      </div>
-                      <div className="text-xs text-neutral-400">
-                        {count} article(s) liés
-                      </div>
-                    </div>
-                    <div className="text-xs text-neutral-300">
-                      poids {(w * 100).toFixed(0)}/100
-                    </div>
-                  </div>
+            <ul className="space-y-3">
+              {ai.actions.map((action) => {
+                const proofs = (action.evidenceIds || [])
+                  .map((id) => index.get(id))
+                  .filter(Boolean) as Article[];
+                return (
+                  <ActionCard
+                    key={`${action.symbol}-${action.direction}-${action.confidence}-${action.conviction}`}
+                    action={action}
+                    proofs={proofs}
+                  />
+                );
+              })}
 
-                  <div className="mt-2 h-2 bg-neutral-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-emerald-400 transition-all duration-500"
-                      style={{ width: `${w * 100}%` }}
-                    />
-                  </div>
-
-                  {t.summary && (
-                    <p className="mt-2 text-sm text-neutral-300">
-                      {t.summary}
-                    </p>
-                  )}
+              {ai.actions.length === 0 && (
+                <li className="text-sm text-neutral-400 px-1">
+                  Aucune action proposée aujourd’hui (pas de signal
+                  suffisamment robuste). Utilise quand même le radar de thèmes
+                  comme lecture rapide du narratif de marché.
                 </li>
-              );
-            })}
-
-            {ai.mainThemes.length === 0 && (
-              <li className="text-sm text-neutral-400 px-1">
-                Aucun thème clé détecté par l’IA sur la fenêtre actuelle.
-              </li>
-            )}
-          </ul>
+              )}
+            </ul>
+          </section>
         </section>
-
-        {/* Colonne 3 : desk de trades IA */}
-        <section className="space-y-3">
-          <div className="px-1 flex items-baseline justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-neutral-100">
-                Desk de trades (IA)
-              </h2>
-              <p className="text-xs text-neutral-400">
-                Propositions basées sur les thèmes &amp; news ci-contre
-              </p>
-            </div>
-          </div>
-
-          <ul className="space-y-3">
-            {ai.actions.map((action) => {
-              const proofs = (action.evidenceIds || [])
-                .map((id) => index.get(id))
-                .filter(Boolean) as Article[];
-            return (
-              <ActionCard
-                key={`${action.symbol}-${action.direction}-${action.confidence}-${action.conviction}`}
-                action={action}
-                proofs={proofs}
-              />
-            );
-            })}
-
-            {ai.actions.length === 0 && (
-              <li className="text-sm text-neutral-400 px-1">
-                Aucune action proposée aujourd’hui (pas de signal
-                suffisamment robuste). Utilise quand même le radar de thèmes
-                comme lecture rapide du narratif de marché.
-              </li>
-            )}
-          </ul>
-        </section>
-      </section>
+      </div>
     </main>
   );
 }

@@ -2,14 +2,25 @@
 
 import OpenAI from "openai";
 import {
-  AiOutputs,
-  AiAction,
+  AIOutput,
+  AIAction,
   RawArticle,
-  AiCluster,
-  AiTheme,
+  AICluster,
+  AITheme,
+  AIFocusDriver,
+  AIMarketRegime,
 } from "./types";
 import { runAllDetectors } from "./detectors";
 import { writeJSON } from "../../src/lib/news/fs";
+
+/* -------------------------------------------------------------------------- */
+/*  Aliases (pour compat avec l'ancien code interne)                          */
+/* -------------------------------------------------------------------------- */
+
+type AiOutputs = AIOutput;
+type AiAction = AIAction;
+type AiCluster = AICluster;
+type AiTheme = AITheme;
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                   */
@@ -21,6 +32,14 @@ function clamp(n: number, a: number, b: number) {
 
 function hoursSince(d: string) {
   return (Date.now() - new Date(d).getTime()) / 36e5;
+}
+
+function normText(s: string) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/[’‘´`]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function defaultPool(ftmo: string[]) {
@@ -51,7 +70,7 @@ function buildAiPayload(arts: RawArticle[], limit = 150) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Catégories « dures » pour thèmes / buckets                                */
+/*  Catégories & buckets déterministes (fallback moteur interne)             */
 /* -------------------------------------------------------------------------- */
 
 type CategoryDef = {
@@ -222,14 +241,6 @@ const CATEGORY_DEFS: CategoryDef[] = [
   },
 ];
 
-function normText(s: string) {
-  return (s || "")
-    .toLowerCase()
-    .replace(/[’‘´`]/g, "'")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function inferCategoryKey(a: RawArticle): string | null {
   const text = normText(`${a.title} ${a.description || ""}`);
   for (const def of CATEGORY_DEFS) {
@@ -283,10 +294,6 @@ function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
   return buckets.sort((a, b) => b.weight - a.weight);
 }
 
-/**
- * Résumé fallback lisible quand l’IA ne répond pas.
- * On explique le narratif, pas seulement le nombre d’articles.
- */
 function bucketSummary(b: CategoryBucket): string {
   const n = b.articles.length;
   const ages = b.articles.map((a) => Math.round(hoursSince(a.publishedAt)));
@@ -333,10 +340,6 @@ function bucketSummary(b: CategoryBucket): string {
   return `${core} ${meta}`;
 }
 
-/**
- * Petitte heuristique pour un horizon de temps indicatif
- * en fonction de la fraicheur des articles du bucket.
- */
 function inferTimeframeForBucket(b: CategoryBucket): string {
   const ages = b.articles.map((a) => hoursSince(a.publishedAt));
   const minAge = Math.min(...ages, 72);
@@ -395,7 +398,7 @@ function symbolForCategory(key: string, pool: string[]): string | null {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Fallback déterministe : radar + éventuelles actions                       */
+/*  Fallback déterministe (radar + clusters + 0-1 trades)                     */
 /* -------------------------------------------------------------------------- */
 
 function fallbackDeterministic(
@@ -418,14 +421,14 @@ function fallbackDeterministic(
   }));
 
   const signalThemes: AiTheme[] = sigs
-    .filter((s) => s.strength > 0)
-    .sort((a, b) => b.strength - a.strength)
-    .map((s) => ({
+    .filter((s: any) => s.strength > 0)
+    .sort((a: any, b: any) => b.strength - a.strength)
+    .map((s: any) => ({
       label: s.label,
       weight: Math.round(s.strength * 100) / 100,
       summary: s.label,
       evidenceIds: s.evidences
-        .map((e) => e.id ?? "")
+        .map((e: any) => e.id ?? "")
         .filter(Boolean)
         .slice(0, 24),
     }));
@@ -520,12 +523,15 @@ function fallbackDeterministic(
         direction: dir,
         conviction: 4,
         confidence: conf,
-        timeframe,
         reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
         evidenceIds: best.articles
           .slice(0, 20)
           .map((a) => a.id ?? "")
           .filter(Boolean),
+        horizon: timeframe,
+        themeLabel: best.label,
+        articleCount: best.articles.length,
+        explanation: undefined,
       });
     }
   }
@@ -535,105 +541,218 @@ function fallbackDeterministic(
     mainThemes: themes,
     actions,
     clusters,
+    focusDrivers: [],
+    marketRegime: undefined,
   };
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Analyse OpenAI : résumés de thèmes + trades                               */
+/*  Heuristiques pour FocusEngine + Market Regime (fallback si IA KO)       */
+/* -------------------------------------------------------------------------- */
+
+function heuristicFocusDrivers(themes: AiTheme[]): AIFocusDriver[] {
+  if (!themes.length) return [];
+  const sorted = [...themes].sort((a, b) => (b.weight ?? 0) - (a.weight ?? 0));
+  return sorted.slice(0, 3).map((t) => ({
+    label: t.label,
+    weight: clamp(t.weight ?? 0.4, 0.1, 1),
+    description:
+      t.summary ||
+      `Thème de marché dominant dans le flux d’actualités (${t.label}).`,
+  }));
+}
+
+function heuristicMarketRegime(
+  articles: RawArticle[],
+  themes: AiTheme[],
+  actions: AiAction[]
+): AIMarketRegime | undefined {
+  const text =
+    themes.map((t) => t.label + " " + (t.summary || "")).join(" ") +
+    " " +
+    actions.map((a) => a.reason).join(" ") +
+    " " +
+    articles
+      .slice(0, 80)
+      .map((a) => a.title + " " + (a.description || ""))
+      .join(" ");
+  const t = normText(text);
+
+  const dovish =
+    t.includes("dovish") ||
+    t.includes("easing") ||
+    t.includes("rate cut") ||
+    t.includes("pivot");
+  const hawkish =
+    t.includes("hawkish") ||
+    t.includes("tightening") ||
+    t.includes("rate hike");
+  const riskOff =
+    t.includes("tariff") ||
+    t.includes("sanction") ||
+    t.includes("embargo") ||
+    t.includes("crisis") ||
+    t.includes("shutdown") ||
+    t.includes("default") ||
+    t.includes("geopolitical") ||
+    t.includes("war");
+  const energyShock =
+    t.includes("opec") ||
+    t.includes("production cut") ||
+    t.includes("supply disruption") ||
+    t.includes("refinery") ||
+    t.includes("gas") ||
+    t.includes("oil");
+
+  if (dovish && !hawkish && !riskOff) {
+    return {
+      label: "Risk-on monétaire",
+      description:
+        "Régime plutôt risk-on : narrative d’assouplissement monétaire et de soutien des banques centrales.",
+      confidence: 70,
+    };
+  }
+  if (hawkish && !riskOff) {
+    return {
+      label: "Risk-off monétaire",
+      description:
+        "Régime plutôt risk-off : durcissement monétaire et sensibilité accrue aux taux.",
+      confidence: 70,
+    };
+  }
+  if (riskOff || energyShock) {
+    return {
+      label: "Risk-off géopolitique / offre",
+      description:
+        "Régime prudent : risques politiques, tarifs, sanctions ou chocs d’offre dominent le narratif.",
+      confidence: 65,
+    };
+  }
+  if (!themes.length && !actions.length) {
+    return undefined;
+  }
+  return {
+    label: "Neutre / oscillant",
+    description:
+      "Régime neutre : flux de news dispersé, sans driver macro unique très dominant.",
+    confidence: 50,
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Analyse OpenAI : Themes + FocusEngine + MarketRegime + Trades            */
 /* -------------------------------------------------------------------------- */
 
 export async function analyzeWithAI(
   articles: RawArticle[],
   opts: { topThemes: number; ftmoSymbols: string[]; watchlist: string[] }
-): Promise<AiOutputs> {
+): Promise<AIOutput> {
   const topThemes = Math.max(3, Number(opts.topThemes || 5));
   const pool = defaultPool(opts.ftmoSymbols);
 
   const baseline = fallbackDeterministic(articles, pool, topThemes);
 
   if (!process.env.OPENAI_API_KEY) {
-    return baseline;
+    return {
+      ...baseline,
+      focusDrivers: heuristicFocusDrivers(baseline.mainThemes),
+      marketRegime: heuristicMarketRegime(
+        articles,
+        baseline.mainThemes,
+        baseline.actions
+      ),
+    };
   }
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-  const model = process.env.OPENAI_NEWS_MODEL || "gpt-4o-mini";
+  const model = process.env.OPENAI_NEWS_MODEL || "gpt-4.1-mini";
 
   const payload = buildAiPayload(articles, 150);
   const poolStr = pool.join(", ");
 
   const sys = `
-Tu es un analyste buy-side macro / multi-actifs.
+Tu es un analyste buy-side macro / multi-actifs pour un terminal de trading.
 On t'envoie:
 - un pool d'instruments FTMO (${poolStr}),
-- une liste de thèmes de marché déjà identifiés (avec leur poids + résumé technique),
-- un échantillon de titres d'articles (avec id, source, score, ancienneté).
+- un radar de thèmes déjà calculé,
+- des clusters d'articles,
+- un échantillon de titres d'articles.
 
-Ta mission:
-1) Réécrire un RÉSUMÉ NARRATIF court (max ~220 caractères, en français) pour chaque thème, en expliquant ce qui se passe concrètement pour le marché.
-2) Proposer 2 à 4 idées de trade très structurées.
-
-Règles themes:
-- Ne change PAS les labels.
-- Le résumé doit être actionnable, lisible par un trader (« La Fed prépare... », « Les tarifs US/Chine se durcissent... »), pas une phrase robotique sur le nombre d'articles.
-
-Règles trades:
-- Utilise uniquement les instruments du pool.
-- Chaque trade doit s'appuyer sur un ou plusieurs thèmes où il y a BEAUCOUP de news (cluster de >= 12 articles pertinents).
-- Pas de trade basé sur un seul titre isolé.
-- Structure d'une action:
-  {
-    "symbol": string (par ex. "US500", "XAUUSD", "USOIL"...),
-    "direction": "BUY" ou "SELL",
-    "conviction": entier 0..10 (5 = neutre, 7 = fort),
-    "confidence": entier 0..100,
-    "reason": texte court (<= 220 caractères, en français, expliquant pourquoi le trade a du sens),
-    "timeframe": "intraday-1j" | "1-3j" | "1-2sem" | "2-4sem" | "1-3mois",
-    "evidenceIds": tableau de 10 à 20 ids d'articles parmi ceux fournis
-  }
-- "confidence" doit refléter le nombre d'articles alignés, la cohérence du narratif et la qualité des sources.
-- Choisis le "timeframe" en fonction du type de news (données très court terme ou tendance de fond).
-- Si tu n'as PAS au moins 12 articles alignés pour un scénario donné, NE PROPOSE PAS de trade pour ce scénario.
-
-Réponds STRICTEMENT au format JSON:
+Ta mission (en français, sortie STRICTEMENT JSON):
 {
   "themes": [
-    { "label": "...", "summary": "..." }
+    { "label": string, "summary": string }
   ],
-  "actions": [ ... ]
-}`;
+  "focusDrivers": [
+    { "label": string, "weight": number (0..1), "description": string }
+  ],
+  "marketRegime": {
+    "label": string,
+    "description": string,
+    "confidence": number (0..100)
+  },
+  "actions": [
+    {
+      "symbol": string,
+      "direction": "BUY" | "SELL",
+      "conviction": number (0..10),
+      "confidence": number (0..100),
+      "reason": string,
+      "timeframe": "intraday-1j" | "1-3j" | "1-2sem" | "2-4sem" | "1-3mois",
+      "themeLabel": string | null,
+      "evidenceIds": string[],
+      "explanation": string
+    }
+  ]
+}
 
-  const themesForModel = baseline.mainThemes.map((t) => {
-    const ids = (t.evidenceIds || []).slice(0, 12);
-    const sampleTitles = ids
-      .map((id) => articles.find((a) => a.id === id))
-      .filter(Boolean)
-      .slice(0, 6)
-      .map((a) => (a as RawArticle).title);
-    return {
-      label: t.label,
-      weight: t.weight,
-      baseSummary: t.summary,
-      sampleTitles,
-    };
-  });
+Règles:
+- Ne propose que des symboles du pool.
+- Les focusDrivers doivent représenter des drivers macro STRUCTURÉS (monétaire, fiscal, géopolitique, énergie, tech, etc.).
+- marketRegime: un seul régime global, avec confidence cohérente.
+- actions: 1 à 4 trades max, chacun basé sur un cluster solide (>= 10 articles pertinents).
+- "reason" et "explanation" doivent être courts, clairs, style trader, pas académiques.
+- "timeframe" doit correspondre au type de news (donnée ponctuelle vs trend de fond).
+`;
 
-  const user = JSON.stringify({
-    themes: themesForModel,
-    clusters: (baseline.clusters || []).map((c) => ({
-      label: c.label,
-      weight: c.weight,
-      size: c.articleIds.length,
-    })),
-    articles: payload,
-  });
+  const themesForModel = baseline.mainThemes.map((t) => ({
+    label: t.label,
+    weight: t.weight,
+    baseSummary: t.summary,
+    evidenceIds: (t.evidenceIds || []).slice(0, 16),
+  }));
 
-  let actions: AiAction[] = baseline.actions ?? [];
+  const user = JSON.stringify(
+    {
+      baseline: {
+        themes: themesForModel,
+        clusters: baseline.clusters?.map((c) => ({
+          label: c.label,
+          weight: c.weight,
+          size: c.articleIds.length,
+        })),
+        actions: baseline.actions,
+      },
+      articles: payload,
+    },
+    null,
+    2
+  );
+
   let mainThemes: AiTheme[] = baseline.mainThemes;
+  let actions: AiAction[] = baseline.actions;
+  let focusDrivers: AIFocusDriver[] =
+    heuristicFocusDrivers(baseline.mainThemes);
+  let marketRegime: AIMarketRegime | undefined = heuristicMarketRegime(
+    articles,
+    baseline.mainThemes,
+    baseline.actions
+  );
 
   try {
     const r = await client.chat.completions.create({
       model,
-      temperature: 0.15,
+      temperature: 0.2,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: sys },
@@ -643,7 +762,7 @@ Réponds STRICTEMENT au format JSON:
 
     const raw = JSON.parse(r.choices[0]?.message?.content || "{}");
 
-    // maj résumés de thèmes
+    // THÈMES
     if (Array.isArray(raw.themes)) {
       const byLabel = new Map<string, string>();
       for (const t of raw.themes) {
@@ -658,26 +777,65 @@ Réponds STRICTEMENT au format JSON:
       }));
     }
 
-    // parsing actions
-    if (Array.isArray(raw.actions)) {
-      const parsed: AiAction[] = raw.actions.map((a: any) => ({
-        symbol: String(a.symbol || "").toUpperCase(),
-        direction:
-          String(a.direction || "BUY").toUpperCase() === "SELL"
-            ? "SELL"
-            : "BUY",
-        conviction: clamp(Number(a.conviction ?? 6), 0, 10),
-        confidence: clamp(Number(a.confidence ?? 50), 0, 100),
-        reason: String(a.reason || "").slice(0, 220),
-        timeframe: typeof a.timeframe === "string" ? a.timeframe : undefined,
-        evidenceIds: Array.isArray(a.evidenceIds)
-          ? a.evidenceIds.slice(0, 24).map(String)
-          : [],
+    // FOCUS DRIVERS
+    if (Array.isArray(raw.focusDrivers)) {
+      const list: AIFocusDriver[] = raw.focusDrivers.map((d: any) => ({
+        label: String(d.label || "").slice(0, 120),
+        weight: clamp(Number(d.weight ?? 0.5), 0, 1),
+        description: String(d.description || "").slice(0, 280),
       }));
+      if (list.length) focusDrivers = list.slice(0, 5);
+    }
+
+    // MARKET REGIME
+    if (raw.marketRegime) {
+      const mr: AIMarketRegime = {
+        label: String(raw.marketRegime.label || "").slice(0, 120),
+        description: String(raw.marketRegime.description || "").slice(
+          0,
+          400
+        ),
+        confidence: clamp(Number(raw.marketRegime.confidence ?? 60), 0, 100),
+      };
+      if (mr.label && mr.description) marketRegime = mr;
+    }
+
+    // ACTIONS
+    if (Array.isArray(raw.actions)) {
+      const parsed: AiAction[] = raw.actions.map((a: any) => {
+        const evIds = Array.isArray(a.evidenceIds)
+          ? a.evidenceIds.slice(0, 30).map(String)
+          : [];
+        const themeLabel =
+          typeof a.themeLabel === "string" && a.themeLabel
+            ? String(a.themeLabel)
+            : undefined;
+        const explanation =
+          typeof a.explanation === "string"
+            ? a.explanation.slice(0, 400)
+            : undefined;
+
+        return {
+          symbol: String(a.symbol || "").toUpperCase(),
+          direction:
+            String(a.direction || "BUY").toUpperCase() === "SELL"
+              ? "SELL"
+              : "BUY",
+          conviction: clamp(Number(a.conviction ?? 6), 0, 10),
+          confidence: clamp(Number(a.confidence ?? 50), 0, 100),
+          reason: String(a.reason || "").slice(0, 240),
+          evidenceIds: evIds,
+          horizon:
+            typeof a.timeframe === "string" ? String(a.timeframe) : undefined,
+          themeLabel,
+          articleCount: evIds.length || undefined,
+          explanation,
+        };
+      });
 
       const robust = parsed.filter((a) => {
         const uniq = new Set(a.evidenceIds || []);
-        return uniq.size >= 10;
+        return a.symbol && uniq.size >= 8;
       });
 
       if (robust.length) {
@@ -685,7 +843,7 @@ Réponds STRICTEMENT au format JSON:
       }
     }
   } catch {
-    // en cas d’erreur OpenAI -> on garde baseline
+    // en cas d’erreur OpenAI -> on garde baseline + heuristiques
   }
 
   return {
@@ -693,6 +851,8 @@ Réponds STRICTEMENT au format JSON:
     mainThemes,
     actions,
     clusters: baseline.clusters,
+    focusDrivers,
+    marketRegime,
   };
 }
 
@@ -700,6 +860,6 @@ Réponds STRICTEMENT au format JSON:
 /*  Persistance                                                               */
 /* -------------------------------------------------------------------------- */
 
-export function persistAI(out: AiOutputs, outFile: string) {
+export function persistAI(out: AIOutput, outFile: string) {
   writeJSON(outFile, out);
 }

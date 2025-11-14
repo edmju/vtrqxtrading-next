@@ -1,39 +1,38 @@
 // scripts/sentiment/refresh.ts
 
-import path from "path";
-import { promises as fs } from "fs";
-import { fetchAllSentimentSources } from "./sources";
-import { analyzeSentimentWithAI } from "./analyze";
-import { SentimentSnapshot } from "./types";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { fetchAllSentimentPoints } from "./sources";
+import { buildSentimentSnapshot } from "./analyze";
 
-const OUT_FILE =
-  process.env.SENTIMENT_OUTPUT_FILE || "public/data/sentiment/latest.json";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-async function ensureDirFor(file: string) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
+async function ensureDir(filePath: string) {
+  const dir = path.dirname(filePath);
+  await fs.mkdir(dir, { recursive: true });
 }
 
 async function main() {
-  console.log("[sentiment] fetch des sources externes…");
-  const points = await fetchAllSentimentSources();
-  console.log(
-    `[sentiment] ${points.length} signaux de sentiment collectés sur internet.`
-  );
+  const outFile =
+    process.env.SENTIMENT_OUTPUT_FILE ||
+    path.join(__dirname, "../../public/data/sentiment/latest.json");
 
-  const snapshot: SentimentSnapshot = await analyzeSentimentWithAI(points);
+  console.log("[sentiment] output file:", outFile);
 
-  const full = path.join(process.cwd(), OUT_FILE);
-  await ensureDirFor(full);
-  await fs.writeFile(full, JSON.stringify(snapshot, null, 2), "utf8");
+  const points = await fetchAllSentimentPoints();
+  console.log("[sentiment] points collected:", points.length);
 
-  console.log(
-    `[sentiment] snapshot sauvegardé dans ${OUT_FILE} (global=${snapshot.globalScore}/100).`
-  );
+  const snapshot = await buildSentimentSnapshot(points);
+
+  await ensureDir(outFile);
+  await fs.writeFile(outFile, JSON.stringify(snapshot, null, 2), "utf8");
+
+  console.log("[sentiment] snapshot written");
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((err) => {
-    console.error("[sentiment] Erreur fatale:", err);
-    process.exit(1);
-  });
-}
+main().catch((err) => {
+  console.error("[sentiment] fatal error", err);
+  process.exit(1);
+});

@@ -283,20 +283,69 @@ function buildCategoryBuckets(articles: RawArticle[]): CategoryBucket[] {
   return buckets.sort((a, b) => b.weight - a.weight);
 }
 
+/**
+ * Résumé fallback lisible quand l’IA ne répond pas.
+ * On explique le narratif, pas seulement le nombre d’articles.
+ */
 function bucketSummary(b: CategoryBucket): string {
   const n = b.articles.length;
   const ages = b.articles.map((a) => Math.round(hoursSince(a.publishedAt)));
   const minAge = Math.min(...ages, 72);
-  const srcs = Array.from(new Set(b.articles.map((a) => a.source))).slice(
-    0,
-    4
-  );
+  const srcs = Array.from(new Set(b.articles.map((a) => a.source))).slice(0, 4);
   const window =
     minAge <= 24 ? "sur les dernières 24h" : "sur les derniers jours";
   const srcTxt = srcs.join(", ");
-  return `${n} article(s) ${window}${
-    srcTxt ? ` (${srcTxt})` : ""
-  } sur ${b.label.toLowerCase()}.`;
+
+  let core: string;
+  switch (b.key) {
+    case "policy":
+      core = `Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi.`;
+      break;
+    case "tariffs":
+      core =
+        "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances.";
+      break;
+    case "energy":
+      core =
+        "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities.";
+      break;
+    case "corp":
+      core =
+        "Série de news sur résultats, guidance, deals M&A et risques antitrust pour plusieurs grands émetteurs.";
+      break;
+    case "tech":
+      core =
+        "Flux dense sur IA, semi-conducteurs, cloud et cybersécurité, avec annonces et risques spécifiques au secteur.";
+      break;
+    case "macro":
+      core =
+        "Narratif macro/fiscal : croissance, budgets publics, élections et décisions de politique économique.";
+      break;
+    default:
+      core =
+        "Flux divers mais orienté marchés, mélange de news macro, corporate et politiques.";
+      break;
+  }
+
+  const meta = `${n} article(s) ${window}${
+    srcTxt ? ` (sources: ${srcTxt})` : ""
+  }.`;
+  return `${core} ${meta}`;
+}
+
+/**
+ * Petitte heuristique pour un horizon de temps indicatif
+ * en fonction de la fraicheur des articles du bucket.
+ */
+function inferTimeframeForBucket(b: CategoryBucket): string {
+  const ages = b.articles.map((a) => hoursSince(a.publishedAt));
+  const minAge = Math.min(...ages, 72);
+
+  if (minAge <= 12) return "intraday-1j";
+  if (minAge <= 48) return "1-3j";
+  if (minAge <= 168) return "1-2sem";
+  if (minAge <= 336) return "2-4sem";
+  return "1-3mois";
 }
 
 function guessDirectionFromText(text: string): "BUY" | "SELL" {
@@ -464,11 +513,14 @@ function fallbackDeterministic(
         .join(" ");
       const dir = guessDirectionFromText(text);
       const conf = Math.round(best.weight * 100);
+      const timeframe = inferTimeframeForBucket(best);
+
       actions.push({
         symbol: sym,
         direction: dir,
         conviction: 4,
         confidence: conf,
+        timeframe,
         reason: `Signal basé sur le thème « ${best.label} » (${best.articles.length} article(s)).`,
         evidenceIds: best.articles
           .slice(0, 20)
@@ -534,10 +586,12 @@ Règles trades:
     "direction": "BUY" ou "SELL",
     "conviction": entier 0..10 (5 = neutre, 7 = fort),
     "confidence": entier 0..100,
-    "reason": texte court (<= 220 caractères, en français),
+    "reason": texte court (<= 220 caractères, en français, expliquant pourquoi le trade a du sens),
+    "timeframe": "intraday-1j" | "1-3j" | "1-2sem" | "2-4sem" | "1-3mois",
     "evidenceIds": tableau de 10 à 20 ids d'articles parmi ceux fournis
   }
 - "confidence" doit refléter le nombre d'articles alignés, la cohérence du narratif et la qualité des sources.
+- Choisis le "timeframe" en fonction du type de news (données très court terme ou tendance de fond).
 - Si tu n'as PAS au moins 12 articles alignés pour un scénario donné, NE PROPOSE PAS de trade pour ce scénario.
 
 Réponds STRICTEMENT au format JSON:
@@ -615,6 +669,7 @@ Réponds STRICTEMENT au format JSON:
         conviction: clamp(Number(a.conviction ?? 6), 0, 10),
         confidence: clamp(Number(a.confidence ?? 50), 0, 100),
         reason: String(a.reason || "").slice(0, 220),
+        timeframe: typeof a.timeframe === "string" ? a.timeframe : undefined,
         evidenceIds: Array.isArray(a.evidenceIds)
           ? a.evidenceIds.slice(0, 24).map(String)
           : [],

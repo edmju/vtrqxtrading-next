@@ -28,7 +28,7 @@ type AIAction = {
   reason: string;
   evidenceIds?: string[];
 
-  // Champs supplémentaires éventuels renvoyés par ton backend
+  // Champs optionnels renvoyés par ton backend
   explanation?: string;
   horizon?: string;
   themeLabel?: string;
@@ -156,13 +156,38 @@ function inferFocus(themes: AITheme[]) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Explication IA courte par trade                                           */
+/* -------------------------------------------------------------------------- */
+
+function buildActionExplanation(action: AIAction, proofsCount: number) {
+  const verb = action.direction === "BUY" ? "acheter" : "vendre";
+  const bias =
+    action.direction === "BUY" ? "biais haussier" : "biais baissier";
+  const horizon = action.horizon || "court terme";
+  const core =
+    (action.explanation || action.reason || "").replace(/\s+/g, " ").trim();
+
+  const header = `IA → ${verb} ${action.symbol} (${bias}, ${horizon}, conv. ${action.conviction}/10, conf. ${action.confidence}/100).`;
+
+  if (core) {
+    return `${header} ${core}`;
+  }
+
+  if (proofsCount > 0) {
+    return `${header} Signal appuyé par ${proofsCount} news convergentes.`;
+  }
+
+  return header;
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Action Card (Desk de trades IA)                                           */
 /* -------------------------------------------------------------------------- */
 
 function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] }) {
   const [open, setOpen] = useState(false);
   const totalSources = proofs.length;
-  const explanation = action.explanation || action.reason;
+  const explanation = buildActionExplanation(action, totalSources);
   const horizon = action.horizon;
   const themeLabel = action.themeLabel;
   const articleCount = action.articleCount ?? totalSources;
@@ -218,12 +243,10 @@ function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] })
         )}
       </div>
 
-      {explanation && (
-        <p className="mt-3 text-sm leading-relaxed text-neutral-200">
-          <span className="font-semibold text-neutral-50">Analyse IA : </span>
-          {explanation}
-        </p>
-      )}
+      <p className="mt-3 text-sm leading-relaxed text-neutral-200">
+        <span className="font-semibold text-neutral-50">Explication IA : </span>
+        {explanation}
+      </p>
 
       {totalSources > 0 && (
         <div className="mt-4 border-t border-neutral-800/80 pt-3">

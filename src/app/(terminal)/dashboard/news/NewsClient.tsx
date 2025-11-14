@@ -49,11 +49,25 @@ type AICluster = {
   articleIds: string[];
 };
 
+type AIFocusDriver = {
+  label: string;
+  weight: number;
+  description: string;
+};
+
+type AIMarketRegime = {
+  label: string;
+  description: string;
+  confidence: number; // 0..100
+};
+
 type AIOutput = {
   generatedAt: string;
   mainThemes: AITheme[];
   actions: AIAction[];
   clusters?: AICluster[];
+  focusDrivers?: AIFocusDriver[];
+  marketRegime?: AIMarketRegime;
 };
 
 type Props = {
@@ -146,7 +160,11 @@ function heatPillClass(level: HeatLevel) {
   }
 }
 
-function inferMarketRegime(themes: AITheme[], actions: AIAction[]) {
+function inferMarketRegime(themes: AITheme[], actions: AIAction[], regime?: AIMarketRegime) {
+  if (regime && regime.label && regime.description) {
+    return regime.description;
+  }
+
   const text = (
     themes.map((t) => t.label + " " + (t.summary || "")).join(" ") +
     " " +
@@ -189,7 +207,14 @@ function inferMarketRegime(themes: AITheme[], actions: AIAction[]) {
   return "Régime neutre : news dispersées sans driver macro évident.";
 }
 
-function inferFocus(themes: AITheme[]) {
+function inferFocus(themes: AITheme[], focusDrivers?: AIFocusDriver[]) {
+  if (focusDrivers && focusDrivers.length) {
+    const top = focusDrivers
+      .slice(0, 3)
+      .map((d) => d.label)
+      .join(" · ");
+    return `Focales du moment : ${top}.`;
+  }
   if (!themes.length) return "Pas de cluster clair, flux de news dispersé.";
   const names = themes.slice(0, 3).map((t) => t.label);
   return `Focales du moment : ${names.join(" · ")}.`;
@@ -365,8 +390,12 @@ export default function NewsClient({ news, ai }: Props) {
   const totalThemes = ai.mainThemes.length;
   const totalActions = ai.actions.length;
 
-  const regimeText = inferMarketRegime(ai.mainThemes, ai.actions);
-  const focusText = inferFocus(ai.mainThemes);
+  const regimeText = inferMarketRegime(
+    ai.mainThemes,
+    ai.actions,
+    ai.marketRegime
+  );
+  const focusText = inferFocus(ai.mainThemes, ai.focusDrivers);
 
   const superHotNews = useMemo(
     () =>
@@ -522,6 +551,37 @@ export default function NewsClient({ news, ai }: Props) {
     );
   };
 
+  const superHotCards = superHotNews.map((a) => {
+    return (
+      <a
+        key={a.id}
+        href={a.url}
+        target="_blank"
+        rel="noreferrer"
+        className="min-w-[220px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-medium text-red-100 truncate">
+            {a.source}
+          </span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
+            Super hot
+          </span>
+        </div>
+        <div className="mt-1 text-[12px] font-semibold text-neutral-50 line-clamp-2">
+          {a.title}
+        </div>
+        <div className="mt-1 text-[10px] text-red-100/80">
+          {new Date(a.publishedAt).toLocaleTimeString(undefined, {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
+        </div>
+      </a>
+    );
+  });
+
   return (
     <main className="py-6 lg:py-8 overflow-x-hidden">
       <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
@@ -590,7 +650,7 @@ export default function NewsClient({ news, ai }: Props) {
             </div>
           </section>
 
-          {/* Ruban horizontal des super hot news */}
+          {/* Ruban horizontal des super hot news (marquee) */}
           {superHotNews.length > 0 && (
             <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40 overflow-hidden">
               <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
@@ -601,39 +661,14 @@ export default function NewsClient({ news, ai }: Props) {
                   {superHotNews.length} news très sensibles
                 </span>
               </div>
-              <div className="overflow-x-auto">
-                <div className="flex gap-3 px-4 py-3 min-w-0">
-                  {superHotNews.map((a) => (
-                    <a
-                      key={a.id}
-                      href={a.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="min-w-[220px] max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[11px] font-medium text-red-100 truncate">
-                          {a.source}
-                        </span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
-                          Super hot
-                        </span>
-                      </div>
-                      <div className="mt-1 text-[12px] font-semibold text-neutral-50 line-clamp-2">
-                        {a.title}
-                      </div>
-                      <div className="mt-1 text-[10px] text-red-100/80">
-                        {new Date(a.publishedAt).toLocaleTimeString(
-                          undefined,
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false,
-                          }
-                        )}
-                      </div>
-                    </a>
-                  ))}
+              <div className="overflow-hidden">
+                <div className="relative px-4 py-3 superhot-marquee-outer">
+                  <div className="superhot-marquee-track">
+                    {superHotCards}
+                  </div>
+                  <div className="superhot-marquee-track" aria-hidden="true">
+                    {superHotCards}
+                  </div>
                 </div>
               </div>
             </section>

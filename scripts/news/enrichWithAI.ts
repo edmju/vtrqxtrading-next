@@ -1,58 +1,9 @@
+// scripts/news/enrichWithAI.ts
+
 import path from "path";
 import { promises as fs } from "fs";
 import OpenAI from "openai";
-
-type Article = {
-  id: string;
-  title: string;
-  url: string;
-  source: string;
-  publishedAt: string;
-  description?: string;
-  score?: number;
-  hits?: string[];
-};
-
-type NewsBundle = {
-  generatedAt: string;
-  total: number;
-  articles: Article[];
-};
-
-type AIAction = {
-  symbol: string;
-  direction: "BUY" | "SELL";
-  conviction: number;
-  confidence: number;
-  reason: string;
-  evidenceIds?: string[];
-
-  explanation?: string;
-  horizon?: string;
-  themeLabel?: string;
-  articleCount?: number;
-};
-
-type AITheme = {
-  label: string;
-  weight: number;
-  summary?: string;
-  evidenceIds?: string[];
-};
-
-type AICluster = {
-  label: string;
-  weight: number;
-  summary: string;
-  articleIds: string[];
-};
-
-type AIOutput = {
-  generatedAt: string;
-  mainThemes: AITheme[];
-  actions: AIAction[];
-  clusters?: AICluster[];
-};
+import { NewsBundle, AIOutput, AIAction, AITheme } from "./types";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -84,7 +35,12 @@ async function buildExplanation(
     summary: t.summary,
   }));
 
-  const sampleArticles = news.articles.slice(0, 8).map((a) => ({
+  const relatedArticles =
+    action.evidenceIds && action.evidenceIds.length
+      ? news.articles.filter((a) => action.evidenceIds!.includes(a.id))
+      : news.articles.slice(0, 8);
+
+  const sampleArticles = relatedArticles.map((a) => ({
     title: a.title,
     source: a.source,
     score: a.score,
@@ -98,9 +54,8 @@ async function buildExplanation(
       content:
         "Tu es un assistant de trading macro ultra concis. " +
         "Tu génères une explication courte (max 3 phrases) en français expliquant pourquoi le trade proposé est logique. " +
-        "Style demandé : 'il se passe ça + ça + ça → donc il faut faire ça car…'. " +
-        "Pas de préambule, pas de listes à puces, pas de 'En tant qu'IA'. " +
-        "Réponds en une seule explication fluide, smart, orientée pro-trader.",
+        "Style : 'il se passe ça + ça + ça → donc il faut faire ça car…'. " +
+        "Pas de préambule, pas de listes, pas de 'En tant qu'IA'.",
     },
     {
       role: "user" as const,
@@ -114,7 +69,7 @@ async function buildExplanation(
             confidence: action.confidence,
           },
           themeLabel: action.themeLabel,
-          articleCount: action.articleCount,
+          articleCount: action.articleCount ?? relatedArticles.length,
           baseReason: action.reason,
           topThemes,
           sampleArticles,
@@ -158,6 +113,8 @@ async function main() {
     mainThemes: [],
     actions: [],
     clusters: [],
+    focusDrivers: [],
+    marketRegime: undefined,
   });
 
   if (!ai.actions.length) {
@@ -167,7 +124,7 @@ async function main() {
 
   for (const action of ai.actions) {
     if (action.explanation && action.explanation.trim().length > 0) {
-      continue; // déjà expliqué
+      continue;
     }
 
     try {
@@ -188,7 +145,9 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error("[news:enrich] Erreur fatale:", err);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error("[news:enrich] Erreur fatale:", err);
+    process.exit(1);
+  });
+}

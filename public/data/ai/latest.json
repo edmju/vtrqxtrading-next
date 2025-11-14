@@ -1,26 +1,23 @@
 {
-  "generatedAt": "2025-11-14T04:36:11.076Z",
+  "generatedAt": "2025-11-14T12:47:13.337Z",
   "mainThemes": [
     {
       "label": "Banques centrales / Taux",
-      "weight": 0.93,
-      "summary": "24 article(s) sur les dernières 24h (Telegraph Business, OilPrice, FXStreet, Financial Times) sur banques centrales / taux.",
+      "weight": 0.9,
+      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 21 article(s) sur les dernières 24h (sources: Telegraph Business, OilPrice, Investing.com, FXStreet).",
       "evidenceIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
         "6a613fe72fa70c03246d766627fc3a25",
-        "e4a9ef94cd553f4ba3ab7858583157a4",
-        "238f58a9f889d40df4c912c3a96beb40",
-        "b2c32276f4ab44bfb3973e463bdbce15",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "96d7eaf8888b5ab48c20d644f8139d8f",
-        "19eb804da3fb09797e4417df91113a77",
-        "40f6cd623209b386777c7ff5ab4f39c7",
-        "033bf1fa9858dbc86155fd9a93c94c04",
-        "851ad334019108041ac015971f255d6f",
+        "6d07f804a8203522166aa47463c5ce14",
+        "ac579174758ea68f92f1bf6aa1fe85d2",
+        "4ca89189e41837ec21ad09f8bc453e4b",
+        "3b970b90046ad6dc7b83878a56bf2cad",
+        "2d2029dab1f2bc9a56f55be6f86f6d27",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
         "5507e717561974ee28e84e746aa328d5",
@@ -35,14 +32,16 @@
     {
       "label": "Tarifs / Géopolitique commerciale",
       "weight": 0.85,
-      "summary": "23 article(s) sur les dernières 24h (OilPrice, Telegraph Business, Investing.com) sur tarifs / géopolitique commerciale.",
+      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 27 article(s) sur les dernières 24h (sources: SCMP Markets, OilPrice, Telegraph Business, Financial Times).",
       "evidenceIds": [
+        "05d15fda23cc9e7a48960ab964336fb9",
         "1d1387baa23cc8f3757c0a30257f0e60",
-        "14fa18aec09ffdcb1f5272410de66560",
         "2b4431e4ba0e095d33cc769e2a277e78",
         "2f3ed7555a2cbbdeda19b970f057aa7d",
         "61c6dca015d8090cb496b9eed67f6fbe",
-        "a69cca81c61396f10b9ad2f42321f07f",
+        "e75f1c826fea84445ef03c27d9ad0a7a",
+        "d1f51b18f5bfaead10e29b6cffde0b4f",
+        "b79897b791cf2fbd73f121986bac4efb",
         "88b66c3678c038ac5768f199506acf42",
         "27dc3a9299dc7dc12fd0520d8462a95f",
         "179b501f380e55b9999e257b69530d99",
@@ -58,20 +57,18 @@
         "887c76eab27001a0c97ee82c39514873",
         "59189ae3404d6645ad5298e1c3c0de60",
         "b8aabfa4916e75f37a58c2ab3763a92b",
-        "45df0ec6d1299a14692c22b9cfd787bf",
-        "21df40ae1c1baaf0775b11ef5c3dca34"
+        "45df0ec6d1299a14692c22b9cfd787bf"
       ]
     },
     {
-      "label": "Earnings / Guidance / M&A / Antitrust",
-      "weight": 0.74,
-      "summary": "5 article(s) sur les dernières 24h (The Guardian, Investing.com, Financial Times) sur earnings / guidance / m&a / antitrust.",
+      "label": "Énergie & Commodities",
+      "weight": 0.66,
+      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 4 article(s) sur les dernières 24h (sources: CNBC, Investing.com, OilPrice).",
       "evidenceIds": [
-        "38e944648a60b61f0dbd288e4773da4a",
-        "d6fb3dc3e81a50a3e8c3cccc308b0071",
-        "6c5b5d278a0992f02e500591d0ce09e5",
-        "6aa501e87cc7d5c8be9d161e482bd0f8",
-        "470d21c68e5e368c64c8338934a37555"
+        "8248e8875fd2a66e62b77890dee67970",
+        "5120cc7ee15bc73c14dc32cab4793555",
+        "7b94a76d485262f6ec6ca5306be002a8",
+        "a887e23ccbea568bf224c2d30fcf439a"
       ]
     }
   ],
@@ -80,53 +77,51 @@
       "symbol": "US500",
       "direction": "BUY",
       "conviction": 4,
-      "confidence": 93,
-      "reason": "Signal basé sur le thème « Banques centrales / Taux » (24 article(s)).",
+      "confidence": 90,
+      "timeframe": "intraday-1j",
+      "reason": "Signal basé sur le thème « Banques centrales / Taux » (21 article(s)).",
       "evidenceIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
         "6a613fe72fa70c03246d766627fc3a25",
-        "e4a9ef94cd553f4ba3ab7858583157a4",
-        "238f58a9f889d40df4c912c3a96beb40",
-        "b2c32276f4ab44bfb3973e463bdbce15",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "96d7eaf8888b5ab48c20d644f8139d8f",
-        "19eb804da3fb09797e4417df91113a77",
-        "40f6cd623209b386777c7ff5ab4f39c7",
-        "033bf1fa9858dbc86155fd9a93c94c04",
-        "851ad334019108041ac015971f255d6f",
+        "6d07f804a8203522166aa47463c5ce14",
+        "ac579174758ea68f92f1bf6aa1fe85d2",
+        "4ca89189e41837ec21ad09f8bc453e4b",
+        "3b970b90046ad6dc7b83878a56bf2cad",
+        "2d2029dab1f2bc9a56f55be6f86f6d27",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
         "5507e717561974ee28e84e746aa328d5",
         "bb3d6ef8ef200b9c2203bc257ea6d697",
-        "d51494a679a3770b650c819310f79791"
+        "d51494a679a3770b650c819310f79791",
+        "8c5c183cbd9c1d011e784ceb9e8d104c",
+        "075b3ec00f60120831ca9491d281bc66",
+        "495622ba5572a2284adbc978c98be5f1"
       ]
     }
   ],
   "clusters": [
     {
       "label": "Banques centrales / Taux",
-      "weight": 0.93,
-      "summary": "24 article(s) sur les dernières 24h (Telegraph Business, OilPrice, FXStreet, Financial Times) sur banques centrales / taux.",
+      "weight": 0.9,
+      "summary": "Flux concentré sur les annonces et commentaires de banques centrales, inflation et emploi. 21 article(s) sur les dernières 24h (sources: Telegraph Business, OilPrice, Investing.com, FXStreet).",
       "articleIds": [
         "d2a1351ad89b9fc0cdc52de316393132",
         "6a613fe72fa70c03246d766627fc3a25",
-        "e4a9ef94cd553f4ba3ab7858583157a4",
-        "238f58a9f889d40df4c912c3a96beb40",
-        "b2c32276f4ab44bfb3973e463bdbce15",
         "473511050e87e341a861d476c3f90ab0",
         "c4d1170d3dc5023cbd706ca1692835fe",
         "71c211710bb0d83ebe47c9c4a1f25132",
         "6899c28d1c773452e22af30628aa3425",
         "be39439a6813ced4bef0d7b70ab5bd13",
-        "96d7eaf8888b5ab48c20d644f8139d8f",
-        "19eb804da3fb09797e4417df91113a77",
-        "40f6cd623209b386777c7ff5ab4f39c7",
-        "033bf1fa9858dbc86155fd9a93c94c04",
-        "851ad334019108041ac015971f255d6f",
+        "6d07f804a8203522166aa47463c5ce14",
+        "ac579174758ea68f92f1bf6aa1fe85d2",
+        "4ca89189e41837ec21ad09f8bc453e4b",
+        "3b970b90046ad6dc7b83878a56bf2cad",
+        "2d2029dab1f2bc9a56f55be6f86f6d27",
         "4f12de4a04107f07fdceffa2916fe3b0",
         "278db2e5e92e336edca6d5f1b557f72d",
         "5507e717561974ee28e84e746aa328d5",
@@ -141,14 +136,16 @@
     {
       "label": "Tarifs / Géopolitique commerciale",
       "weight": 0.85,
-      "summary": "23 article(s) sur les dernières 24h (OilPrice, Telegraph Business, Investing.com) sur tarifs / géopolitique commerciale.",
+      "summary": "Narratif chargé sur sanctions, droits de douane et tensions commerciales entre grandes puissances. 27 article(s) sur les dernières 24h (sources: SCMP Markets, OilPrice, Telegraph Business, Financial Times).",
       "articleIds": [
+        "05d15fda23cc9e7a48960ab964336fb9",
         "1d1387baa23cc8f3757c0a30257f0e60",
-        "14fa18aec09ffdcb1f5272410de66560",
         "2b4431e4ba0e095d33cc769e2a277e78",
         "2f3ed7555a2cbbdeda19b970f057aa7d",
         "61c6dca015d8090cb496b9eed67f6fbe",
-        "a69cca81c61396f10b9ad2f42321f07f",
+        "e75f1c826fea84445ef03c27d9ad0a7a",
+        "d1f51b18f5bfaead10e29b6cffde0b4f",
+        "b79897b791cf2fbd73f121986bac4efb",
         "88b66c3678c038ac5768f199506acf42",
         "27dc3a9299dc7dc12fd0520d8462a95f",
         "179b501f380e55b9999e257b69530d99",
@@ -165,19 +162,20 @@
         "59189ae3404d6645ad5298e1c3c0de60",
         "b8aabfa4916e75f37a58c2ab3763a92b",
         "45df0ec6d1299a14692c22b9cfd787bf",
-        "21df40ae1c1baaf0775b11ef5c3dca34"
+        "21df40ae1c1baaf0775b11ef5c3dca34",
+        "019ab3f5d60cc181ad3d258caecbe1a3",
+        "7b1b985d9152048c3b542d8b3a087739"
       ]
     },
     {
-      "label": "Earnings / Guidance / M&A / Antitrust",
-      "weight": 0.74,
-      "summary": "5 article(s) sur les dernières 24h (The Guardian, Investing.com, Financial Times) sur earnings / guidance / m&a / antitrust.",
+      "label": "Énergie & Commodities",
+      "weight": 0.66,
+      "summary": "Nouvelles répétées sur production, stocks et disruptions d’offre sur pétrole, gaz et commodities. 4 article(s) sur les dernières 24h (sources: CNBC, Investing.com, OilPrice).",
       "articleIds": [
-        "38e944648a60b61f0dbd288e4773da4a",
-        "d6fb3dc3e81a50a3e8c3cccc308b0071",
-        "6c5b5d278a0992f02e500591d0ce09e5",
-        "6aa501e87cc7d5c8be9d161e482bd0f8",
-        "470d21c68e5e368c64c8338934a37555"
+        "8248e8875fd2a66e62b77890dee67970",
+        "5120cc7ee15bc73c14dc32cab4793555",
+        "7b94a76d485262f6ec6ca5306be002a8",
+        "a887e23ccbea568bf224c2d30fcf439a"
       ]
     }
   ]

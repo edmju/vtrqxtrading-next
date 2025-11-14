@@ -1,7 +1,23 @@
 {
-  "generatedAt": "2025-11-14T04:36:11.062Z",
+  "generatedAt": "2025-11-14T12:47:13.324Z",
   "total": 60,
   "articles": [
+    {
+      "url": "https://www.scmp.com/news/hong-kong/hong-kong-economy/article/3332811/hong-kong-raises-gdp-forecast-32-cent-amid-better-expected-growth?utm_source=rss_feed",
+      "title": "Hong Kong raises GDP growth forecast to 3.2% amid ‘robust’ economic performance",
+      "publishedAt": "2025-11-14T08:40:12.000Z",
+      "description": "The Hong Kong government has revised its gross domestic product (GDP) growth forecast for 2025 from 2 to 3 per cent to 3.2 per cent, with the finance chief attributing the higher projection to better-than-expected performance in the first three quarters and a positive outlook after a slight de-escalation of the US-China trade war. The Census and Statistics Department on Friday revealed that it upgraded the real GDP forecast for 2025 to 3.2 per cent, taking into account the actual outturn of 3.3...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "05d15fda23cc9e7a48960ab964336fb9",
+      "score": 25,
+      "hits": [
+        "trade war",
+        "upgrade",
+        "gdp",
+        "percent"
+      ]
+    },
     {
       "url": "https://oilprice.com/Energy/Crude-Oil/Diesel-Spreads-Hit-Near-Two-Year-Peak-After-India-Cuts-Russian-Crude-Purchases.html",
       "title": "Diesel Spreads Hit Near Two-Year Peak After India Cuts Russian Crude Purchases",
@@ -49,68 +65,6 @@
       ]
     },
     {
-      "url": "https://www.fxstreet.com/news/fx-today-gdp-figures-in-euroland-take-centre-stage-investors-gear-up-for-us-data-202511131836",
-      "title": "FX Today: GDP figures in Euroland take centre stage; investors gear up for US data",
-      "publishedAt": "2025-11-13T18:36:59.000Z",
-      "description": "The US Dollar (USD) resumed its downtrend on Thursday, reaching fresh monthly lows as market participants assessed the deal that ended the longest US government shutdown in history. Meanwhile, bets on a Fed rate cut in December remained pretty divided.",
-      "source": "FXStreet",
-      "lang": "en",
-      "id": "e4a9ef94cd553f4ba3ab7858583157a4",
-      "score": 22,
-      "hits": [
-        "rate cut",
-        "gdp",
-        "shutdown"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/US-Sanctions-Strand-a-Third-of-Russias-Crude-Exports-at-Sea.html",
-      "title": "U.S. Sanctions Strand a Third of Russia’s Crude Exports at Sea",
-      "publishedAt": "2025-11-13T17:30:00.000Z",
-      "description": "Nearly a third of Russia’s current seaborne oil export potential is now stuck in tankers as the U.S. sanctions upend crude flows and Russia’s top buyers, China and India, are still struggling to assess the implications of the sanctions, according to JPMorgan. “Russia’s oil exports are entering a new phase of disruption as sanctions targeting Rosneft and Lukoil are set to take effect, prompting its two largest customers — India and China — to sharply reduce their December purchases,” the Wall…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "14fa18aec09ffdcb1f5272410de66560",
-      "score": 22,
-      "hits": [
-        "sanction",
-        "oil exports",
-        "sanctions"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Crude-Prices-Stabilize-After-Selloff-Amid-OPEC-Reassessment-and-US-Funding-Dea.html",
-      "title": "Oil Stabilizes After Selloff Amid OPEC Reassessment and U.S. Funding Deal",
-      "publishedAt": "2025-11-13T16:15:00.000Z",
-      "description": "Oil prices steadied on Wednesday after a sharp 4% slide the day before, with Brent trading near $63.08 and WTI around $58.80 at 11:01 a.m. ET, as traders reassessed the latest OPEC shift toward a more balanced 2026 market outlook. The passage of the U.S. funding deal that ended the government shutdown removed one macro problem, but crude remained focused on supply signals rather than broader risk sentiment. The modest rebound contrasted with the equity rally highlighted by Bloomberg, where U.S. indices advanced on softer inflation readings, renewed…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "238f58a9f889d40df4c912c3a96beb40",
-      "score": 22,
-      "hits": [
-        "opec",
-        "inflation",
-        "shutdown",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.theguardian.com/business/2025/nov/13/uk-economy-grew-by-just-01-in-third-quarter-amid-jlr-cyber-attack-hit",
-      "title": "UK economy grew by just 0.1% in third quarter after hit from JLR cyber-attack",
-      "publishedAt": "2025-11-13T08:49:37.000Z",
-      "description": "Figure undershoots forecasts, with Jaguar Land Rover hack helping to pull September GDP down by 0.1%• Business live – latest updates• Amid disappointing UK growth, how can Reeves escape the doom loop?The UK economy expanded by just 0.1% in the quarter from July to September as the crippling cyber-attack on Jaguar Land Rover hit manufacturing.The latest official figures, issued as Rachel Reeves prepares for a crunch budget on 26 November, show gross domestic product fell by 0.1% in September as car production was dragged to a 73-year low by the fallout from the hack. Continue reading...",
-      "source": "The Guardian",
-      "lang": "en",
-      "id": "38e944648a60b61f0dbd288e4773da4a",
-      "score": 22,
-      "hits": [
-        "hack",
-        "gdp",
-        "budget",
-        "percent"
-      ]
-    },
-    {
       "url": "https://oilprice.com/Energy/Crude-Oil/New-President-Vows-to-End-Bolivias-Energy-Crisis.html",
       "title": "New President Vows to End Bolivia’s Energy Crisis",
       "publishedAt": "2025-11-14T01:00:00.000Z",
@@ -140,35 +94,6 @@
         "spending cuts",
         "budget",
         "percent"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Nigeria-Scraps-Plans-for-Fuel-Import-Duty-in-Blow-to-Local-Refiners.html",
-      "title": "Nigeria Scraps Plans for Fuel Import Duty in Blow to Local Refiners",
-      "publishedAt": "2025-11-13T16:30:00.000Z",
-      "description": "Nigeria is abandoning plans to impose a 15% duty on imported refined petroleum products, which is a blow to its new private domestic refinery of billionaire Aliko Dangote. “The implementation of the 15 per cent ad-valorem import duty on imported Premium Motor Spirit and Diesel is no longer in view,” the Nigerian Midstream and Downstream Petroleum Regulatory Authority (NMDPRA) said on Thursday in a statement advising against “panic buying of any petroleum product.” There is an adequate supply of petroleum products…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "3701e1ee862b8bb27a759965de833876",
-      "score": 18,
-      "hits": [
-        "import duty",
-        "fine",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.ft.com/content/95c0f0e7-f736-4963-af8b-acc0ec9eee1b",
-      "title": "US antitrust regulator launches probe into ISS and Glass Lewis",
-      "publishedAt": "2025-11-12T22:12:28.000Z",
-      "description": "Federal Trade Commission’s investigation comes as Trump administration targets influential proxy advisers",
-      "source": "Financial Times",
-      "lang": "en",
-      "id": "b2c32276f4ab44bfb3973e463bdbce15",
-      "score": 17,
-      "hits": [
-        "fed",
-        "antitrust"
       ]
     },
     {
@@ -298,30 +223,68 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/deal-to-end-us-government-shutdown-strikes-buzzy-cannabis-drinks-industry-4357534",
-      "title": "Deal to end US government shutdown strikes buzzy cannabis drinks industry",
-      "publishedAt": "2025-11-14T00:06:30.000Z",
+      "url": "https://www.investing.com/news/sec-filings/azul-posts-record-third-quarter-ebitda-but-reports-net-loss-amid-restructuring-93CH-4358775",
+      "title": "Azul posts record third quarter EBITDA but reports net loss amid restructuring",
+      "publishedAt": "2025-11-14T12:43:55.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "d6fb3dc3e81a50a3e8c3cccc308b0071",
-      "score": 14,
+      "id": "84b47bac4c6344dfee02ceb8410e07d2",
+      "score": 9,
       "hits": [
-        "government shutdown",
-        "shutdown"
+        "restructuring"
       ]
     },
     {
-      "url": "https://www.theguardian.com/business/nils-pratley-on-finance/2025/nov/12/sse-grid-upgrade-consumers-small-businesses",
-      "title": "SSE is a winner in the great grid upgrade. Who is looking out for consumers and small businesses? | Nils Pratley",
-      "publishedAt": "2025-11-12T17:43:36.000Z",
-      "description": "Nobody doubts chunky spending is necessary to improve the grid. But how much of that money will be funded through consumer bills?It is a “once-in-a-generation opportunity to upgrade the UK electricity network”, gushed Martin Pibworth, the chief executive of SSE, and you can understand his excitement. The great grid upgrade has put a rocket under his share price. SSE’s shares soared 17% on Wednesday as the group laid out plans to spend the phenomenal sum of £33bn – more than the company’s current stock market value – over the next five years.That’s terrific news for SSE shareholders, but the stock market’s enthusiasm will do nothing to quiet two big worries about the sprint to upgrade the electricity grid. Has the regulator Ofgem – under orders from the government to get the upgrade done by 2030 – had to throw gold in the path of SSE, Scottish Power and National Grid Group, the trio behind the overall £80bn network investment programme? And what does it all mean for electricity consumers – households and businesses – who will fund this upgrade through their bills? Continue reading...",
-      "source": "The Guardian",
+      "url": "https://www.investing.com/news/stock-market-news/enbridge-approves-14-billion-project-to-boost-canadian-oil-flows-to-us-refiners-4358705",
+      "title": "Enbridge approves $1.4 billion project to boost Canadian oil flows to U.S. refiners",
+      "publishedAt": "2025-11-14T12:37:05.000Z",
+      "description": "",
+      "source": "Investing.com",
       "lang": "en",
-      "id": "6c5b5d278a0992f02e500591d0ce09e5",
-      "score": 10,
+      "id": "5120cc7ee15bc73c14dc32cab4793555",
+      "score": 9,
       "hits": [
-        "upgrade",
+        "fine"
+      ]
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/bhp-liable-for-2015-brazil-dam-collapse-uk-court-rules-in-mammoth-lawsuit-4358161",
+      "title": "BHP liable for 2015 Brazil dam collapse, UK court rules in mammoth lawsuit",
+      "publishedAt": "2025-11-14T12:31:35.000Z",
+      "description": "",
+      "source": "Investing.com",
+      "lang": "en",
+      "id": "d91dbf792c1ea1ab231fd4d76a12d64d",
+      "score": 9,
+      "hits": [
+        "lawsuit"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Carlyle-Eyes-Lukoil-Assets-After-Gunvors-22-Billion-Deal-Collapses.html",
+      "title": "Carlyle Eyes Lukoil Assets After Gunvor&#039;s $22 Billion Deal Collapses",
+      "publishedAt": "2025-11-14T07:00:00.000Z",
+      "description": "Carlyle is in talks with Lukoil for the potential acquisition of the latter’s international operations, Reuters has reported, citing unnamed sources. The news follows Gunvor’s attempt to buy the assets, only to change its mind after the Trump administration called it a “Kremlin puppet” and said it would block the deal. The private equity major is still in the early stage of the negotiations, but it has applied for a license that would clear the way to an acquisition, one of the Reuters sources told the publication. The next…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "7b94a76d485262f6ec6ca5306be002a8",
+      "score": 9,
+      "hits": [
+        "acquisition"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/e56e8bb0-6dc0-4447-a907-e95164cec8e5",
+      "title": "Canada to reroute lumber exports as Trump’s tariffs bite",
+      "publishedAt": "2025-11-14T05:00:19.000Z",
+      "description": "Forestry industry aims to divert 10% of wood normally sent south of the border to new markets such as the UK",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "e75f1c826fea84445ef03c27d9ad0a7a",
+      "score": 9,
+      "hits": [
+        "tariff",
         "percent"
       ]
     },
@@ -339,19 +302,6 @@
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/bank-of-america-bank-of-new-york-mellon-seek-to-end-epstein-lawsuits-4357597",
-      "title": "Bank of America, Bank of New York Mellon seek to end Epstein lawsuits",
-      "publishedAt": "2025-11-14T01:18:33.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "470d21c68e5e368c64c8338934a37555",
-      "score": 9,
-      "hits": [
-        "lawsuit"
-      ]
-    },
-    {
       "url": "https://www.telegraph.co.uk/business/2025/07/24/trump-tariffs-eu-us-trade-deal-ftse-100-markets-latest/",
       "title": "Job cuts accelerate as Reeves tax raid bites",
       "publishedAt": "2025-07-24T15:43:51.000Z",
@@ -365,92 +315,119 @@
       ]
     },
     {
-      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
-      "title": "Global markets extend sell-off over tech jitters and rate cut uncertainty",
-      "publishedAt": "2025-11-14T04:30:40.000Z",
-      "description": "Drop in AI stocks in Asia including SoftBank and chipmakers SK Hynix and Samsung",
-      "source": "Financial Times",
+      "url": "https://www.investing.com/news/commodities-news/gold-prices-rise-on-economic-uncertainty-cooling-rate-cut-bets-limit-upside-4357693",
+      "title": "Gold prices fall on waning Fed rate cut bets; weekly gains still likely",
+      "publishedAt": "2025-11-14T12:45:24.000Z",
+      "description": "",
+      "source": "Investing.com",
       "lang": "en",
-      "id": "96d7eaf8888b5ab48c20d644f8139d8f",
+      "id": "6d07f804a8203522166aa47463c5ce14",
       "score": 8,
       "hits": [
         "rate cut"
       ]
     },
     {
-      "url": "https://www.investing.com/news/economy-news/stocks-crumble-as-hopes-fade-for-imminent-fed-rate-cut-4357579",
-      "title": "Stocks crumble as hopes fade for imminent Fed rate cut",
-      "publishedAt": "2025-11-14T02:43:06.000Z",
+      "url": "https://www.investing.com/news/analyst-ratings/boeing-stock-price-target-lowered-to-267-by-bernstein-socgen-on-cash-flow-concerns-93CH-4358776",
+      "title": "Boeing stock price target lowered to $267 by Bernstein SocGen on cash flow concerns",
+      "publishedAt": "2025-11-14T12:43:58.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "19eb804da3fb09797e4417df91113a77",
-      "score": 8,
-      "hits": [
-        "rate cut"
-      ]
-    },
-    {
-      "url": "https://www.investing.com/news/economy-news/imf-sees-thai-gdp-growth-at-16-in-2026-4357651",
-      "title": "IMF sees Thai GDP growth at 1.6% in 2026",
-      "publishedAt": "2025-11-14T02:36:32.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "f55892d9cb604a36d04d7b09f0d758ad",
-      "score": 8,
-      "hits": [
-        "gdp",
-        "percent"
-      ]
-    },
-    {
-      "url": "https://www.cnbc.com/2025/11/14/asia-pacific-friday-stocks-nikkei-225-kospi-nifty-50-hang-seng-hsi-shares-china-retail-property-industrial.html",
-      "title": "Asia shares track Wall Street declines as tech selloff deepens, Fed rate-cut hopes fade",
-      "publishedAt": "2025-11-14T02:30:14.000Z",
-      "description": "Asia-Pacific markets fell Friday, tracking losses on Wall Street, as technology stocks continue to come under pressure for another day.",
-      "source": "CNBC",
-      "lang": "en",
-      "id": "40f6cd623209b386777c7ff5ab4f39c7",
-      "score": 8,
-      "hits": [
-        "rate cut"
-      ]
-    },
-    {
-      "url": "https://www.investing.com/news/stock-market-news/singapore-airlines-ceo-says-not-expecting-major-impact-from-boeing-7779-delay-4357642",
-      "title": "Singapore Airlines CEO says not expecting major impact from Boeing 777-9 delay",
-      "publishedAt": "2025-11-14T02:12:28.000Z",
-      "description": "",
-      "source": "Investing.com",
-      "lang": "en",
-      "id": "033bf1fa9858dbc86155fd9a93c94c04",
+      "id": "ac579174758ea68f92f1bf6aa1fe85d2",
       "score": 8,
       "hits": [
         "boe"
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/south-korea-to-boost-ev-subsidies-in-2026-to-help-auto-industry-weather-us-tariffs-4357624",
-      "title": "South Korea to boost EV subsidies in 2026 to help auto industry weather US tariffs",
-      "publishedAt": "2025-11-14T01:43:15.000Z",
+      "url": "https://www.investing.com/news/stock-market-news/cartierowner-richemont-beats-quarterly-sales-forecast-as-sales-jump-14-4357710",
+      "title": "Cartier-owner Richemont shrugs off tariffs, high gold prices as China improves",
+      "publishedAt": "2025-11-14T12:30:51.000Z",
       "description": "",
       "source": "Investing.com",
       "lang": "en",
-      "id": "a69cca81c61396f10b9ad2f42321f07f",
+      "id": "d1f51b18f5bfaead10e29b6cffde0b4f",
       "score": 8,
       "hits": [
         "tariff"
       ]
     },
     {
-      "url": "https://www.investing.com/news/stock-market-news/wall-st-futures-rise-after-waning-rate-cut-bets-tech-rout-drive-deep-losses-4357571",
-      "title": "Wall St futures rise after waning rate cut bets, tech rout drive deep losses",
-      "publishedAt": "2025-11-14T00:44:16.000Z",
-      "description": "",
-      "source": "Investing.com",
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Canada-and-India-to-Partner-in-Critical-Minerals-Supply-Chain.html",
+      "title": "Canada and India to Partner in Critical Minerals Supply Chain",
+      "publishedAt": "2025-11-14T12:30:00.000Z",
+      "description": "Faced with difficult trade negotiations with the United States and American tariffs on their products, Canada and India pledged to encourage long-term supply chain partnerships in critical minerals and clean energy. At a trade summit in India, Canada and the host country agreed to revive their stalled bilateral relations and “reiterated their commitment to deepening bilateral cooperation through sustained dialogue, mutual respect, and forward-looking initiatives,” the countries said in a joint statement. Canada and India…",
+      "source": "OilPrice",
       "lang": "en",
-      "id": "851ad334019108041ac015971f255d6f",
+      "id": "b79897b791cf2fbd73f121986bac4efb",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.scmp.com/economy/china-economy/article/3332847/china-signals-patience-nexperia-row-escalation-seen-possible-talks-loom?utm_source=rss_feed",
+      "title": "China patient in Nexperia row – but escalation seen as possible as talks loom",
+      "publishedAt": "2025-11-14T11:30:19.000Z",
+      "description": "As China and the Netherlands prepare to hold talks next week over the Nexperia chipmaker dispute, Beijing has the patience to resolve the issue through multiple rounds of negotiations to ensure the case remains isolated, analysts said. On Thursday, Dutch Economy Minister Vincent Karremans said a senior government delegation would visit Beijing “to continue our efforts to find a mutually agreeable solution”. The Dutch government took the unusual step of seizing control of Nexperia from its...",
+      "source": "SCMP Markets",
+      "lang": "en",
+      "id": "a815bd740886be6a3bca8513854f28bd",
+      "score": 8,
+      "hits": [
+        "escalation"
+      ]
+    },
+    {
+      "url": "https://www.fxstreet.com/news/usd-inr-ticks-lower-amid-caution-ahead-of-us-economic-data-releases-202511140502",
+      "title": "USD/INR edges down as US Dollar drops, India's WPI inflation declines 1.21%",
+      "publishedAt": "2025-11-14T11:03:27.000Z",
+      "description": "The Indian Rupee (INR) ticks up against the US Dollar (USD) at open on Friday. The USD/INR pair edges lower to near 88.85 as the US Dollar extends its downside.",
+      "source": "FXStreet",
+      "lang": "en",
+      "id": "4ca89189e41837ec21ad09f8bc453e4b",
+      "score": 8,
+      "hits": [
+        "inflation",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Prices-Jump-as-Ukraine-Hits-One-of-Russias-Biggest-Export-Hubs.html",
+      "title": "Oil Prices Soar 2.75% After Ukraine Strike On Major Russian Export Hub",
+      "publishedAt": "2025-11-14T10:30:00.000Z",
+      "description": "Oil prices jumped in early Asian trade on Friday morning as markets responded to renewed Ukrainian attacks on Russia&#039;s energy infrastructure. A Ukrainian drone attack on the Russian Black Sea port of Novorossiysk, one of the country’s most significant oil export hubs, triggered renewed fears of supply disruptions. At the time of writing, WTI had risen 2.71% to $60.28... While Brent was trading at $64.54. The attacks damaged a ship, nearby apartment buildings, and an oil depot, injuring three crew members aboard the vessel, Russian regional…",
+      "source": "OilPrice",
+      "lang": "en",
+      "id": "a887e23ccbea568bf224c2d30fcf439a",
+      "score": 8,
+      "hits": [
+        "supply disruption",
+        "percent"
+      ]
+    },
+    {
+      "url": "https://www.ft.com/content/fa9b11c5-187e-449c-b227-a75c56d1a152",
+      "title": "Global stock sell-off deepens on tech fears and US rate cut doubts",
+      "publishedAt": "2025-11-14T09:53:00.000Z",
+      "description": "Investors worry over high valuation of companies",
+      "source": "Financial Times",
+      "lang": "en",
+      "id": "3b970b90046ad6dc7b83878a56bf2cad",
+      "score": 8,
+      "hits": [
+        "rate cut"
+      ]
+    },
+    {
+      "url": "https://www.cnbc.com/2025/11/13/markets-rethink-december-rate-cut-amid-fed-doubts.html",
+      "title": "Markets no longer view the December rate cut as a sure bet, with Fed officials casting doubts",
+      "publishedAt": "2025-11-13T19:36:39.000Z",
+      "description": "Fed Chair Jerome Powell wasn't kidding a couple weeks ago when he said a December rate cut wasn't in the bag.",
+      "source": "CNBC",
+      "lang": "en",
+      "id": "2d2029dab1f2bc9a56f55be6f86f6d27",
       "score": 8,
       "hits": [
         "rate cut"
@@ -468,19 +445,6 @@
       "hits": [
         "ai chip",
         "percent"
-      ]
-    },
-    {
-      "url": "https://oilprice.com/Energy/Energy-General/Putin-Confronts-Kazakhstans-President-Over-US-Pivot.html",
-      "title": "Putin Confronts Kazakhstan’s President Over U.S. Pivot",
-      "publishedAt": "2025-11-13T16:20:00.000Z",
-      "description": "Kazakh President Kassym-Jomart Tokayev kicked off a two-day visit November 11 to Russia by exchanging pleasantries in the Kremlin with Vladimir Putin and meeting with students at the prestigious Moscow State Institute for International Relations. Tokayev sought to reassure Putin that bilateral ties retain “the character of strategic partnership,” adding that “there are no serious problems between our states.” Putin, meanwhile, voiced a desire to “talk informally about issues…",
-      "source": "OilPrice",
-      "lang": "en",
-      "id": "e0d5870dc0a1a6ced7239c6a4c3a656f",
-      "score": 8,
-      "hits": [
-        "pivot"
       ]
     },
     {
@@ -816,6 +780,32 @@
       "source": "Telegraph Business",
       "lang": "en",
       "id": "21df40ae1c1baaf0775b11ef5c3dca34",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/08/trump-tariffs-china-trade-war-ftse-100-markets-latest-news/",
+      "title": "US stocks fall after Trump confirms 104pc tariffs on China",
+      "publishedAt": "2025-04-09T00:57:48.000Z",
+      "description": "US stocks fall after Trump confirms 104pc tariffs on China",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "019ab3f5d60cc181ad3d258caecbe1a3",
+      "score": 8,
+      "hits": [
+        "tariff"
+      ]
+    },
+    {
+      "url": "https://www.telegraph.co.uk/business/2025/04/07/donald-trump-tariffs-market-reaction-live/",
+      "title": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
+      "publishedAt": "2025-04-07T21:36:30.000Z",
+      "description": "Trump rules out tariffs pause as he claims ‘tremendous progress’",
+      "source": "Telegraph Business",
+      "lang": "en",
+      "id": "7b1b985d9152048c3b542d8b3a087739",
       "score": 8,
       "hits": [
         "tariff"

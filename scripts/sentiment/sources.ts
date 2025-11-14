@@ -1,87 +1,85 @@
 // scripts/sentiment/sources.ts
 
-import { SentimentPoint, AssetClass } from "./types";
 import fetch from "node-fetch";
+import { AssetClass, SentimentPoint } from "./types";
 
 type ProviderConfig = {
   id: string;
   label: string;
   assetClass: AssetClass;
-  envUrl: string;              // nom de la variable d'env qui contient l'URL
-  envKey?: string;             // optionnel: API key
-  keyHeader?: string;          // nom du header pour l'API key
+  envUrl: string;
+  envKey?: string;
+  keyHeader?: string;
 };
 
 const PROVIDERS: ProviderConfig[] = [
-  // FOREX (3 sources)
+  // FOREX
   {
-    id: "forex_1",
-    label: "FX Sentiment #1",
+    id: "forex_myfxbook",
+    label: "MyFXBook Community Outlook",
     assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_1",
-    envKey: "SENTIMENT_FOREX_KEY_1",
-    keyHeader: "Authorization",
+    envUrl: "SENTIMENT_FOREX_URL_1"
   },
   {
-    id: "forex_2",
-    label: "FX Sentiment #2",
+    id: "forex_forexfactory",
+    label: "ForexFactory Sentiment",
     assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_2",
+    envUrl: "SENTIMENT_FOREX_URL_2"
   },
   {
-    id: "forex_3",
-    label: "FX Sentiment #3",
+    id: "forex_dailyfx",
+    label: "DailyFX IG Client Sentiment",
     assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_3",
+    envUrl: "SENTIMENT_FOREX_URL_3"
   },
 
-  // STOCKS (4 sources)
+  // STOCKS
   {
-    id: "equity_1",
-    label: "Equity Sentiment #1",
+    id: "stocks_cnn_fng",
+    label: "CNN Fear & Greed",
     assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_1",
-    envKey: "SENTIMENT_STOCKS_KEY_1",
-    keyHeader: "X-API-Key",
+    envUrl: "SENTIMENT_STOCKS_URL_1"
   },
   {
-    id: "equity_2",
-    label: "Equity Sentiment #2",
+    id: "stocks_finviz",
+    label: "Finviz Map",
     assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_2",
+    envUrl: "SENTIMENT_STOCKS_URL_2"
   },
   {
-    id: "equity_3",
-    label: "Equity Sentiment #3",
+    id: "stocks_stocktwits",
+    label: "StockTwits Trending",
     assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_3",
+    envUrl: "SENTIMENT_STOCKS_URL_3"
   },
   {
-    id: "equity_4",
-    label: "Equity Sentiment #4",
+    id: "stocks_alphavantage",
+    label: "AlphaVantage News Sentiment",
     assetClass: "stocks",
     envUrl: "SENTIMENT_STOCKS_URL_4",
+    envKey: "SENTIMENT_STOCKS_KEY_4",
+    keyHeader: "X-API-Key"
   },
 
-  // COMMODITIES (3 sources)
+  // COMMODITIES
   {
-    id: "commod_1",
-    label: "Commodities Sentiment #1",
+    id: "commod_oilprice",
+    label: "OilPrice.com",
     assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_1",
+    envUrl: "SENTIMENT_COMMOD_URL_1"
   },
   {
-    id: "commod_2",
-    label: "Commodities Sentiment #2",
+    id: "commod_kitco",
+    label: "Kitco Metals",
     assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_2",
+    envUrl: "SENTIMENT_COMMOD_URL_2"
   },
   {
-    id: "commod_3",
-    label: "Commodities Sentiment #3",
+    id: "commod_barchart",
+    label: "Barchart Futures",
     assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_3",
-  },
+    envUrl: "SENTIMENT_COMMOD_URL_3"
+  }
 ];
 
 function clamp01(x: number) {
@@ -89,11 +87,10 @@ function clamp01(x: number) {
 }
 
 /**
- * Normalise un JSON arbitraire vers un score 0..100.
- * Hypothèse de base:
- *  - soit json.score/json.value/json.index est déjà 0..100
- *  - soit c'est -1..1 (on recentre)
- * Tu pourras adapter la logique pour chaque API si besoin.
+ * Normalisation très générique:
+ * - si le JSON contient un champ dans [0,100], on le prend
+ * - sinon si [-1,1], on remappe vers [0,100]
+ * Tu adapteras pour chaque provider si besoin.
  */
 function extractScore(json: any): number | null {
   if (!json || typeof json !== "object") return null;
@@ -103,16 +100,15 @@ function extractScore(json: any): number | null {
     json.value,
     json.index,
     json.sentiment,
+    json.fear_and_greed,
     json.data?.score,
-    json.data?.value,
+    json.data?.value
   ];
 
   for (const c of candidates) {
     const n = Number(c);
     if (!Number.isFinite(n)) continue;
-    // si déjà 0..100
     if (n >= 0 && n <= 100) return n;
-    // si -1..1 → map vers 0..100
     if (n >= -1 && n <= 1) return Math.round((n + 1) * 50);
   }
 
@@ -121,10 +117,13 @@ function extractScore(json: any): number | null {
 
 async function fetchOneProvider(cfg: ProviderConfig): Promise<SentimentPoint | null> {
   const url = process.env[cfg.envUrl];
-  if (!url) return null;
+  if (!url) {
+    console.warn(`[sentiment] ${cfg.id} ignoré: variable ${cfg.envUrl} absente.`);
+    return null;
+  }
 
   const headers: Record<string, string> = {
-    Accept: "application/json",
+    Accept: "application/json, text/html;q=0.8,*/*;q=0.5"
   };
 
   if (cfg.envKey && cfg.keyHeader && process.env[cfg.envKey]) {
@@ -137,20 +136,31 @@ async function fetchOneProvider(cfg: ProviderConfig): Promise<SentimentPoint | n
       console.warn(`[sentiment] ${cfg.id} HTTP ${res.status}`);
       return null;
     }
-    const json = await res.json();
-    const score = extractScore(json);
-    if (score == null) {
-      console.warn(`[sentiment] ${cfg.id} pas de score exploitable.`);
+
+    const text = await res.text();
+
+    let json: any | null = null;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      json = { html: text };
+    }
+
+    const rawScore = extractScore(json);
+    if (rawScore == null) {
+      console.warn(`[sentiment] ${cfg.id}: score non trouvé, tu pourras adapter extractScore().`);
       return null;
     }
+
+    const score = Math.round(clamp01(rawScore / 100) * 100);
 
     return {
       id: cfg.id,
       label: cfg.label,
       provider: cfg.id,
       assetClass: cfg.assetClass,
-      score: Math.round(clamp01(score / 100) * 100),
-      raw: json,
+      score,
+      raw: json
     };
   } catch (err) {
     console.warn(`[sentiment] ${cfg.id} erreur réseau`, err);

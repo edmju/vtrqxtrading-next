@@ -1,180 +1,120 @@
 // scripts/sentiment/sources.ts
 
-import fetch from "node-fetch";
-import { AssetClass, SentimentPoint } from "./types";
-
-type ProviderConfig = {
-  id: string;
-  label: string;
-  assetClass: AssetClass;
-  envUrl: string;
-  envKey?: string;
-  keyHeader?: string;
-};
-
-const PROVIDERS: ProviderConfig[] = [
-  // FOREX
-  {
-    id: "forex_myfxbook",
-    label: "MyFXBook Community Outlook",
-    assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_1"
-  },
-  {
-    id: "forex_forexfactory",
-    label: "ForexFactory Sentiment",
-    assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_2"
-  },
-  {
-    id: "forex_dailyfx",
-    label: "DailyFX IG Client Sentiment",
-    assetClass: "forex",
-    envUrl: "SENTIMENT_FOREX_URL_3"
-  },
-
-  // STOCKS
-  {
-    id: "stocks_cnn_fng",
-    label: "CNN Fear & Greed",
-    assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_1"
-  },
-  {
-    id: "stocks_finviz",
-    label: "Finviz Map",
-    assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_2"
-  },
-  {
-    id: "stocks_stocktwits",
-    label: "StockTwits Trending",
-    assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_3"
-  },
-  {
-    id: "stocks_alphavantage",
-    label: "AlphaVantage News Sentiment",
-    assetClass: "stocks",
-    envUrl: "SENTIMENT_STOCKS_URL_4",
-    envKey: "SENTIMENT_STOCKS_KEY_4",
-    keyHeader: "X-API-Key"
-  },
-
-  // COMMODITIES
-  {
-    id: "commod_oilprice",
-    label: "OilPrice.com",
-    assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_1"
-  },
-  {
-    id: "commod_kitco",
-    label: "Kitco Metals",
-    assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_2"
-  },
-  {
-    id: "commod_barchart",
-    label: "Barchart Futures",
-    assetClass: "commodities",
-    envUrl: "SENTIMENT_COMMOD_URL_3"
-  }
-];
-
-function clamp01(x: number) {
-  return Math.max(0, Math.min(1, x));
-}
+import type { AssetClass, SentimentPoint } from "./types";
 
 /**
- * Normalisation très générique:
- * - si le JSON contient un champ dans [0,100], on le prend
- * - sinon si [-1,1], on remappe vers [0,100]
- * Tu adapteras pour chaque provider si besoin.
+ * Recherche récursive d'un score 0–100 dans un objet JSON.
+ * On privilégie les clés qui ressemblent à score/sentiment/index.
  */
-function extractScore(json: any): number | null {
-  if (!json || typeof json !== "object") return null;
+function findScoreCandidate(obj: unknown): number | null {
+  const preferredKeys = ["score", "sentiment", "index", "value", "fear_greed"];
 
-  const candidates = [
-    json.score,
-    json.value,
-    json.index,
-    json.sentiment,
-    json.fear_and_greed,
-    json.data?.score,
-    json.data?.value
-  ];
-
-  for (const c of candidates) {
-    const n = Number(c);
-    if (!Number.isFinite(n)) continue;
-    if (n >= 0 && n <= 100) return n;
-    if (n >= -1 && n <= 1) return Math.round((n + 1) * 50);
-  }
-
-  return null;
-}
-
-async function fetchOneProvider(cfg: ProviderConfig): Promise<SentimentPoint | null> {
-  const url = process.env[cfg.envUrl];
-  if (!url) {
-    console.warn(`[sentiment] ${cfg.id} ignoré: variable ${cfg.envUrl} absente.`);
+  const visit = (value: unknown): number | null => {
+    if (typeof value === "number" && value >= 0 && value <= 100) {
+      return value;
+    }
+    if (value && typeof value === "object") {
+      const rec = value as Record<string, unknown>;
+      // 1) clés "intéressantes" en priorité
+      for (const k of preferredKeys) {
+        if (k in rec) {
+          const r = visit(rec[k]);
+          if (r !== null) return r;
+        }
+      }
+      // 2) sinon, tout le reste
+      for (const v of Object.values(rec)) {
+        const r = visit(v);
+        if (r !== null) return r;
+      }
+    }
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        const r = visit(v);
+        if (r !== null) return r;
+      }
+    }
     return null;
-  }
-
-  const headers: Record<string, string> = {
-    Accept: "application/json, text/html;q=0.8,*/*;q=0.5"
   };
 
-  if (cfg.envKey && cfg.keyHeader && process.env[cfg.envKey]) {
-    headers[cfg.keyHeader] = process.env[cfg.envKey] as string;
-  }
+  return visit(obj);
+}
 
+async function fetchJsonSafe(url: string): Promise<unknown | null> {
   try {
-    const res = await fetch(url, { headers });
+    const res = await fetch(url, { method: "GET" });
     if (!res.ok) {
-      console.warn(`[sentiment] ${cfg.id} HTTP ${res.status}`);
+      console.warn("[sentiment] HTTP", res.status, "for", url);
       return null;
     }
 
     const text = await res.text();
 
-    let json: any | null = null;
     try {
-      json = JSON.parse(text);
+      return JSON.parse(text);
     } catch {
-      json = { html: text };
-    }
-
-    const rawScore = extractScore(json);
-    if (rawScore == null) {
-      console.warn(`[sentiment] ${cfg.id}: score non trouvé, tu pourras adapter extractScore().`);
+      // HTML ou autre → on ignore
+      console.warn("[sentiment] non-JSON response, ignore", url);
       return null;
     }
-
-    const score = Math.round(clamp01(rawScore / 100) * 100);
-
-    return {
-      id: cfg.id,
-      label: cfg.label,
-      provider: cfg.id,
-      assetClass: cfg.assetClass,
-      score,
-      raw: json
-    };
   } catch (err) {
-    console.warn(`[sentiment] ${cfg.id} erreur réseau`, err);
+    console.warn("[sentiment] fetch error for", url, err);
     return null;
   }
 }
 
-export async function fetchAllSentimentSources(): Promise<SentimentPoint[]> {
-  const out: SentimentPoint[] = [];
+async function buildPointsForEnv(
+  envName: string,
+  assetClass: AssetClass
+): Promise<SentimentPoint[]> {
+  const url = process.env[envName];
+  if (!url) return [];
 
-  for (const cfg of PROVIDERS) {
-    const pt = await fetchOneProvider(cfg);
-    if (pt) out.push(pt);
+  const json = await fetchJsonSafe(url);
+  if (!json) return [];
+
+  const score = findScoreCandidate(json);
+  if (score === null) {
+    console.warn("[sentiment] no score candidate for", envName);
+    return [];
   }
 
-  return out;
+  return [
+    {
+      source: envName,
+      assetClass,
+      score: Math.max(0, Math.min(100, Math.round(score))),
+      meta: { url },
+    },
+  ];
+}
+
+/**
+ * Récupère tous les points de sentiment disponibles à partir
+ * des URLs configurées via les variables d'environnement.
+ */
+export async function fetchAllSentimentPoints(): Promise<SentimentPoint[]> {
+  const tasks: Promise<SentimentPoint[]>[] = [];
+
+  // Forex
+  tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_1", "forex"));
+  tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_2", "forex"));
+  tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_3", "forex"));
+
+  // Actions / indices
+  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_1", "stocks"));
+  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_2", "stocks"));
+  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_3", "stocks"));
+  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_4", "stocks"));
+
+  // Commodities
+  tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_1", "commodities"));
+  tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_2", "commodities"));
+  tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_3", "commodities"));
+
+  const results = await Promise.all(tasks);
+  const flat = results.flat();
+
+  console.log("[sentiment] collected points:", flat.length);
+  return flat;
 }

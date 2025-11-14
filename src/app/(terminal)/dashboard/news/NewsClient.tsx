@@ -596,7 +596,7 @@ export default function NewsClient({ news, ai }: Props) {
   });
 
   return (
-    <main className="py-6 lg:py-8 w-full max-w-full overflow-x-hidden">
+    <main className="py-6 lg:py-8 w-full overflow-x-hidden">
       <div className="w-full rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
         <div className="p-4 sm:p-6 lg:p-7 space-y-5 lg:space-y-6">
           {/* Bandeau de synthèse */}

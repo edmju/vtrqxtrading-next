@@ -40,6 +40,33 @@ function findScoreCandidate(obj: unknown): number | null {
   return visit(obj);
 }
 
+/**
+ * Cas particulier pour Alpha Vantage NEWS_SENTIMENT :
+ * - json.feed = tableau
+ * - overall_sentiment_score ∈ [-1, 1]
+ * On le convertit en 0–100 : (x + 1) * 50
+ */
+function alphaVantageNewsScore(json: any): number | null {
+  if (!json || !Array.isArray(json.feed)) return null;
+
+  const scores: number[] = [];
+  for (const item of json.feed) {
+    const raw = Number(item?.overall_sentiment_score);
+    if (Number.isFinite(raw)) {
+      scores.push(raw);
+    }
+  }
+
+  if (!scores.length) return null;
+
+  const mean =
+    scores.reduce((acc, v) => acc + v, 0) / (scores.length || 1); // [-1,1]
+  const scaled = (mean + 1) * 50; // [0,100]
+
+  if (!Number.isFinite(scaled)) return null;
+  return Math.max(0, Math.min(100, Math.round(scaled)));
+}
+
 async function fetchJsonSafe(url: string): Promise<unknown | null> {
   try {
     const res = await fetch(url, { method: "GET" });
@@ -68,12 +95,26 @@ async function buildPointsForEnv(
   assetClass: AssetClass
 ): Promise<SentimentPoint[]> {
   const url = process.env[envName];
-  if (!url) return [];
+  if (!url || !url.trim()) {
+    // pas configuré → on ne fait rien
+    return [];
+  }
 
-  const json = await fetchJsonSafe(url);
+  const json = await fetchJsonSafe(url.trim());
   if (!json) return [];
 
-  const score = findScoreCandidate(json);
+  let score: number | null = null;
+
+  // Cas spécifique Alpha Vantage
+  if (envName === "SENTIMENT_STOCKS_URL_4") {
+    score = alphaVantageNewsScore(json);
+  }
+
+  // Sinon on tente la recherche générique 0–100
+  if (score === null) {
+    score = findScoreCandidate(json);
+  }
+
   if (score === null) {
     console.warn("[sentiment] no score candidate for", envName);
     return [];

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-15T00:19:43.765Z",
-  "globalScore": 57,
+  "generatedAt": "2025-11-15T00:43:29.874Z",
+  "globalScore": 58,
   "themes": [
     {
       "id": "forex",
@@ -12,9 +12,9 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 57,
+      "score": 58,
       "direction": "neutral",
-      "comment": "Actions reste globalement neutre (57/100)."
+      "comment": "Actions reste globalement neutre (58/100)."
     },
     {
       "id": "commodities",
@@ -28,8 +28,8 @@
   "focusDrivers": [
     {
       "label": "Actions",
-      "weight": 0.23333333333333334,
-      "description": "Actions reste globalement neutre (57/100)."
+      "weight": 0.26666666666666666,
+      "description": "Actions reste globalement neutre (58/100)."
     }
   ],
   "marketRegime": {

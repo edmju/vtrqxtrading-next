@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-14T23:57:30.795Z",
-  "globalScore": 50,
+  "generatedAt": "2025-11-15T00:19:43.765Z",
+  "globalScore": 57,
   "themes": [
     {
       "id": "forex",
@@ -12,9 +12,9 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 50,
+      "score": 57,
       "direction": "neutral",
-      "comment": "Actions reste globalement neutre (50/100)."
+      "comment": "Actions reste globalement neutre (57/100)."
     },
     {
       "id": "commodities",
@@ -25,11 +25,23 @@
     }
   ],
   "riskIndicators": [],
-  "focusDrivers": [],
+  "focusDrivers": [
+    {
+      "label": "Actions",
+      "weight": 0.23333333333333334,
+      "description": "Actions reste globalement neutre (57/100)."
+    }
+  ],
   "marketRegime": {
     "label": "Neutre",
     "description": "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.",
     "confidence": 50
   },
-  "sources": []
+  "sources": [
+    {
+      "name": "SENTIMENT_STOCKS_URL_4",
+      "assetClass": "stocks",
+      "weight": 1
+    }
+  ]
 }

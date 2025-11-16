@@ -22,6 +22,8 @@ export type RiskIndicator = {
   label: string;
   score: number; // 0–100
   comment: string;
+  value?: string;
+  direction?: "up" | "down" | "neutral";
 };
 
 export type FocusDriver = {

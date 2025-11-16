@@ -1,5 +1,3 @@
-// src/app/(terminal)/dashboard/sentiment/page.tsx
-
 import React from "react";
 import path from "path";
 import { promises as fs } from "fs";
@@ -12,7 +10,7 @@ export type SentimentThemeId = "forex" | "stocks" | "commodities";
 export type SentimentTheme = {
   id: SentimentThemeId;
   label: string;
-  score: number; // 0..100  ( >50 = plutôt risk-on, <50 = plutôt risk-off )
+  score: number; // 0..100
   direction?: "bullish" | "bearish" | "neutral";
   comment?: string;
 };
@@ -21,14 +19,15 @@ export type RiskIndicator = {
   id: string;
   label: string;
   value: string;
-  score: number; // 0..100 (0 = très risk-off, 100 = très risk-on)
+  score: number; // 0..100
   direction: "up" | "down" | "neutral";
   comment?: string;
 };
 
 export type FocusDriver = {
   label: string;
-  weight: number; // 0..1
+  weight: number; // intensité relative (sera normalisée sur 0–100 côté client)
+  description?: string;
   comment?: string;
 };
 
@@ -51,10 +50,6 @@ export type SentimentSnapshot = {
   themes: SentimentTheme[];
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
-  /**
-   * Dans le JSON généré par scripts/sentiment/analyze.ts,
-   * sources est un tableau d'objets { name, assetClass, weight }.
-   */
   sources: SentimentSource[];
 };
 
@@ -76,22 +71,13 @@ async function getData() {
       globalScore: 50,
       marketRegime: {
         label: "Neutre",
-        description: "Régime neutre : pas de driver clair, sentiment équilibré.",
+        description:
+          "Régime neutre : pas de driver clair, sentiment équilibré entre actifs risqués et défensifs.",
         confidence: 50,
       },
       themes: [
-        {
-          id: "forex",
-          label: "Forex",
-          score: 50,
-          direction: "neutral",
-        },
-        {
-          id: "stocks",
-          label: "Actions",
-          score: 50,
-          direction: "neutral",
-        },
+        { id: "forex", label: "Forex", score: 50, direction: "neutral" },
+        { id: "stocks", label: "Actions", score: 50, direction: "neutral" },
         {
           id: "commodities",
           label: "Commodities",

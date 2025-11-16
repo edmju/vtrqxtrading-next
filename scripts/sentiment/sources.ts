@@ -3,18 +3,64 @@
 import type { AssetClass, SentimentPoint } from "./types";
 
 /**
- * Recherche récursive d'un score 0–100 dans un objet JSON.
- * On privilégie les clés qui ressemblent à score/sentiment/index.
+ * Normalise une valeur numérique / string vers un score 0–100.
+ * Gère :
+ * - 0–100 → inchangé
+ * - 0–1   → ×100
+ * - -1–1  → (x + 1) * 50
+ * - strings numériques ("42", "0.7", "-0.3")
+ */
+function toScore0to100(value: unknown): number | null {
+  if (typeof value === "number") {
+    const x = value;
+    if (!Number.isFinite(x)) return null;
+
+    if (x >= 0 && x <= 100) return x;
+    if (x >= 0 && x <= 1) return x * 100;
+    if (x >= -1 && x <= 1) return (x + 1) * 50;
+
+    return null;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const n = Number(trimmed);
+    if (!Number.isFinite(n)) return null;
+
+    if (n >= 0 && n <= 100) return n;
+    if (n >= 0 && n <= 1) return n * 100;
+    if (n >= -1 && n <= 1) return (n + 1) * 50;
+
+    return null;
+  }
+
+  return null;
+}
+
+/**
+ * Recherche récursive d'un score (0–100 après normalisation) dans un objet JSON.
+ * On privilégie les clés qui ressemblent à score/sentiment/index/value/fear_greed.
  */
 function findScoreCandidate(obj: unknown): number | null {
   const preferredKeys = ["score", "sentiment", "index", "value", "fear_greed"];
 
   const visit = (value: unknown): number | null => {
-    if (typeof value === "number" && value >= 0 && value <= 100) {
-      return value;
+    // Essai direct de normalisation
+    const direct = toScore0to100(value);
+    if (direct !== null) return direct;
+
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        const r = visit(v);
+        if (r !== null) return r;
+      }
+      return null;
     }
+
     if (value && typeof value === "object") {
       const rec = value as Record<string, unknown>;
+
       // 1) clés "intéressantes" en priorité
       for (const k of preferredKeys) {
         if (k in rec) {
@@ -22,22 +68,22 @@ function findScoreCandidate(obj: unknown): number | null {
           if (r !== null) return r;
         }
       }
-      // 2) sinon, tout le reste
+
+      // 2) sinon, on parcourt tout
       for (const v of Object.values(rec)) {
         const r = visit(v);
         if (r !== null) return r;
       }
     }
-    if (Array.isArray(value)) {
-      for (const v of value) {
-        const r = visit(v);
-        if (r !== null) return r;
-      }
-    }
+
     return null;
   };
 
-  return visit(obj);
+  const score = visit(obj);
+  if (score === null) return null;
+
+  const clamped = Math.max(0, Math.min(100, score));
+  return Math.round(clamped);
 }
 
 /**
@@ -64,7 +110,8 @@ function alphaVantageNewsScore(json: any): number | null {
   const scaled = (mean + 1) * 50; // [0,100]
 
   if (!Number.isFinite(scaled)) return null;
-  return Math.max(0, Math.min(100, Math.round(scaled)));
+  const clamped = Math.max(0, Math.min(100, scaled));
+  return Math.round(clamped);
 }
 
 async function fetchJsonSafe(url: string): Promise<unknown | null> {
@@ -80,7 +127,6 @@ async function fetchJsonSafe(url: string): Promise<unknown | null> {
     try {
       return JSON.parse(text);
     } catch {
-      // HTML ou autre → on ignore
       console.warn("[sentiment] non-JSON response, ignore", url);
       return null;
     }
@@ -94,23 +140,22 @@ async function buildPointsForEnv(
   envName: string,
   assetClass: AssetClass
 ): Promise<SentimentPoint[]> {
-  const url = process.env[envName];
-  if (!url || !url.trim()) {
+  const rawUrl = process.env[envName];
+  if (!rawUrl || !rawUrl.trim()) {
     // pas configuré → on ne fait rien
     return [];
   }
 
-  const json = await fetchJsonSafe(url.trim());
+  const url = rawUrl.trim();
+  const json = await fetchJsonSafe(url);
   if (!json) return [];
 
   let score: number | null = null;
 
-  // Cas spécifique Alpha Vantage
-  if (envName === "SENTIMENT_STOCKS_URL_4") {
-    score = alphaVantageNewsScore(json);
-  }
+  // 1) On tente d'abord le pattern Alpha Vantage NEWS_SENTIMENT (feed[].overall_sentiment_score ∈ [-1,1])
+  score = alphaVantageNewsScore(json);
 
-  // Sinon on tente la recherche générique 0–100
+  // 2) Sinon on tente la recherche générique (0–100, 0–1, -1–1)
   if (score === null) {
     score = findScoreCandidate(json);
   }

@@ -7,6 +7,7 @@ import type {
   SentimentTheme,
   RiskIndicator,
   FocusDriver,
+  SentimentSource,
 } from "./page";
 
 type Props = {
@@ -26,10 +27,14 @@ function scoreToColor(score: number) {
 }
 
 function barBg(score: number) {
-  if (score >= 70) return "from-emerald-500/70 via-emerald-400/70 to-lime-400/70";
-  if (score >= 55) return "from-lime-500/70 via-lime-400/70 to-emerald-400/70";
-  if (score >= 45) return "from-amber-500/70 via-amber-400/70 to-yellow-400/70";
-  if (score >= 30) return "from-orange-500/80 via-amber-500/80 to-red-500/80";
+  if (score >= 70)
+    return "from-emerald-500/70 via-emerald-400/70 to-lime-400/70";
+  if (score >= 55)
+    return "from-lime-500/70 via-lime-400/70 to-emerald-400/70";
+  if (score >= 45)
+    return "from-amber-500/70 via-amber-400/70 to-yellow-400/70";
+  if (score >= 30)
+    return "from-orange-500/80 via-amber-500/80 to-red-500/80";
   return "from-red-600/80 via-red-500/80 to-rose-500/80";
 }
 
@@ -73,6 +78,15 @@ export default function SentimentClient({ snapshot }: Props) {
   const stocks = themeMap.stocks;
   const commodities = themeMap.commodities;
 
+  const sourcesLabel = useMemo(() => {
+    if (!snapshot.sources || snapshot.sources.length === 0) return "";
+    const list = snapshot.sources as SentimentSource[];
+    const uniqueNames = Array.from(
+      new Set(list.map((s) => s.name))
+    );
+    return uniqueNames.join(" · ");
+  }, [snapshot.sources]);
+
   return (
     <main className="py-6 lg:py-8 w-full overflow-x-hidden">
       <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
@@ -93,12 +107,10 @@ export default function SentimentClient({ snapshot }: Props) {
                 Dernière mise à jour :{" "}
                 <span className="text-neutral-200">{formattedDate}</span>
               </div>
-              {snapshot.sources.length > 0 && (
+              {sourcesLabel && (
                 <div className="max-w-[360px]">
                   Sources agrégées :{" "}
-                  <span className="text-neutral-300">
-                    {snapshot.sources.join(" · ")}
-                  </span>
+                  <span className="text-neutral-300">{sourcesLabel}</span>
                 </div>
               )}
             </div>
@@ -248,16 +260,16 @@ export default function SentimentClient({ snapshot }: Props) {
                             <span
                               className={
                                 "px-2 py-0.5 rounded-full text-[11px] border " +
-                                (theme.direction === "risk-on"
+                                (theme.direction === "bullish"
                                   ? "border-emerald-500/60 text-emerald-300 bg-emerald-500/10"
-                                  : theme.direction === "risk-off"
+                                  : theme.direction === "bearish"
                                   ? "border-red-500/60 text-red-300 bg-red-500/10"
                                   : "border-neutral-600 text-neutral-300 bg-neutral-800/60")
                               }
                             >
-                              {theme.direction === "risk-on"
+                              {theme.direction === "bullish"
                                 ? "biais risk-on"
-                                : theme.direction === "risk-off"
+                                : theme.direction === "bearish"
                                 ? "biais risk-off"
                                 : "neutre"}
                             </span>

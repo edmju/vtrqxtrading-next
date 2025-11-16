@@ -90,28 +90,60 @@ function findScoreCandidate(obj: unknown): number | null {
  * Cas particulier pour Alpha Vantage NEWS_SENTIMENT :
  * - json.feed = tableau
  * - overall_sentiment_score ∈ [-1, 1]
- * On le convertit en 0–100 : (x + 1) * 50
+ * On renvoie :
+ * - score moyen converti en 0–100
+ * - nb d’articles, nb bull & nb bear
  */
-function alphaVantageNewsScore(json: any): number | null {
+function alphaVantageNewsStats(json: any): {
+  score: number | null;
+  articleCount: number;
+  bullishCount: number;
+  bearishCount: number;
+} | null {
   if (!json || !Array.isArray(json.feed)) return null;
 
   const scores: number[] = [];
+  let articleCount = 0;
+  let bullishCount = 0;
+  let bearishCount = 0;
+
   for (const item of json.feed) {
+    if (!item) continue;
+    articleCount++;
+
     const raw = Number(item?.overall_sentiment_score);
     if (Number.isFinite(raw)) {
       scores.push(raw);
     }
+
+    const label = String(item?.overall_sentiment_label || "").toLowerCase();
+    if (label.includes("bull")) {
+      bullishCount++;
+    } else if (label.includes("bear")) {
+      bearishCount++;
+    } else if (Number.isFinite(raw)) {
+      if (raw > 0.05) bullishCount++;
+      else if (raw < -0.05) bearishCount++;
+    }
   }
 
-  if (!scores.length) return null;
+  let score: number | null = null;
+  if (scores.length) {
+    const mean =
+      scores.reduce((acc, v) => acc + v, 0) / (scores.length || 1); // [-1,1]
+    const scaled = (mean + 1) * 50; // [0,100]
+    if (Number.isFinite(scaled)) {
+      const clamped = Math.max(0, Math.min(100, scaled));
+      score = Math.round(clamped);
+    }
+  }
 
-  const mean =
-    scores.reduce((acc, v) => acc + v, 0) / (scores.length || 1); // [-1,1]
-  const scaled = (mean + 1) * 50; // [0,100]
-
-  if (!Number.isFinite(scaled)) return null;
-  const clamped = Math.max(0, Math.min(100, scaled));
-  return Math.round(clamped);
+  return {
+    score,
+    articleCount,
+    bullishCount,
+    bearishCount,
+  };
 }
 
 async function fetchJsonSafe(url: string): Promise<unknown | null> {
@@ -151,9 +183,18 @@ async function buildPointsForEnv(
   if (!json) return [];
 
   let score: number | null = null;
+  let articleCount = 0;
+  let bullishCount = 0;
+  let bearishCount = 0;
 
-  // 1) On tente d'abord le pattern Alpha Vantage NEWS_SENTIMENT (feed[].overall_sentiment_score ∈ [-1,1])
-  score = alphaVantageNewsScore(json);
+  // 1) Pattern Alpha Vantage NEWS_SENTIMENT
+  const stats = alphaVantageNewsStats(json);
+  if (stats) {
+    score = stats.score;
+    articleCount = stats.articleCount;
+    bullishCount = stats.bullishCount;
+    bearishCount = stats.bearishCount;
+  }
 
   // 2) Sinon on tente la recherche générique (0–100, 0–1, -1–1)
   if (score === null) {
@@ -165,12 +206,19 @@ async function buildPointsForEnv(
     return [];
   }
 
+  const meta: Record<string, unknown> = { url };
+  if (articleCount) {
+    meta.articleCount = articleCount;
+    meta.bullishCount = bullishCount;
+    meta.bearishCount = bearishCount;
+  }
+
   return [
     {
       source: envName,
       assetClass,
       score: Math.max(0, Math.min(100, Math.round(score))),
-      meta: { url },
+      meta,
     },
   ];
 }

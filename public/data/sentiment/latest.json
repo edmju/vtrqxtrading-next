@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-16T22:08:18.263Z",
+  "generatedAt": "2025-11-16T23:08:19.217Z",
   "globalScore": 47,
   "themes": [
     {
@@ -28,23 +28,23 @@
   "focusDrivers": [
     {
       "label": "Aversion au risque sur Forex",
-      "description": "Le sentiment baissier sur le Forex reflète une prudence accrue face aux devises, possiblement liée à des incertitudes géopolitiques ou monétaires.",
+      "description": "Le sentiment baissier sur le Forex reflète une prudence ou une aversion au risque sur les devises, possiblement liée à des incertitudes macroéconomiques ou géopolitiques.",
       "weight": 1
     },
     {
-      "label": "Neutralité sur les actions",
-      "description": "Le sentiment neutre sur les actions indique une hésitation des investisseurs, probablement en attente de données économiques ou de résultats d'entreprise.",
+      "label": "Neutralité sur actions",
+      "description": "Le sentiment neutre sur les actions suggère une absence de tendance claire, avec un équilibre entre optimisme et prudence des investisseurs sur les marchés actions.",
       "weight": 1
     },
     {
       "label": "Appétit pour le risque sur commodities",
-      "description": "Le sentiment haussier sur les commodities suggère une demande accrue pour les actifs tangibles, souvent perçus comme une protection contre l'inflation ou une anticipation de reprise économique.",
+      "description": "Le sentiment haussier fort sur les commodities indique un intérêt accru pour les matières premières, souvent perçues comme des actifs refuges ou des bénéficiaires de pressions inflationnistes.",
       "weight": 1
     }
   ],
   "marketRegime": {
-    "label": "Mixed Sentiment with Commodities Optimism",
-    "description": "Le marché présente un sentiment global mitigé avec une aversion modérée sur le Forex, une neutralité sur les actions, et un optimisme marqué sur les commodities, suggérant une préférence pour les actifs réels face à une incertitude macroéconomique.",
+    "label": "Mixed Sentiment with Commodity Optimism",
+    "description": "Le marché présente un sentiment global mitigé avec une aversion modérée sur le Forex, une neutralité sur les actions, et un optimisme marqué sur les commodities, indiquant une préférence pour les actifs liés aux matières premières dans un contexte d'incertitude générale.",
     "confidence": 65
   },
   "sources": [

@@ -13,7 +13,7 @@ export type SentimentTheme = {
   id: SentimentThemeId;
   label: string;
   score: number; // 0..100  ( >50 = plutôt risk-on, <50 = plutôt risk-off )
-  direction?: "risk-on" | "risk-off" | "neutral";
+  direction?: "bullish" | "bearish" | "neutral";
   comment?: string;
 };
 
@@ -38,6 +38,12 @@ export type MarketRegime = {
   confidence: number; // 0..100
 };
 
+export type SentimentSource = {
+  name: string;
+  assetClass: SentimentThemeId | "global";
+  weight: number;
+};
+
 export type SentimentSnapshot = {
   generatedAt: string;
   globalScore: number; // 0..100
@@ -45,7 +51,11 @@ export type SentimentSnapshot = {
   themes: SentimentTheme[];
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
-  sources: string[]; // noms des fournisseurs utilisés pour la moyenne
+  /**
+   * Dans le JSON généré par scripts/sentiment/analyze.ts,
+   * sources est un tableau d'objets { name, assetClass, weight }.
+   */
+  sources: SentimentSource[];
 };
 
 async function readJson<T>(rel: string, fallback: T): Promise<T> {

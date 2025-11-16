@@ -142,7 +142,7 @@ export default function SentimentClient({ snapshot }: Props) {
     <main className="py-6 lg:py-8 w-full overflow-x-hidden">
       <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
         <div className="p-4 sm:p-6 lg:p-7 space-y-5 lg:space-y-6">
-          {/* Bandeau titre + méta (même style que la page News) */}
+          {/* Header aligné sur la page News */}
           <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold text-neutral-50 tracking-tight">
@@ -181,7 +181,7 @@ export default function SentimentClient({ snapshot }: Props) {
             </div>
           </header>
 
-          {/* Ligne 1 : score global + régime IA + focus drivers IA */}
+          {/* Ligne 1 : score global + régime IA + focus drivers */}
           <section className="grid gap-3 md:gap-4 md:grid-cols-3 min-w-0">
             {/* Score global */}
             <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40 flex flex-col gap-3 min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(8,47,73,0.8)]">
@@ -226,7 +226,7 @@ export default function SentimentClient({ snapshot }: Props) {
                     <span className={scoreToColor(globalScore)}>
                       {Math.round(globalScore)}/100
                     </span>{" "}
-                    calculé à partir des 9 flux d’actualités agrégés.
+                    calculé à partir des flux Alpha Vantage.
                   </p>
                   {shortRegimeDescription && (
                     <p className="text-[11px] text-sky-100/80 leading-snug">
@@ -237,8 +237,8 @@ export default function SentimentClient({ snapshot }: Props) {
               </div>
             </div>
 
-            {/* Régime de marché IA */}
-            <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40 flex flex-col justify-between min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(76,29,149,0.9)]">
+            {/* Régime de marché IA - on enlève justify-between pour éviter le "trou" */}
+            <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40 flex flex-col min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(76,29,149,0.9)]">
               <div className="flex items-center justify-between gap-2">
                 <div className="text-[11px] font-semibold uppercase tracking-wide text-violet-300/80">
                   Régime de marché (IA)
@@ -275,9 +275,8 @@ export default function SentimentClient({ snapshot }: Props) {
 
               {normalizedFocusDrivers.length === 0 ? (
                 <p className="mt-3 text-xs text-neutral-200">
-                  L’IA ne détecte pas de driver dominant sur cette fenêtre : le
-                  flux de news est réparti entre plusieurs thèmes, comme sur le
-                  radar de la page News.
+                  L’IA ne détecte pas de driver dominant sur cette fenêtre :
+                  le flux de news est réparti entre plusieurs thèmes.
                 </p>
               ) : (
                 <ul className="mt-3 space-y-2.5">
@@ -326,7 +325,7 @@ export default function SentimentClient({ snapshot }: Props) {
                     Sentiment par grand thème
                   </h2>
                   <p className="text-[11px] text-neutral-400">
-                    Forex, actions et commodities – agrégés depuis les flux
+                    Forex, actions et commodities – agrégés à partir des flux
                     externes, même logique que le radar de thèmes de la page
                     News.
                   </p>
@@ -415,19 +414,18 @@ export default function SentimentClient({ snapshot }: Props) {
                   Indicateurs de risque
                 </h2>
                 <p className="text-[11px] text-neutral-400">
-                  Volatilité, dérivés, crédit… normalisés sur 0–100 pour
-                  compléter la lecture IA du régime global.
+                  Volatilité, biais bull/bear & intensité du flux – normalisés
+                  sur 0–100 pour compléter la lecture IA du régime global.
                 </p>
               </div>
 
               <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 shadow-sm shadow-black/50 p-4 space-y-3 min-w-0">
-                {riskIndicators.length === 0 && (
+                {(!riskIndicators || riskIndicators.length === 0) && (
                   <div className="space-y-3">
                     <p className="text-[12px] text-neutral-300">
-                      Les indicateurs chiffrés (VIX, spreads de crédit, skew
-                      d’options, etc.) ne sont pas encore intégrés sur cette
-                      vue. Pour l’instant, le risque est lu uniquement via le
-                      régime IA et les drivers ci-dessus.
+                      Les indicateurs chiffrés (VIX, spreads de crédit, etc.)
+                      ne sont pas encore intégrés. Pour l’instant, le risque
+                      est lu via la structure du flux d’actualités.
                     </p>
                     <div className="space-y-2">
                       <div className="h-1.5 rounded-full bg-neutral-900 overflow-hidden">
@@ -461,7 +459,7 @@ export default function SentimentClient({ snapshot }: Props) {
                             {ind.label}
                           </span>
                           <span className="text-neutral-400 text-[11px]">
-                            {ind.value} · {dirLabel}
+                            {ind.value ? ind.value : "—"} · {dirLabel}
                           </span>
                         </div>
                         <span

@@ -1,3 +1,4 @@
+// src/app/(terminal)/dashboard/sentiment/page.tsx
 import React from "react";
 import path from "path";
 import { promises as fs } from "fs";
@@ -18,15 +19,15 @@ export type SentimentTheme = {
 export type RiskIndicator = {
   id: string;
   label: string;
-  value: string;
   score: number; // 0..100
-  direction: "up" | "down" | "neutral";
   comment?: string;
+  value?: string;
+  direction?: "up" | "down" | "neutral";
 };
 
 export type FocusDriver = {
   label: string;
-  weight: number; // intensité relative (sera normalisée sur 0–100 côté client)
+  weight: number; // intensité relative
   description?: string;
   comment?: string;
 };

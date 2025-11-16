@@ -15,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Même stack que pour news : pnpm + Node 20
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -44,8 +43,6 @@ jobs:
           SENTIMENT_STOCKS_URL_1: ${{ secrets.SENTIMENT_STOCKS_URL_1 }}
           SENTIMENT_STOCKS_URL_2: ${{ secrets.SENTIMENT_STOCKS_URL_2 }}
           SENTIMENT_STOCKS_URL_3: ${{ secrets.SENTIMENT_STOCKS_URL_3 }}
-          SENTIMENT_STOCKS_URL_4: ${{ secrets.SENTIMENT_STOCKS_URL_4 }}
-          SENTIMENT_STOCKS_KEY_4: ${{ secrets.SENTIMENT_STOCKS_KEY_4 }}
 
           SENTIMENT_COMMOD_URL_1: ${{ secrets.SENTIMENT_COMMOD_URL_1 }}
           SENTIMENT_COMMOD_URL_2: ${{ secrets.SENTIMENT_COMMOD_URL_2 }}

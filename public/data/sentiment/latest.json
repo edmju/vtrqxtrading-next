@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-16T20:52:11.969Z",
-  "globalScore": 46,
+  "generatedAt": "2025-11-16T21:07:52.862Z",
+  "globalScore": 47,
   "themes": [
     {
       "id": "forex",
@@ -13,8 +13,8 @@
       "id": "stocks",
       "label": "Actions",
       "score": 40,
-      "direction": "bearish",
-      "comment": "Actions montre un biais plutôt baissier (40/100)."
+      "direction": "neutral",
+      "comment": "Actions reste globalement neutre (40/100)."
     },
     {
       "id": "commodities",
@@ -27,25 +27,25 @@
   "riskIndicators": [],
   "focusDrivers": [
     {
-      "label": "Aversion au risque sur Forex",
-      "description": "Le sentiment baissier sur le Forex indique une prudence accrue des investisseurs vis-à-vis des devises, reflétant une possible fuite vers des actifs refuges ou une incertitude macroéconomique.",
+      "label": "Aversion au risque sur le Forex",
+      "description": "Le sentiment baissier sur le Forex suggère une pression sur les devises, possiblement liée à des incertitudes macroéconomiques ou des flux de capitaux défavorables.",
       "weight": 1
     },
     {
-      "label": "Aversion au risque sur actions",
-      "description": "Le sentiment négatif sur les actions souligne une baisse de l'appétit pour le risque sur les marchés boursiers, suggérant des inquiétudes sur la croissance ou les valorisations.",
+      "label": "Neutralité sur les actions",
+      "description": "Le sentiment neutre sur les actions reflète une hésitation des investisseurs, sans tendance claire à l'achat ou à la vente, indiquant une attente ou un équilibre des forces sur les marchés actions.",
       "weight": 1
     },
     {
-      "label": "Appétit pour le risque sur commodities",
-      "description": "Le sentiment haussier sur les matières premières indique une demande soutenue, possiblement liée à des pressions inflationnistes ou des tensions géopolitiques favorisant les actifs réels.",
+      "label": "Appétit pour le risque sur les commodities",
+      "description": "Le sentiment haussier sur les commodities montre un intérêt accru pour les matières premières, souvent perçues comme un actif refuge ou un levier en période d'inflation ou de tensions géopolitiques.",
       "weight": 1
     }
   ],
   "marketRegime": {
-    "label": "Risk-off with commodity strength",
-    "description": "Le marché présente un sentiment global modérément baissier, marqué par une aversion au risque sur le Forex et les actions, tandis que les matières premières bénéficient d'un appétit pour le risque distinct.",
-    "confidence": 75
+    "label": "Mixed Sentiment with Commodity Optimism",
+    "description": "Le marché présente un sentiment global mitigé avec une aversion modérée sur le Forex, une neutralité sur les actions, et un optimisme marqué sur les commodities, indiquant un régime où les matières premières sont perçues comme un refuge ou une opportunité, tandis que les devises restent sous pression.",
+    "confidence": 70
   },
   "sources": [
     {

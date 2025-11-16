@@ -1,46 +1,96 @@
 {
-  "generatedAt": "2025-11-16T20:09:51.407Z",
-  "globalScore": 60,
+  "generatedAt": "2025-11-16T20:52:11.969Z",
+  "globalScore": 46,
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 50,
-      "direction": "neutral",
-      "comment": "Forex reste globalement neutre (50/100)."
+      "score": 39,
+      "direction": "bearish",
+      "comment": "Forex montre un biais plutôt baissier (39/100)."
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 60,
-      "direction": "bullish",
-      "comment": "Actions montre un biais plutôt haussier (60/100)."
+      "score": 40,
+      "direction": "bearish",
+      "comment": "Actions montre un biais plutôt baissier (40/100)."
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 50,
-      "direction": "neutral",
-      "comment": "Commodities reste globalement neutre (50/100)."
+      "score": 60,
+      "direction": "bullish",
+      "comment": "Commodities montre un biais plutôt haussier (60/100)."
     }
   ],
   "riskIndicators": [],
   "focusDrivers": [
     {
-      "label": "Actions",
-      "weight": 0.3333333333333333,
-      "description": "Actions montre un biais plutôt haussier (60/100)."
+      "label": "Aversion au risque sur Forex",
+      "description": "Le sentiment baissier sur le Forex indique une prudence accrue des investisseurs vis-à-vis des devises, reflétant une possible fuite vers des actifs refuges ou une incertitude macroéconomique.",
+      "weight": 1
+    },
+    {
+      "label": "Aversion au risque sur actions",
+      "description": "Le sentiment négatif sur les actions souligne une baisse de l'appétit pour le risque sur les marchés boursiers, suggérant des inquiétudes sur la croissance ou les valorisations.",
+      "weight": 1
+    },
+    {
+      "label": "Appétit pour le risque sur commodities",
+      "description": "Le sentiment haussier sur les matières premières indique une demande soutenue, possiblement liée à des pressions inflationnistes ou des tensions géopolitiques favorisant les actifs réels.",
+      "weight": 1
     }
   ],
   "marketRegime": {
-    "label": "Risk-on modéré",
-    "description": "Le sentiment agrégé penche vers un scénario risk-on, avec un biais haussier sur les actifs risqués.",
-    "confidence": 30
+    "label": "Risk-off with commodity strength",
+    "description": "Le marché présente un sentiment global modérément baissier, marqué par une aversion au risque sur le Forex et les actions, tandis que les matières premières bénéficient d'un appétit pour le risque distinct.",
+    "confidence": 75
   },
   "sources": [
     {
-      "name": "SENTIMENT_STOCKS_URL_4",
+      "name": "SENTIMENT_FOREX_URL_1",
+      "assetClass": "forex",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_FOREX_URL_2",
+      "assetClass": "forex",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_FOREX_URL_3",
+      "assetClass": "forex",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_STOCKS_URL_1",
       "assetClass": "stocks",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_STOCKS_URL_2",
+      "assetClass": "stocks",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_STOCKS_URL_3",
+      "assetClass": "stocks",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_COMMOD_URL_1",
+      "assetClass": "commodities",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_COMMOD_URL_2",
+      "assetClass": "commodities",
+      "weight": 1
+    },
+    {
+      "name": "SENTIMENT_COMMOD_URL_3",
+      "assetClass": "commodities",
       "weight": 1
     }
   ]

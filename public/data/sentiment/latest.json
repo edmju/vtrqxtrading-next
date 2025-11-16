@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2025-11-16T15:07:54.485Z",
-  "globalScore": 60,
+  "generatedAt": "2025-11-16T16:09:34.810Z",
+  "globalScore": 59,
   "themes": [
     {
       "id": "forex",
@@ -12,9 +12,9 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 60,
-      "direction": "bullish",
-      "comment": "Actions montre un biais plutôt haussier (60/100)."
+      "score": 59,
+      "direction": "neutral",
+      "comment": "Actions reste globalement neutre (59/100)."
     },
     {
       "id": "commodities",
@@ -28,14 +28,14 @@
   "focusDrivers": [
     {
       "label": "Actions",
-      "weight": 0.3333333333333333,
-      "description": "Actions montre un biais plutôt haussier (60/100)."
+      "weight": 0.3,
+      "description": "Actions reste globalement neutre (59/100)."
     }
   ],
   "marketRegime": {
-    "label": "Risk-on modéré",
-    "description": "Le sentiment agrégé penche vers un scénario risk-on, avec un biais haussier sur les actifs risqués.",
-    "confidence": 30
+    "label": "Neutre",
+    "description": "Régime neutre : les signaux de sentiment restent globalement équilibrés entre risk-on et risk-off.",
+    "confidence": 50
   },
   "sources": [
     {

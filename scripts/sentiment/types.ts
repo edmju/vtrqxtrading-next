@@ -1,12 +1,19 @@
 // scripts/sentiment/types.ts
-
 export type AssetClass = "forex" | "stocks" | "commodities";
+
+export type SentimentPointMeta = {
+  url?: string;
+  articleCount?: number;
+  bullishCount?: number;
+  bearishCount?: number;
+  [key: string]: unknown;
+};
 
 export type SentimentPoint = {
   source: string;
   assetClass: AssetClass;
-  score: number; // 0–100
-  meta?: Record<string, unknown>;
+  score: number; // 0–100 normalisé
+  meta?: SentimentPointMeta;
 };
 
 export type ThemeSentiment = {
@@ -38,42 +45,46 @@ export type MarketRegime = {
   confidence: number; // 0–100
 };
 
-export type SentimentTradeIdea = {
-  id: string;
-  label: string;
-  asset: string; // ex: "US500", "EURUSD", "Gold"
-  direction: "long" | "short";
-  horizon: string; // ex: "intraday", "1–3 jours"
-  confidence: number; // 0–100
-  reasoning: string;
+export type SentimentSource = {
+  name: string;
+  assetClass: AssetClass | "global";
+  weight: number;
 };
 
 export type SentimentHistoryPoint = {
-  generatedAt: string;
+  timestamp: string;
   globalScore: number;
-  forexScore: number;
-  stocksScore: number;
-  commoditiesScore: number;
-  totalArticles: number;
-  bullishArticles: number;
-  bearishArticles: number;
+  forexScore?: number;
+  stocksScore?: number;
+  commoditiesScore?: number;
+  totalArticles?: number;
+};
+
+export type SentimentSuggestion = {
+  id: string;
+  label: string;
+  assetClass: AssetClass | "global";
+  bias: "long" | "short" | "neutral";
+  confidence: number; // 0–100
+  rationale: string;
 };
 
 export type SentimentSnapshot = {
   generatedAt: string;
-  globalScore: number;
+  globalScore: number; // 0–100
+  marketRegime: MarketRegime;
   themes: ThemeSentiment[];
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
-  marketRegime: MarketRegime;
-  tradeIdeas: SentimentTradeIdea[];
-  totalArticles: number;
-  bullishArticles: number;
-  bearishArticles: number;
-  globalConfidence: number;
-  sources: {
-    name: string;
-    assetClass: AssetClass | "global";
-    weight: number;
-  }[];
+  sources: SentimentSource[];
+
+  history?: SentimentHistoryPoint[];
+  globalConfidence?: number;
+  sourceConsensus?: number;
+  tensionScore?: number;
+  suggestions?: SentimentSuggestion[];
+
+  totalArticles?: number;
+  bullishArticles?: number;
+  bearishArticles?: number;
 };

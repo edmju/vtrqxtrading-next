@@ -304,8 +304,1037 @@
     "totalArticles": 302
   },
 
-  /* ...  >>> Ici tu continues le même pattern jusqu’à 2025-11-17T09:00:00Z <<<  */
+  /* ---- À partir d’ici : génération de la continuité logique ---- */
 
+  {
+    "timestamp": "2025-11-12T00:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 310
+  },
+  {
+    "timestamp": "2025-11-12T01:00:00Z",
+    "globalScore": 59,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 58,
+    "totalArticles": 318
+  },
+  {
+    "timestamp": "2025-11-12T02:00:00Z",
+    "globalScore": 60,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 59,
+    "totalArticles": 322
+  },
+  {
+    "timestamp": "2025-11-12T03:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 330
+  },
+  {
+    "timestamp": "2025-11-12T04:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 337
+  },
+  {
+    "timestamp": "2025-11-12T05:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 344
+  },
+  {
+    "timestamp": "2025-11-12T06:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 56,
+    "commoditiesScore": 56,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-12T07:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 55,
+    "commoditiesScore": 55,
+    "totalArticles": 353
+  },
+  {
+    "timestamp": "2025-11-12T08:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 55,
+    "commoditiesScore": 54,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-12T09:00:00Z",
+    "globalScore": 54,
+    "forexScore": 53,
+    "stocksScore": 54,
+    "commoditiesScore": 53,
+    "totalArticles": 366
+  },
+  {
+    "timestamp": "2025-11-12T10:00:00Z",
+    "globalScore": 53,
+    "forexScore": 52,
+    "stocksScore": 53,
+    "commoditiesScore": 52,
+    "totalArticles": 370
+  },
+  {
+    "timestamp": "2025-11-12T11:00:00Z",
+    "globalScore": 53,
+    "forexScore": 52,
+    "stocksScore": 53,
+    "commoditiesScore": 52,
+    "totalArticles": 371
+  },
+  {
+    "timestamp": "2025-11-12T12:00:00Z",
+    "globalScore": 54,
+    "forexScore": 53,
+    "stocksScore": 54,
+    "commoditiesScore": 53,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-12T13:00:00Z",
+    "globalScore": 56,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 55,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-12T14:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 57,
+    "totalArticles": 347
+  },
+  {
+    "timestamp": "2025-11-12T15:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 58,
+    "totalArticles": 340
+  },
+  {
+    "timestamp": "2025-11-12T16:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 60,
+    "totalArticles": 332
+  },
+  {
+    "timestamp": "2025-11-12T17:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 324
+  },
+  {
+    "timestamp": "2025-11-12T18:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 320
+  },
+  {
+    "timestamp": "2025-11-12T19:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 314
+  },
+  {
+    "timestamp": "2025-11-12T20:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 310
+  },
+  {
+    "timestamp": "2025-11-12T21:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 55,
+    "commoditiesScore": 55,
+    "totalArticles": 309
+  },
+  {
+    "timestamp": "2025-11-12T22:00:00Z",
+    "globalScore": 54,
+    "forexScore": 52,
+    "stocksScore": 54,
+    "commoditiesScore": 53,
+    "totalArticles": 315
+  },
+  {
+    "timestamp": "2025-11-12T23:00:00Z",
+    "globalScore": 54,
+    "forexScore": 52,
+    "stocksScore": 54,
+    "commoditiesScore": 53,
+    "totalArticles": 319
+  },
+
+  {
+    "timestamp": "2025-11-13T00:00:00Z",
+    "globalScore": 55,
+    "forexScore": 53,
+    "stocksScore": 55,
+    "commoditiesScore": 54,
+    "totalArticles": 328
+  },
+  {
+    "timestamp": "2025-11-13T01:00:00Z",
+    "globalScore": 56,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 55,
+    "totalArticles": 330
+  },
+  {
+    "timestamp": "2025-11-13T02:00:00Z",
+    "globalScore": 57,
+    "forexScore": 55,
+    "stocksScore": 57,
+    "commoditiesScore": 56,
+    "totalArticles": 336
+  },
+  {
+    "timestamp": "2025-11-13T03:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 57,
+    "totalArticles": 340
+  },
+  {
+    "timestamp": "2025-11-13T04:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 59,
+    "commoditiesScore": 58,
+    "totalArticles": 345
+  },
+  {
+    "timestamp": "2025-11-13T05:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 58,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-13T06:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 59,
+    "totalArticles": 356
+  },
+  {
+    "timestamp": "2025-11-13T07:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 60,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-13T08:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 61,
+    "totalArticles": 365
+  },
+  {
+    "timestamp": "2025-11-13T09:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 61,
+    "totalArticles": 370
+  },
+  {
+    "timestamp": "2025-11-13T10:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 60,
+    "totalArticles": 369
+  },
+  {
+    "timestamp": "2025-11-13T11:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 59,
+    "totalArticles": 366
+  },
+  {
+    "timestamp": "2025-11-13T12:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 59,
+    "commoditiesScore": 58,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-13T13:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 57,
+    "totalArticles": 354
+  },
+  {
+    "timestamp": "2025-11-13T14:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 55,
+    "totalArticles": 349
+  },
+  {
+    "timestamp": "2025-11-13T15:00:00Z",
+    "globalScore": 54,
+    "forexScore": 52,
+    "stocksScore": 54,
+    "commoditiesScore": 54,
+    "totalArticles": 345
+  },
+  {
+    "timestamp": "2025-11-13T16:00:00Z",
+    "globalScore": 54,
+    "forexScore": 51,
+    "stocksScore": 54,
+    "commoditiesScore": 53,
+    "totalArticles": 340
+  },
+  {
+    "timestamp": "2025-11-13T17:00:00Z",
+    "globalScore": 55,
+    "forexScore": 52,
+    "stocksScore": 55,
+    "commoditiesScore": 54,
+    "totalArticles": 335
+  },
+  {
+    "timestamp": "2025-11-13T18:00:00Z",
+    "globalScore": 56,
+    "forexScore": 53,
+    "stocksScore": 56,
+    "commoditiesScore": 55,
+    "totalArticles": 332
+  },
+  {
+    "timestamp": "2025-11-13T19:00:00Z",
+    "globalScore": 56,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 56,
+    "totalArticles": 330
+  },
+  {
+    "timestamp": "2025-11-13T20:00:00Z",
+    "globalScore": 57,
+    "forexScore": 55,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 334
+  },
+  {
+    "timestamp": "2025-11-13T21:00:00Z",
+    "globalScore": 57,
+    "forexScore": 55,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 339
+  },
+  {
+    "timestamp": "2025-11-13T22:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 58,
+    "totalArticles": 345
+  },
+  {
+    "timestamp": "2025-11-13T23:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 58,
+    "totalArticles": 352
+  },
+
+  {
+    "timestamp": "2025-11-14T00:00:00Z",
+    "globalScore": 59,
+    "forexScore": 57,
+    "stocksScore": 59,
+    "commoditiesScore": 59,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-14T01:00:00Z",
+    "globalScore": 60,
+    "forexScore": 58,
+    "stocksScore": 60,
+    "commoditiesScore": 60,
+    "totalArticles": 366
+  },
+  {
+    "timestamp": "2025-11-14T02:00:00Z",
+    "globalScore": 61,
+    "forexScore": 59,
+    "stocksScore": 61,
+    "commoditiesScore": 61,
+    "totalArticles": 372
+  },
+  {
+    "timestamp": "2025-11-14T03:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 380
+  },
+  {
+    "timestamp": "2025-11-14T04:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 385
+  },
+  {
+    "timestamp": "2025-11-14T05:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 388
+  },
+  {
+    "timestamp": "2025-11-14T06:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 390
+  },
+  {
+    "timestamp": "2025-11-14T07:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 392
+  },
+  {
+    "timestamp": "2025-11-14T08:00:00Z",
+    "globalScore": 57,
+    "forexScore": 55,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 395
+  },
+  {
+    "timestamp": "2025-11-14T09:00:00Z",
+    "globalScore": 56,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 398
+  },
+  {
+    "timestamp": "2025-11-14T10:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 55,
+    "commoditiesScore": 56,
+    "totalArticles": 400
+  },
+  {
+    "timestamp": "2025-11-14T11:00:00Z",
+    "globalScore": 55,
+    "forexScore": 53,
+    "stocksScore": 55,
+    "commoditiesScore": 56,
+    "totalArticles": 401
+  },
+  {
+    "timestamp": "2025-11-14T12:00:00Z",
+    "globalScore": 56,
+    "forexScore": 54,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 398
+  },
+  {
+    "timestamp": "2025-11-14T13:00:00Z",
+    "globalScore": 57,
+    "forexScore": 55,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 395
+  },
+  {
+    "timestamp": "2025-11-14T14:00:00Z",
+    "globalScore": 59,
+    "forexScore": 57,
+    "stocksScore": 59,
+    "commoditiesScore": 59,
+    "totalArticles": 390
+  },
+  {
+    "timestamp": "2025-11-14T15:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 60,
+    "totalArticles": 385
+  },
+  {
+    "timestamp": "2025-11-14T16:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 61,
+    "totalArticles": 380
+  },
+  {
+    "timestamp": "2025-11-14T17:00:00Z",
+    "globalScore": 61,
+    "forexScore": 61,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 375
+  },
+  {
+    "timestamp": "2025-11-14T18:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 372
+  },
+  {
+    "timestamp": "2025-11-14T19:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 370
+  },
+  {
+    "timestamp": "2025-11-14T20:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 369
+  },
+  {
+    "timestamp": "2025-11-14T21:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 365
+  },
+  {
+    "timestamp": "2025-11-14T22:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 362
+  },
+  {
+    "timestamp": "2025-11-14T23:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 360
+  },
+
+  {
+    "timestamp": "2025-11-15T00:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-15T01:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 348
+  },
+  {
+    "timestamp": "2025-11-15T02:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 347
+  },
+  {
+    "timestamp": "2025-11-15T03:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 351
+  },
+  {
+    "timestamp": "2025-11-15T04:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 62,
+    "totalArticles": 355
+  },
+  {
+    "timestamp": "2025-11-15T05:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-15T06:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 364
+  },
+  {
+    "timestamp": "2025-11-15T07:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 368
+  },
+  {
+    "timestamp": "2025-11-15T08:00:00Z",
+    "globalScore": 59,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 371
+  },
+  {
+    "timestamp": "2025-11-15T09:00:00Z",
+    "globalScore": 58,
+    "forexScore": 58,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 375
+  },
+  {
+    "timestamp": "2025-11-15T10:00:00Z",
+    "globalScore": 57,
+    "forexScore": 57,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 378
+  },
+  {
+    "timestamp": "2025-11-15T11:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 380
+  },
+  {
+    "timestamp": "2025-11-15T12:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 379
+  },
+  {
+    "timestamp": "2025-11-15T13:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 375
+  },
+  {
+    "timestamp": "2025-11-15T14:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 371
+  },
+  {
+    "timestamp": "2025-11-15T15:00:00Z",
+    "globalScore": 61,
+    "forexScore": 60,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 368
+  },
+  {
+    "timestamp": "2025-11-15T16:00:00Z",
+    "globalScore": 61,
+    "forexScore": 61,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 364
+  },
+  {
+    "timestamp": "2025-11-15T17:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-15T18:00:00Z",
+    "globalScore": 59,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 357
+  },
+  {
+    "timestamp": "2025-11-15T19:00:00Z",
+    "globalScore": 58,
+    "forexScore": 58,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 356
+  },
+  {
+    "timestamp": "2025-11-15T20:00:00Z",
+    "globalScore": 57,
+    "forexScore": 57,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 355
+  },
+  {
+    "timestamp": "2025-11-15T21:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 57,
+    "totalArticles": 352
+  },
+  {
+    "timestamp": "2025-11-15T22:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 56,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-15T23:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 55,
+    "commoditiesScore": 55,
+    "totalArticles": 349
+  },
+
+  {
+    "timestamp": "2025-11-16T00:00:00Z",
+    "globalScore": 55,
+    "forexScore": 54,
+    "stocksScore": 55,
+    "commoditiesScore": 56,
+    "totalArticles": 345
+  },
+  {
+    "timestamp": "2025-11-16T01:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 343
+  },
+  {
+    "timestamp": "2025-11-16T02:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 342
+  },
+  {
+    "timestamp": "2025-11-16T03:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 344
+  },
+  {
+    "timestamp": "2025-11-16T04:00:00Z",
+    "globalScore": 58,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 347
+  },
+  {
+    "timestamp": "2025-11-16T05:00:00Z",
+    "globalScore": 59,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 61,
+    "totalArticles": 350
+  },
+  {
+    "timestamp": "2025-11-16T06:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 353
+  },
+  {
+    "timestamp": "2025-11-16T07:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 62,
+    "totalArticles": 356
+  },
+  {
+    "timestamp": "2025-11-16T08:00:00Z",
+    "globalScore": 59,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 61,
+    "totalArticles": 357
+  },
+  {
+    "timestamp": "2025-11-16T09:00:00Z",
+    "globalScore": 58,
+    "forexScore": 58,
+    "stocksScore": 58,
+    "commoditiesScore": 60,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-16T10:00:00Z",
+    "globalScore": 57,
+    "forexScore": 57,
+    "stocksScore": 57,
+    "commoditiesScore": 59,
+    "totalArticles": 364
+  },
+  {
+    "timestamp": "2025-11-16T11:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 366
+  },
+  {
+    "timestamp": "2025-11-16T12:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 365
+  },
+  {
+    "timestamp": "2025-11-16T13:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 362
+  },
+  {
+    "timestamp": "2025-11-16T14:00:00Z",
+    "globalScore": 60,
+    "forexScore": 59,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 360
+  },
+  {
+    "timestamp": "2025-11-16T15:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 357
+  },
+  {
+    "timestamp": "2025-11-16T16:00:00Z",
+    "globalScore": 61,
+    "forexScore": 61,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 355
+  },
+  {
+    "timestamp": "2025-11-16T17:00:00Z",
+    "globalScore": 61,
+    "forexScore": 61,
+    "stocksScore": 61,
+    "commoditiesScore": 62,
+    "totalArticles": 351
+  },
+  {
+    "timestamp": "2025-11-16T18:00:00Z",
+    "globalScore": 60,
+    "forexScore": 60,
+    "stocksScore": 60,
+    "commoditiesScore": 61,
+    "totalArticles": 347
+  },
+  {
+    "timestamp": "2025-11-16T19:00:00Z",
+    "globalScore": 59,
+    "forexScore": 59,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 343
+  },
+  {
+    "timestamp": "2025-11-16T20:00:00Z",
+    "globalScore": 58,
+    "forexScore": 58,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 340
+  },
+  {
+    "timestamp": "2025-11-16T21:00:00Z",
+    "globalScore": 57,
+    "forexScore": 57,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 338
+  },
+  {
+    "timestamp": "2025-11-16T22:00:00Z",
+    "globalScore": 56,
+    "forexScore": 56,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 336
+  },
+  {
+    "timestamp": "2025-11-16T23:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 335
+  },
+
+  {
+    "timestamp": "2025-11-17T00:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 334
+  },
+  {
+    "timestamp": "2025-11-17T01:00:00Z",
+    "globalScore": 58,
+    "forexScore": 56,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 333
+  },
+  {
+    "timestamp": "2025-11-17T02:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 334
+  },
+  {
+    "timestamp": "2025-11-17T03:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 336
+  },
+  {
+    "timestamp": "2025-11-17T04:00:00Z",
+    "globalScore": 59,
+    "forexScore": 58,
+    "stocksScore": 59,
+    "commoditiesScore": 60,
+    "totalArticles": 338
+  },
+  {
+    "timestamp": "2025-11-17T05:00:00Z",
+    "globalScore": 58,
+    "forexScore": 57,
+    "stocksScore": 58,
+    "commoditiesScore": 59,
+    "totalArticles": 339
+  },
+  {
+    "timestamp": "2025-11-17T06:00:00Z",
+    "globalScore": 57,
+    "forexScore": 56,
+    "stocksScore": 57,
+    "commoditiesScore": 58,
+    "totalArticles": 340
+  },
+  {
+    "timestamp": "2025-11-17T07:00:00Z",
+    "globalScore": 56,
+    "forexScore": 55,
+    "stocksScore": 56,
+    "commoditiesScore": 57,
+    "totalArticles": 339
+  },
   {
     "timestamp": "2025-11-17T08:00:00Z",
     "globalScore": 56,

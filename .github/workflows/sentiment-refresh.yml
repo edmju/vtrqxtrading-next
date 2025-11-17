@@ -2,8 +2,10 @@ name: Hourly Sentiment Refresh
 
 on:
   schedule:
-    - cron: "0 * * * *"   # toutes les heures
-  workflow_dispatch: {}    # déclenchement manuel possible
+    # toutes les heures
+    - cron: "0 * * * *"
+  # déclenchement manuel possible depuis l’UI GitHub
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -13,8 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
+      # Même stack que pour News : pnpm + Node 20
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -43,17 +47,23 @@ jobs:
           SENTIMENT_STOCKS_URL_1: ${{ secrets.SENTIMENT_STOCKS_URL_1 }}
           SENTIMENT_STOCKS_URL_2: ${{ secrets.SENTIMENT_STOCKS_URL_2 }}
           SENTIMENT_STOCKS_URL_3: ${{ secrets.SENTIMENT_STOCKS_URL_3 }}
+          SENTIMENT_STOCKS_URL_4: ${{ secrets.SENTIMENT_STOCKS_URL_4 }}
+          SENTIMENT_STOCKS_KEY_4: ${{ secrets.SENTIMENT_STOCKS_KEY_4 }}
 
           SENTIMENT_COMMOD_URL_1: ${{ secrets.SENTIMENT_COMMOD_URL_1 }}
           SENTIMENT_COMMOD_URL_2: ${{ secrets.SENTIMENT_COMMOD_URL_2 }}
           SENTIMENT_COMMOD_URL_3: ${{ secrets.SENTIMENT_COMMOD_URL_3 }}
 
+          # chemin de sortie du snapshot
           SENTIMENT_OUTPUT_FILE: public/data/sentiment/latest.json
 
       - name: Commit sentiment data
         run: |
           git config user.name "sentiment-bot"
           git config user.email "sentiment-bot@users.noreply.github.com"
-          git add public/data/sentiment/latest.json || true
+
+          # ⬅️ IMPORTANT : on commit latest.json ET history.json
+          git add public/data/sentiment/latest.json public/data/sentiment/history.json || true
+
           git commit -m "chore(sentiment): refresh data $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes"
           git push

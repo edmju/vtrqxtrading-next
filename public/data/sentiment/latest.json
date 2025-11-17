@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-17T18:13:05.367Z",
+  "generatedAt": "2025-11-17T19:01:55.666Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Optimisme modéré avec vigilance",
-    "description": "Le sentiment global est positivement orienté avec une forte dominance des opinions haussières, mais la température des flux d’actualités reste modérée, suggérant une prudence face à une possible volatilité à court terme.",
+    "label": "Régime d’optimisme prudent",
+    "description": "Le sentiment global est modérément positif avec un fort consensus haussier, mais la température des actualités reste neutre, indiquant une confiance mesurée sans euphorie excessive.",
     "confidence": 60
   },
   "themes": [
@@ -24,7 +24,7 @@
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 60,
+      "score": 59,
       "direction": "bullish",
       "comment": ""
     }
@@ -49,27 +49,27 @@
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 90,
-      "value": "90/100",
+      "score": 91,
+      "value": "91/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Domination haussière",
+      "label": "Consensus haussier très élevé",
       "weight": 3,
-      "description": "Une écrasante majorité des sources et articles expriment un optimisme marqué, renforçant la dynamique positive sur les marchés."
+      "description": "Une majorité écrasante des sources exprime un sentiment positif, soutenant une dynamique favorable sur les marchés."
     },
     {
-      "label": "Consensus élevé",
+      "label": "Température d’actualité modérée",
       "weight": 2,
-      "description": "Un fort accord entre les différentes sources d’information soutient la cohérence du sentiment positif."
+      "description": "Le flux d’actualités est stable sans excès de tension, ce qui limite les risques de volatilité soudaine."
     },
     {
-      "label": "Flux d’actualités modéré",
-      "weight": 2,
-      "description": "Le volume et la température des articles sont moyens, ce qui limite les risques de surchauffe mais incite à la prudence."
+      "label": "Balance bull/bear extrêmement biaisée",
+      "weight": 3,
+      "description": "La prédominance quasi totale des positions haussières peut signaler un potentiel de surchauffe ou un manque de couverture baissière."
     }
   ],
   "sources": [
@@ -119,10 +119,10 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 90,
+  "sourceConsensus": 91,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 197,
+  "bullishArticles": 200,
   "bearishArticles": 2,
   "globalConfidence": 80,
   "history": [
@@ -140,6 +140,14 @@
       "forexScore": 56,
       "stocksScore": 56,
       "commoditiesScore": 60,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-17T19:01:55.666Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 56,
+      "commoditiesScore": 59,
       "totalArticles": 350
     }
   ]

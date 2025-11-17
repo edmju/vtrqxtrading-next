@@ -50,6 +50,7 @@ export type SentimentHistoryPoint = {
   forexScore?: number;
   stocksScore?: number;
   commoditiesScore?: number;
+  totalArticles?: number;
 };
 
 export type SentimentSuggestion = {
@@ -70,7 +71,7 @@ export type SentimentSnapshot = {
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
 
-  // nouveaux champs optionnels utilisés par la page
+  // champs optionnels injectés par le script de refresh
   history?: SentimentHistoryPoint[]; // timeline de sentiment
   globalConfidence?: number; // confiance IA globale
   sourceConsensus?: number; // consensus des sources 0–100

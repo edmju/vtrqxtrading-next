@@ -1,155 +1,164 @@
 {
-  "generatedAt": "2025-11-17T07:11:07.204Z",
-  "globalScore": 46,
+  "generatedAt": "2025-11-17T08:15:01.102Z",
+  "globalScore": 57,
+  "marketRegime": {
+    "label": "Régime haussier modéré",
+    "description": "Le marché montre un fort consensus haussier avec une majorité écrasante de positions bullish, mais la tension des flux d’actualités reste modérée, suggérant un optimisme prudent.",
+    "confidence": 85
+  },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 39,
-      "direction": "bearish",
-      "comment": "Le sentiment baissier sur le Forex indique une pression probable sur les devises majeures, possiblement liée à des incertitudes économiques ou à une aversion au risque accrue. Les scores très variables entre sources suggèrent une volatilité importante."
+      "score": 55,
+      "direction": "bullish",
+      "comment": "Le sentiment positif s’étend au forex, soutenant une appréciation générale des devises majeures."
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 40,
-      "direction": "bearish",
-      "comment": "Le sentiment baissier sur les actions reflète une prudence des investisseurs face aux perspectives économiques ou aux résultats d'entreprises. La volatilité des scores souligne un marché hésitant."
+      "score": 56,
+      "direction": "bullish",
+      "comment": "Les actions bénéficient d’un fort optimisme, favorisant une dynamique acheteuse."
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 58,
-      "direction": "neutral",
-      "comment": "Le sentiment neutre à légèrement positif sur les commodities suggère une demande stable ou une anticipation d'amélioration des fondamentaux, notamment dans les secteurs de l'énergie ou des métaux."
+      "score": 59,
+      "direction": "bullish",
+      "comment": "Les matières premières profitent également d’un sentiment haussier, reflétant une demande soutenue."
     }
   ],
   "riskIndicators": [
     {
-      "id": "source_consensus",
-      "label": "Consensus des sources",
-      "score": 19,
-      "value": "24.4 pts d'écart-type",
-      "direction": "down",
-      "comment": "Les sources de sentiment envoient des signaux divergents, ce qui rend la lecture plus fragile."
-    },
-    {
-      "id": "news_heat",
-      "label": "Température du flux d’actualités",
-      "score": 60,
+      "id": "tension_flux",
+      "label": "Tension du flux d’actualités",
+      "score": 50,
       "value": "350 articles",
-      "direction": "up",
-      "comment": "Volume agrégé d’environ 350 articles Alpha Vantage sur la fenêtre récente."
+      "direction": "neutral",
+      "comment": "Flux d’actualités de volume moyen, sans tension particulière."
     },
     {
       "id": "bull_bear_balance",
-      "label": "Balance bull/bear globale",
-      "score": 87,
-      "value": "87% bull",
+      "label": "Balance bull / bear globale",
+      "score": 95,
+      "value": "95% haussiers / 5% baissiers",
       "direction": "up",
-      "comment": "Environ 87% des articles sont classés haussiers contre 6% baissiers, donnant un signal assez lisible du flux."
+      "comment": "Légère dominance des articles haussiers dans le flux."
+    },
+    {
+      "id": "source_consensus",
+      "label": "Consensus entre les sources",
+      "score": 91,
+      "value": "91/100",
+      "direction": "up",
+      "comment": "Nos différentes sources convergent vers une même lecture du marché."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Divergence entre classes d'actifs",
-      "description": "Le contraste marqué entre le sentiment baissier sur Forex et actions et la neutralité/positivité sur les commodities suggère des dynamiques sectorielles distinctes, probablement liées à des facteurs macroéconomiques spécifiques comme l'inflation ou les tensions géopolitiques.",
-      "weight": 0.5
+      "label": "Consensus haussier fort",
+      "weight": 3,
+      "description": "95% des acteurs sont positionnés à la hausse, indiquant une forte conviction collective dans la tendance positive."
     },
     {
-      "label": "Volume élevé d'articles bullish mais confiance modérée",
-      "description": "La prédominance d'articles bullish contraste avec un score global baissier, indiquant une possible volatilité ou des opinions divergentes qui rendent le marché incertain à court terme.",
-      "weight": 0.3
+      "label": "Consensus entre sources élevé",
+      "weight": 2,
+      "description": "Un score de 91/100 confirme une forte homogénéité dans les signaux et analyses, renforçant la fiabilité du sentiment."
     },
     {
-      "label": "Faible score sur certains signaux Forex et actions",
-      "description": "La présence de scores nuls dans certains signaux Forex et actions peut refléter des zones d'incertitude ou d'absence de consensus, renforçant la prudence dans ces segments.",
-      "weight": 0.2
+      "label": "Tension modérée des flux d’actualités",
+      "weight": 1,
+      "description": "La quantité d’articles et la tension moyenne indiquent un environnement d’information stable sans excès de volatilité émotionnelle."
     }
   ],
-  "marketRegime": {
-    "label": "Cautious Bearish with Commodity Resilience",
-    "description": "Le sentiment global est modérément baissier (score 46), avec une nette divergence entre les classes d'actifs. Le Forex et les actions affichent un sentiment baissier marqué (scores respectifs 39 et 40), suggérant une prudence accrue sur les devises majeures et les marchés actions, possiblement liée à des incertitudes macroéconomiques ou géopolitiques. En revanche, les commodities montrent un sentiment plus neutre à légèrement positif (score 58), indiquant une certaine résilience ou anticipation d'une demande soutenue dans cette classe d'actifs. Le volume d'articles bullish est très élevé (304 sur 350), mais la confiance globale reste modérée (54), ce qui traduit une possible volatilité ou des opinions divergentes sur les marchés. Ce régime reflète une phase où les investisseurs restent pru",
-    "confidence": 60
-  },
-  "tradeIdeas": [
-    {
-      "id": "trade1",
-      "label": "Short EUR/USD à court terme",
-      "asset": "EUR/USD",
-      "direction": "short",
-      "horizon": "1-2 semaines",
-      "confidence": 65,
-      "reasoning": "Le sentiment baissier sur le Forex et la volatilité des signaux indiquent une pression probable sur l'euro face au dollar, justifiant une position short prudente à court terme."
-    },
-    {
-      "id": "trade2",
-      "label": "Short indice actions US",
-      "asset": "S&P 500",
-      "direction": "short",
-      "horizon": "1 mois",
-      "confidence": 60,
-      "reasoning": "Le sentiment baissier sur les actions et la prudence des investisseurs suggèrent un risque de correction ou de consolidation sur les marchés actions US."
-    },
-    {
-      "id": "trade3",
-      "label": "Long sur matières premières énergétiques",
-      "asset": "Brent Crude Oil",
-      "direction": "long",
-      "horizon": "1-3 mois",
-      "confidence": 55,
-      "reasoning": "Le sentiment neutre à légèrement positif sur les commodities, notamment l'énergie, indique une possible stabilité ou hausse des prix, soutenue par des fondamentaux solides."
-    }
-  ],
-  "totalArticles": 350,
-  "bullishArticles": 304,
-  "bearishArticles": 20,
-  "globalConfidence": 60,
   "sources": [
     {
-      "name": "SENTIMENT_FOREX_URL_1",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=economy_monetary&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "forex",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_FOREX_URL_2",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=economy_macro&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "forex",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_FOREX_URL_3",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=economy_fiscal,financial_markets&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "forex",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_STOCKS_URL_1",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=financial_markets&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "stocks",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_STOCKS_URL_2",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=earnings&sort=LATEST&apikey=UWA3A1EXUI6TZVS5\n",
       "assetClass": "stocks",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_STOCKS_URL_3",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=technology,financial_markets&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "stocks",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_COMMOD_URL_1",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=energy&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "commodities",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_COMMOD_URL_2",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=manufacturing&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "commodities",
       "weight": 1
     },
     {
-      "name": "SENTIMENT_COMMOD_URL_3",
+      "name": "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=energy,manufacturing&sort=LATEST&apikey=UWA3A1EXUI6TZVS5",
       "assetClass": "commodities",
       "weight": 1
+    }
+  ],
+  "sourceConsensus": 91,
+  "tensionScore": 50,
+  "totalArticles": 350,
+  "bullishArticles": 230,
+  "bearishArticles": 13,
+  "suggestions": [
+    {
+      "id": "long_equities",
+      "label": "Exposition longue aux actions",
+      "assetClass": "stocks",
+      "bias": "long",
+      "confidence": 85,
+      "rationale": "Le fort consensus bullish et la confiance élevée suggèrent une poursuite probable de la tendance haussière sur les marchés actions."
+    },
+    {
+      "id": "long_commodities",
+      "label": "Position longue sur les matières premières",
+      "assetClass": "commodities",
+      "bias": "long",
+      "confidence": 80,
+      "rationale": "Le sentiment positif sur les commodities indique une opportunité d’investissement dans ce secteur."
+    },
+    {
+      "id": "long_forex",
+      "label": "Position longue sur le forex",
+      "assetClass": "forex",
+      "bias": "long",
+      "confidence": 75,
+      "rationale": "Le sentiment haussier modéré sur le forex soutient une stratégie d’achat sur les devises majeures."
+    }
+  ],
+  "globalConfidence": 85,
+  "history": [
+    {
+      "timestamp": "2025-11-17T08:15:01.102Z",
+      "globalScore": 57,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 59,
+      "totalArticles": 350
     }
   ]
 }

@@ -66,12 +66,14 @@ export type SentimentSnapshot = {
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
+
   sourceConsensus?: number;
   tensionScore?: number;
   totalArticles?: number;
   bullishArticles?: number;
   bearishArticles?: number;
   globalConfidence?: number;
+
   history?: SentimentHistoryPoint[];
   suggestions?: SentimentSuggestion[];
 };
@@ -83,6 +85,7 @@ async function loadSnapshot(): Promise<SentimentSnapshot | null> {
       await fs.readFile(path.join(dir, "latest.json"), "utf8")
     ) as SentimentSnapshot;
 
+    // IMPORTANT : injecte toute l'historique dans le snapshot
     try {
       const history = JSON.parse(
         await fs.readFile(path.join(dir, "history.json"), "utf8")
@@ -98,12 +101,11 @@ async function loadSnapshot(): Promise<SentimentSnapshot | null> {
 
 export default async function SentimentPage() {
   const snapshot = await loadSnapshot();
-
   if (!snapshot) {
     return (
       <main className="py-8 lg:py-10 w-full">
         <div className="rounded-3xl border border-neutral-800/60 bg-neutral-950/90 backdrop-blur-xl p-6 text-sm text-neutral-400">
-          Aucune donnée disponible. Le prochain rafraîchissement remplira automatiquement cette vue.
+          Aucune donnée disponible. Le prochain run remplira automatiquement cette vue.
         </div>
       </main>
     );

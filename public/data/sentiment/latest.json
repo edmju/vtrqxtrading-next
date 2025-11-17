@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-17T06:15:56.917Z",
+  "generatedAt": "2025-11-17T07:11:07.204Z",
   "globalScore": 46,
   "themes": [
     {
@@ -7,29 +7,29 @@
       "label": "Forex",
       "score": 39,
       "direction": "bearish",
-      "comment": "Le sentiment baissier sur le forex reflète une aversion au risque accrue et une possible pression sur les devises majeures, notamment celles sensibles aux politiques monétaires ou tensions géopolitiques."
+      "comment": "Le sentiment baissier sur le Forex indique une pression probable sur les devises majeures, possiblement liée à des incertitudes économiques ou à une aversion au risque accrue. Les scores très variables entre sources suggèrent une volatilité importante."
     },
     {
       "id": "stocks",
       "label": "Actions",
       "score": 40,
       "direction": "bearish",
-      "comment": "Les actions montrent un sentiment baissier, indiquant une prudence des investisseurs face à des incertitudes économiques ou des résultats d'entreprises mitigés."
+      "comment": "Le sentiment baissier sur les actions reflète une prudence des investisseurs face aux perspectives économiques ou aux résultats d'entreprises. La volatilité des scores souligne un marché hésitant."
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 59,
+      "score": 58,
       "direction": "neutral",
-      "comment": "Les commodities bénéficient d'un sentiment neutre à légèrement positif, suggérant une demande stable ou en hausse, possiblement soutenue par des facteurs d'offre ou une inflation persistante."
+      "comment": "Le sentiment neutre à légèrement positif sur les commodities suggère une demande stable ou une anticipation d'amélioration des fondamentaux, notamment dans les secteurs de l'énergie ou des métaux."
     }
   ],
   "riskIndicators": [
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 18,
-      "value": "24.6 pts d'écart-type",
+      "score": 19,
+      "value": "24.4 pts d'écart-type",
       "direction": "down",
       "comment": "Les sources de sentiment envoient des signaux divergents, ce qui rend la lecture plus fragile."
     },
@@ -47,29 +47,29 @@
       "score": 87,
       "value": "87% bull",
       "direction": "up",
-      "comment": "Environ 87% des articles sont classés haussiers contre 5% baissiers, donnant un signal assez lisible du flux."
+      "comment": "Environ 87% des articles sont classés haussiers contre 6% baissiers, donnant un signal assez lisible du flux."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Divergence Sentimentielle entre Classes d'Actifs",
-      "description": "Le contraste marqué entre un sentiment baissier sur forex et actions et un sentiment neutre/positif sur commodities suggère des flux différenciés, possiblement liés à des facteurs macroéconomiques ou géopolitiques spécifiques.",
-      "weight": 1
+      "label": "Divergence entre classes d'actifs",
+      "description": "Le contraste marqué entre le sentiment baissier sur Forex et actions et la neutralité/positivité sur les commodities suggère des dynamiques sectorielles distinctes, probablement liées à des facteurs macroéconomiques spécifiques comme l'inflation ou les tensions géopolitiques.",
+      "weight": 0.5
     },
     {
-      "label": "Volume d'Articles Bullish Dominant mais Score Global Baissier",
-      "description": "Un fort volume d'articles bullish ne se traduit pas en sentiment positif global, indiquant une possible hésitation des investisseurs ou un biais de couverture médiatique qui ne reflète pas pleinement la réalité du marché.",
-      "weight": 1
+      "label": "Volume élevé d'articles bullish mais confiance modérée",
+      "description": "La prédominance d'articles bullish contraste avec un score global baissier, indiquant une possible volatilité ou des opinions divergentes qui rendent le marché incertain à court terme.",
+      "weight": 0.3
     },
     {
-      "label": "Volatilité et Incertitude sur Forex et Actions",
-      "description": "Les scores extrêmes (0 sur certains flux) dans forex et actions peuvent signaler des épisodes ponctuels de forte volatilité ou des signaux contradictoires, renforçant la prudence dans ces classes d'actifs.",
-      "weight": 1
+      "label": "Faible score sur certains signaux Forex et actions",
+      "description": "La présence de scores nuls dans certains signaux Forex et actions peut refléter des zones d'incertitude ou d'absence de consensus, renforçant la prudence dans ces segments.",
+      "weight": 0.2
     }
   ],
   "marketRegime": {
-    "label": "Cautious Bearish with Commodities Resilience",
-    "description": "Le sentiment global est modérément baissier (score 46), avec des signaux divergents entre les classes d'actifs. Le forex et les actions affichent un sentiment baissier marqué (scores respectifs de 39 et 40), indiquant une prudence accrue et des pressions négatives potentielles. En revanche, les commodities montrent un sentiment plus neutre à légèrement positif (score 59), suggérant une certaine résilience ou une demande soutenue dans ce secteur. Le volume élevé d'articles bullish (306 sur 350) contraste avec les scores baissiers sur forex et actions, ce qui peut refléter un optimisme de fond mais une volatilité ou incertitude accrue sur ces marchés. Ce régime reflète une phase où les investisseurs restent prudents, favorisant les matières premières comme refuge temporaire, tout en restant ",
+    "label": "Cautious Bearish with Commodity Resilience",
+    "description": "Le sentiment global est modérément baissier (score 46), avec une nette divergence entre les classes d'actifs. Le Forex et les actions affichent un sentiment baissier marqué (scores respectifs 39 et 40), suggérant une prudence accrue sur les devises majeures et les marchés actions, possiblement liée à des incertitudes macroéconomiques ou géopolitiques. En revanche, les commodities montrent un sentiment plus neutre à légèrement positif (score 58), indiquant une certaine résilience ou anticipation d'une demande soutenue dans cette classe d'actifs. Le volume d'articles bullish est très élevé (304 sur 350), mais la confiance globale reste modérée (54), ce qui traduit une possible volatilité ou des opinions divergentes sur les marchés. Ce régime reflète une phase où les investisseurs restent pru",
     "confidence": 60
   },
   "tradeIdeas": [
@@ -80,31 +80,31 @@
       "direction": "short",
       "horizon": "1-2 semaines",
       "confidence": 65,
-      "reasoning": "Le sentiment baissier marqué sur le forex, combiné à une aversion au risque, suggère une pression possible sur l'euro face au dollar, notamment dans un contexte macro incertain."
+      "reasoning": "Le sentiment baissier sur le Forex et la volatilité des signaux indiquent une pression probable sur l'euro face au dollar, justifiant une position short prudente à court terme."
     },
     {
       "id": "trade2",
-      "label": "Short indice actions US (ex: S&P 500)",
+      "label": "Short indice actions US",
       "asset": "S&P 500",
       "direction": "short",
-      "horizon": "2-4 semaines",
+      "horizon": "1 mois",
       "confidence": 60,
-      "reasoning": "Le sentiment baissier sur les actions et la prudence des investisseurs indiquent un risque accru de correction ou stagnation à court terme."
+      "reasoning": "Le sentiment baissier sur les actions et la prudence des investisseurs suggèrent un risque de correction ou de consolidation sur les marchés actions US."
     },
     {
       "id": "trade3",
-      "label": "Long matières premières (ex: or)",
-      "asset": "Or",
+      "label": "Long sur matières premières énergétiques",
+      "asset": "Brent Crude Oil",
       "direction": "long",
-      "horizon": "3-6 semaines",
+      "horizon": "1-3 mois",
       "confidence": 55,
-      "reasoning": "Le sentiment neutre à positif sur les commodities, couplé à une demande potentielle de valeur refuge, soutient une position longue prudente sur l'or."
+      "reasoning": "Le sentiment neutre à légèrement positif sur les commodities, notamment l'énergie, indique une possible stabilité ou hausse des prix, soutenue par des fondamentaux solides."
     }
   ],
   "totalArticles": 350,
-  "bullishArticles": 306,
-  "bearishArticles": 19,
-  "globalConfidence": 58,
+  "bullishArticles": 304,
+  "bearishArticles": 20,
+  "globalConfidence": 60,
   "sources": [
     {
       "name": "SENTIMENT_FOREX_URL_1",

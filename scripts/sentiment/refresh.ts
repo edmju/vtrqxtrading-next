@@ -1,4 +1,5 @@
 // scripts/sentiment/refresh.ts
+
 import path from "path";
 import { promises as fs } from "fs";
 import { fetchAllSentimentPoints } from "./sources";
@@ -14,7 +15,7 @@ const OUTPUT_FILE =
 const HISTORY_FILE =
   process.env.SENTIMENT_HISTORY_FILE || "public/data/sentiment/history.json";
 
-const HISTORY_MAX_POINTS = 96; // ~4 jours si job horaire
+const HISTORY_MAX_POINTS = 96; // ~4 jours si cron horaire
 
 async function readHistory(): Promise<SentimentHistoryPoint[]> {
   const fullPath = path.join(process.cwd(), HISTORY_FILE);

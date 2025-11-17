@@ -9,11 +9,21 @@ import {
   type FocusDriver,
   type MarketRegime,
   type RiskIndicator,
+  type SentimentHistoryPoint,
+  type SentimentTradeIdea,
 } from "./types";
 
 function mean(nums: number[]): number {
   if (!nums.length) return 50;
   return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+function stdDev(nums: number[]): number {
+  if (nums.length <= 1) return 0;
+  const m = mean(nums);
+  const variance =
+    nums.reduce((acc, v) => acc + (v - m) * (v - m), 0) / nums.length;
+  return Math.sqrt(variance);
 }
 
 function directionFromScore(score: number): "bullish" | "bearish" | "neutral" {
@@ -82,7 +92,7 @@ function deterministicFocusDrivers(
   const drivers: FocusDriver[] = [];
   for (const t of spreadSorted) {
     const delta = Math.abs(t.score - 50);
-    if (delta < 5) continue; // trop proche de neutre
+    if (delta < 5) continue;
     const weight = Math.min(1, delta / 30);
     drivers.push({
       label: t.label,
@@ -94,13 +104,75 @@ function deterministicFocusDrivers(
   return drivers;
 }
 
+function baseTradeIdeasFromThemes(
+  themes: ThemeSentiment[]
+): SentimentTradeIdea[] {
+  const ideas: SentimentTradeIdea[] = [];
+
+  const fx = themes.find((t) => t.id === "forex");
+  const st = themes.find((t) => t.id === "stocks");
+  const cm = themes.find((t) => t.id === "commodities");
+
+  if (st && st.score >= 60) {
+    ideas.push({
+      id: "stocks_long",
+      label: "Biais haussier sur actions",
+      asset: "US500",
+      direction: "long",
+      horizon: "1–3 jours",
+      confidence: Math.round(st.score),
+      reasoning:
+        "Le sentiment agrégé sur les actions montre un biais haussier, ce qui plaide pour un biais acheteur sur les grands indices.",
+    });
+  } else if (st && st.score <= 40) {
+    ideas.push({
+      id: "stocks_short",
+      label: "Biais défensif sur actions",
+      asset: "US500",
+      direction: "short",
+      horizon: "1–3 jours",
+      confidence: 100 - Math.round(st.score),
+      reasoning:
+        "Le sentiment agrégé sur les actions est plutôt négatif, ce qui milite pour une approche défensive sur les indices.",
+    });
+  }
+
+  if (cm && cm.score >= 60) {
+    ideas.push({
+      id: "commod_long",
+      label: "Appétit pour les matières premières",
+      asset: "XAUUSD",
+      direction: "long",
+      horizon: "swing",
+      confidence: Math.round(cm.score),
+      reasoning:
+        "Les matières premières ressortent en territoire haussier, ce qui renforce l’attrait pour les actifs réels comme l’or.",
+    });
+  }
+
+  if (fx && fx.score <= 40) {
+    ideas.push({
+      id: "fx_defensive",
+      label: "Préférence pour les devises refuges",
+      asset: "USDJPY",
+      direction: "long",
+      horizon: "1–3 jours",
+      confidence: 100 - Math.round(fx.score),
+      reasoning:
+        "Le sentiment sur le Forex est plutôt risk-off, ce qui favorise un biais pro-USD/JPY face aux devises cycliques.",
+    });
+  }
+
+  return ideas.slice(0, 3);
+}
+
 /**
- * Enrichit la vue avec OpenAI si la clé est dispo.
- * Si l'appel échoue, on garde les valeurs déterministes.
+ * Enrichit avec OpenAI si la clé est dispo.
  */
 async function enrichWithAI(
   snapshot: SentimentSnapshot,
-  points: SentimentPoint[]
+  points: SentimentPoint[],
+  history: SentimentHistoryPoint[]
 ): Promise<SentimentSnapshot> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return snapshot;
@@ -117,22 +189,34 @@ async function enrichWithAI(
         score: t.score,
         direction: t.direction,
       })),
+      metrics: {
+        totalArticles: snapshot.totalArticles,
+        bullishArticles: snapshot.bullishArticles,
+        bearishArticles: snapshot.bearishArticles,
+        globalConfidence: snapshot.globalConfidence,
+      },
       rawPoints: points.slice(0, 80).map((p) => ({
         source: p.source,
         assetClass: p.assetClass,
         score: p.score,
       })),
+      recentHistory: history.slice(-24),
     };
 
     const sys = `
 Tu es un stratégiste macro multi-actifs.
-On te donne des scores de sentiment agrégés (0–100) par grande classe d'actifs (forex, actions, commodities) et un score global.
+On te donne:
+- un score global de sentiment (0–100),
+- des scores par grande classe d'actifs (forex, actions, commodities),
+- des statistiques d'articles (bull/bear, volume),
+- une petite série historique récente.
 
 Ta mission:
-1) Reformuler un régime de marché synthétique (label + description courte) cohérent avec ces signaux.
-2) Identifier 1 à 3 "focus drivers" logiques (par ex. "appétit pour le risque sur actions", "aversion au risque sur forex", etc.) avec une petite explication.
-3) Optionnel: affiner pour chaque grande classe d'actifs un commentaire de sentiment (forex, actions, commodities) + direction bullish/bearish/neutral.
-4) Donner une confiance globale 0–100 sur le régime.
+1) Reformuler un régime de marché synthétique (label + description détaillée) cohérent avec ces signaux.
+2) Proposer 1 à 3 "focus drivers" clairs avec une explication courte.
+3) Affiner les commentaires pour chaque grande classe d'actifs (forex, actions, commodities) + direction bullish/bearish/neutral.
+4) Proposer 1 à 3 idées de trades simples basées sur le sentiment (pas de levier, pas de conseil personnalisé, seulement des idées : actif, sens, horizon, confiance, justification).
+5) Donner une "globalConfidence" 0–100 sur la lisibilité du signal de sentiment.
 
 Réponds en JSON strict:
 {
@@ -142,13 +226,25 @@ Réponds en JSON strict:
   ],
   "themes": [
     { "id": "forex" | "stocks" | "commodities", "comment": string, "direction": "bullish" | "bearish" | "neutral" }
-  ]
+  ],
+  "tradeIdeas": [
+    {
+      "id": string,
+      "label": string,
+      "asset": string,
+      "direction": "long" | "short",
+      "horizon": string,
+      "confidence": number,
+      "reasoning": string
+    }
+  ],
+  "globalConfidence": number
 }
 `;
 
     const res = await client.chat.completions.create({
       model,
-      temperature: 0.2,
+      temperature: 0.3,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: sys },
@@ -160,14 +256,20 @@ Réponds en JSON strict:
 
     const next: SentimentSnapshot = { ...snapshot };
 
-    // Régime de marché
+    if (raw.globalConfidence != null && typeof raw.globalConfidence === "number") {
+      next.globalConfidence = Math.max(
+        0,
+        Math.min(100, Math.round(raw.globalConfidence))
+      );
+    }
+
     if (raw.marketRegime) {
       const mr = raw.marketRegime;
       next.marketRegime = {
         label: String(mr.label || snapshot.marketRegime.label),
         description: String(
           mr.description || snapshot.marketRegime.description
-        ).slice(0, 600),
+        ).slice(0, 800),
         confidence:
           typeof mr.confidence === "number"
             ? Math.max(0, Math.min(100, Math.round(mr.confidence)))
@@ -175,7 +277,6 @@ Réponds en JSON strict:
       };
     }
 
-    // Focus drivers
     if (Array.isArray(raw.focusDrivers) && raw.focusDrivers.length) {
       next.focusDrivers = raw.focusDrivers.slice(0, 3).map((d: any) => ({
         label: String(d.label || "Driver").slice(0, 140),
@@ -187,7 +288,6 @@ Réponds en JSON strict:
       }));
     }
 
-    // Thèmes (commentaires personnalisés IA)
     if (Array.isArray(raw.themes) && raw.themes.length) {
       const byId = new Map<
         string,
@@ -229,6 +329,22 @@ Réponds en JSON strict:
       });
     }
 
+    if (Array.isArray(raw.tradeIdeas) && raw.tradeIdeas.length) {
+      next.tradeIdeas = raw.tradeIdeas.slice(0, 3).map((ti: any, idx: number) => ({
+        id: String(ti.id || `idea_${idx + 1}`).slice(0, 80),
+        label: String(ti.label || "Idée de trade").slice(0, 120),
+        asset: String(ti.asset || "US500").slice(0, 40),
+        direction:
+          ti.direction === "short" ? "short" : "long",
+        horizon: String(ti.horizon || "1–3 jours").slice(0, 80),
+        confidence:
+          typeof ti.confidence === "number"
+            ? Math.max(0, Math.min(100, Math.round(ti.confidence)))
+            : 60,
+        reasoning: String(ti.reasoning || "").slice(0, 400),
+      }));
+    }
+
     return next;
   } catch (err) {
     console.warn("[sentiment] OpenAI enrichment failed", err);
@@ -237,11 +353,12 @@ Réponds en JSON strict:
 }
 
 /**
- * Point d'entrée principal: transforme des points bruts en snapshot
- * consommable par la page Sentiment.
+ * Point d'entrée principal: transforme des points bruts en snapshot,
+ * en utilisant aussi l'historique pour la "tension" du flux.
  */
 export async function buildSentimentSnapshot(
-  points: SentimentPoint[]
+  points: SentimentPoint[],
+  history: SentimentHistoryPoint[]
 ): Promise<SentimentSnapshot> {
   const perClass: Record<AssetClass, number[]> = {
     forex: [],
@@ -249,7 +366,6 @@ export async function buildSentimentSnapshot(
     commodities: [],
   };
 
-  // stats Alpha Vantage pour les indicateurs de risque
   let totalArticles = 0;
   let bullishArticles = 0;
   let bearishArticles = 0;
@@ -288,57 +404,132 @@ export async function buildSentimentSnapshot(
   const allScores = points.map((p) => p.score);
   const globalScore = Math.round(mean(allScores));
 
-  // Indicateurs de risque dérivés du flux Alpha Vantage
   const riskIndicators: RiskIndicator[] = [];
 
+  // Consensus des sources (dispersion)
+  if (allScores.length > 0) {
+    const dispersion = stdDev(allScores); // typiquement max ~30
+    const consensusScore = Math.round(
+      Math.max(0, Math.min(100, 100 - (dispersion / 30) * 100))
+    );
+
+    riskIndicators.push({
+      id: "source_consensus",
+      label: "Consensus des sources",
+      score: consensusScore,
+      value: `${dispersion.toFixed(1)} pts d'écart-type`,
+      direction:
+        consensusScore >= 55
+          ? "up"
+          : consensusScore <= 45
+          ? "down"
+          : "neutral",
+      comment:
+        consensusScore >= 70
+          ? "Les différentes sources de sentiment sont fortement alignées."
+          : consensusScore <= 40
+          ? "Les sources de sentiment envoient des signaux divergents, ce qui rend la lecture plus fragile."
+          : "Les sources sont modérément alignées, sans consensus extrême.",
+    });
+  }
+
+  // Tension du flux d'actualités vs historique
+  let heatScore = 50;
   if (totalArticles > 0) {
-    const heatRaw = Math.max(
-      5,
-      Math.min(100, Math.round((totalArticles / 90) * 100))
-    ); // ~90 articles => proche de 100
+    const validHistory = (history || []).filter(
+      (h) => typeof h.totalArticles === "number" && h.totalArticles > 0
+    );
+    if (validHistory.length === 0) {
+      heatScore = 60;
+    } else {
+      const baseline = mean(validHistory.map((h) => h.totalArticles));
+      const ratio = baseline > 0 ? totalArticles / baseline : 1;
+      if (ratio >= 1) {
+        heatScore = Math.min(100, 50 + (ratio - 1) * 40); // ratio 2 => 90
+      } else {
+        heatScore = Math.max(0, 50 - (1 - ratio) * 40); // ratio 0.5 => 30
+      }
+    }
 
     riskIndicators.push({
       id: "news_heat",
       label: "Température du flux d’actualités",
-      score: heatRaw,
+      score: Math.round(heatScore),
       value: `${totalArticles} articles`,
       direction:
-        heatRaw >= 55 ? "up" : heatRaw <= 45 ? "down" : "neutral",
-      comment: `Volume agrégé d’environ ${totalArticles} articles Alpha Vantage sur la fenêtre récente.`,
+        heatScore >= 55 ? "up" : heatScore <= 45 ? "down" : "neutral",
+      comment:
+        validHistory.length === 0
+          ? `Volume agrégé d’environ ${totalArticles} articles Alpha Vantage sur la fenêtre récente.`
+          : `Le volume d’articles est ${
+              heatScore >= 55 ? "supérieur" : heatScore <= 45 ? "inférieur" : "proche"
+            } à la moyenne récente, signe d’un ${
+              heatScore >= 55 ? "contexte plus actif" : heatScore <= 45 ? "contexte plus calme" : "flux normalisé"
+            }.`,
     });
+  }
 
-    const bullShare =
-      bullishArticles > 0
-        ? Math.round((bullishArticles / totalArticles) * 100)
-        : 0;
-    const bearShare =
-      bearishArticles > 0
-        ? Math.round((bearishArticles / totalArticles) * 100)
-        : 0;
-
-    const bbScore = Math.max(0, Math.min(100, bullShare));
+  // Balance bull/bear
+  if (totalArticles > 0) {
+    const bullShare = Math.round((bullishArticles / totalArticles) * 100);
+    const bearShare = Math.round((bearishArticles / totalArticles) * 100);
+    const clarityScore = Math.max(
+      0,
+      Math.min(
+        100,
+        50 + (Math.abs(bullShare - bearShare) / 100) * 40
+      )
+    );
 
     riskIndicators.push({
       id: "bull_bear_balance",
       label: "Balance bull/bear globale",
-      score: bbScore,
+      score: bullShare,
       value: `${bullShare}% bull`,
       direction:
-        bbScore >= 55 ? "up" : bbScore <= 45 ? "down" : "neutral",
+        bullShare >= 55 ? "up" : bullShare <= 45 ? "down" : "neutral",
       comment:
         bullShare || bearShare
-          ? `Environ ${bullShare}% des articles sont haussiers contre ${bearShare}% baissiers sur la période analysée.`
+          ? `Environ ${bullShare}% des articles sont classés haussiers contre ${bearShare}% baissiers, donnant un signal ${
+              clarityScore >= 60 ? "assez lisible" : "plutôt neutre"
+            } du flux.`
           : `Répartition bull/bear peu marquée sur la fenêtre actuelle.`,
     });
   }
+
+  const baseRegime = deterministicMarketRegime(globalScore);
+  const drivers = deterministicFocusDrivers(themes);
+  const baseIdeas = baseTradeIdeasFromThemes(themes);
+
+  // Confiance globale brute
+  const consensusIndicator = riskIndicators.find(
+    (r) => r.id === "source_consensus"
+  );
+  const heatIndicator = riskIndicators.find((r) => r.id === "news_heat");
+  const bbIndicator = riskIndicators.find(
+    (r) => r.id === "bull_bear_balance"
+  );
+
+  const confComponents: number[] = [];
+  if (consensusIndicator) confComponents.push(consensusIndicator.score);
+  if (heatIndicator) confComponents.push(heatIndicator.score);
+  if (bbIndicator) confComponents.push(bbIndicator.score);
+  confComponents.push(baseRegime.confidence);
+
+  const globalConfidence = Math.round(mean(confComponents));
 
   let snapshot: SentimentSnapshot = {
     generatedAt: new Date().toISOString(),
     globalScore,
     themes,
     riskIndicators,
-    focusDrivers: deterministicFocusDrivers(themes),
-    marketRegime: deterministicMarketRegime(globalScore),
+    focusDrivers: drivers,
+    marketRegime: { ...baseRegime, confidence: baseRegime.confidence },
+    tradeIdeas: baseIdeas,
+    totalArticles,
+    bullishArticles,
+    bearishArticles,
+    globalConfidence,
     sources: points.length
       ? Array.from(
           new Map(
@@ -355,8 +546,7 @@ export async function buildSentimentSnapshot(
       : [],
   };
 
-  // Enrichissement IA si possible
-  snapshot = await enrichWithAI(snapshot, points);
+  snapshot = await enrichWithAI(snapshot, points, history);
 
   return snapshot;
 }

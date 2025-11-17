@@ -1,4 +1,5 @@
 // scripts/sentiment/types.ts
+
 export type AssetClass = "forex" | "stocks" | "commodities";
 
 export type SentimentPointMeta = {

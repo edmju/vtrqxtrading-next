@@ -44,6 +44,23 @@ export type SentimentSource = {
   weight: number;
 };
 
+export type SentimentHistoryPoint = {
+  timestamp: string;
+  globalScore: number;
+  forexScore?: number;
+  stocksScore?: number;
+  commoditiesScore?: number;
+};
+
+export type SentimentSuggestion = {
+  id: string;
+  label: string;
+  assetClass: SentimentThemeId | "global";
+  bias: "long" | "short" | "neutral";
+  confidence: number; // 0..100
+  rationale: string;
+};
+
 export type SentimentSnapshot = {
   generatedAt: string;
   globalScore: number; // 0..100
@@ -52,6 +69,13 @@ export type SentimentSnapshot = {
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
+
+  // nouveaux champs optionnels utilisés par la page
+  history?: SentimentHistoryPoint[]; // timeline de sentiment
+  globalConfidence?: number; // confiance IA globale
+  sourceConsensus?: number; // consensus des sources 0–100
+  tensionScore?: number; // tension du flux d’actualités 0–100
+  suggestions?: SentimentSuggestion[]; // idées de trades basées sur le sentiment
 };
 
 async function readJson<T>(rel: string, fallback: T): Promise<T> {
@@ -89,6 +113,11 @@ async function getData() {
       riskIndicators: [],
       focusDrivers: [],
       sources: [],
+      history: [],
+      globalConfidence: 50,
+      sourceConsensus: 50,
+      tensionScore: 50,
+      suggestions: [],
     }
   );
 

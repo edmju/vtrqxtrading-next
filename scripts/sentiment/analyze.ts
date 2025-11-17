@@ -111,7 +111,7 @@ export async function buildSentimentSnapshot(
   const allScores = points.map((p) => p.score);
   const sourceConsensus = consensusFromStd(stdDev(allScores));
 
-  // Tension news vs historique
+  // Tension du flux (volume d’articles vs historique)
   let tensionScore: number | undefined = undefined;
   let tensionRatio: number | undefined = undefined;
   if (totalArticles > 0) {
@@ -125,12 +125,12 @@ export async function buildSentimentSnapshot(
       tensionRatio = 1;
     } else {
       tensionRatio = totalArticles / pastAvg;
-      const raw = 50 + 25 * (tensionRatio - 1); // +/- 25 pts pour +/-100% de variation
+      const raw = 50 + 25 * (tensionRatio - 1); // +/-25 pts pour +/-100% de variation
       tensionScore = clampScore(Math.round(raw));
     }
   }
 
-  // Balance bull/bear globale
+  // Balance bull / bear
   const totalSentimentArticles = bullishArticles + bearishArticles;
   const bullShare =
     totalSentimentArticles > 0 ? bullishArticles / totalSentimentArticles : 0;
@@ -176,10 +176,11 @@ export async function buildSentimentSnapshot(
 
   const riskIndicators: RiskIndicator[] = [];
 
-  // Indicateur de tension du flux
   if (totalArticles > 0) {
     const tScore = tensionScore ?? 50;
-    let comment = "Flux d’actualités de volume moyen, sans tension particulière.";
+    let comment =
+      "Flux d’actualités de volume moyen, sans tension particulière.";
+
     if (tensionRatio && tensionRatio >= 1.3) {
       comment =
         "Flux d’actualités nettement plus chargé que d’habitude : environnement plus nerveux à court terme.";
@@ -199,16 +200,15 @@ export async function buildSentimentSnapshot(
     });
   }
 
-  // Indicateur bull/bear
   riskIndicators.push({
     id: "bull_bear_balance",
     label: "Balance bull / bear globale",
     score: bullBearScore,
     value:
       totalSentimentArticles > 0
-        ? `${Math.round(bullShare * 100)}% bull / ${Math.round(
+        ? `${Math.round(bullShare * 100)}% haussiers / ${Math.round(
             bearShare * 100
-          )}% bear`
+          )}% baissiers`
         : "échantillon limité",
     direction:
       bullBearScore >= 55
@@ -219,7 +219,6 @@ export async function buildSentimentSnapshot(
     comment: bullBearComment,
   });
 
-  // Indicateur de consensus des sources
   riskIndicators.push({
     id: "source_consensus",
     label: "Consensus entre les sources",
@@ -233,7 +232,7 @@ export async function buildSentimentSnapshot(
         : ("neutral" as const),
     comment:
       sourceConsensus >= 70
-        ? "Les différentes sources convergent vers une même lecture du marché."
+        ? "Nos différentes sources convergent vers une même lecture du marché."
         : sourceConsensus >= 55
         ? "Consensus raisonnable entre les sources, avec quelques nuances."
         : sourceConsensus >= 40
@@ -241,7 +240,6 @@ export async function buildSentimentSnapshot(
         : "Sources divergentes : le signal de sentiment doit être utilisé avec prudence.",
   });
 
-  // Focus drivers de base (seront raffinés par l’IA)
   const focusDrivers: FocusDriver[] = themes.map((t) => ({
     label: `Biais ${t.label}`,
     weight: 1,
@@ -334,9 +332,7 @@ async function enrichWithAI(
   history: SentimentHistoryPoint[]
 ): Promise<SentimentSnapshot> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return snapshot;
-  }
+  if (!apiKey) return snapshot;
 
   const client = new OpenAI({ apiKey });
 
@@ -411,7 +407,6 @@ async function enrichWithAI(
     if (!raw) return snapshot;
 
     const parsed = JSON.parse(raw) as AiResponseShape;
-
     const updated = { ...snapshot };
 
     if (parsed.marketRegime) {
@@ -436,9 +431,7 @@ async function enrichWithAI(
             typeof d.weight === "number" && d.weight > 0 ? d.weight : 1,
           description: d.description || "",
         }));
-      if (drivers.length) {
-        updated.focusDrivers = drivers;
-      }
+      if (drivers.length) updated.focusDrivers = drivers;
     }
 
     if (Array.isArray(parsed.themes) && parsed.themes.length > 0) {
@@ -451,12 +444,14 @@ async function enrichWithAI(
         if (!base) continue;
 
         const next: ThemeSentiment = { ...base };
-        if (t.direction === "bullish" || t.direction === "bearish" || t.direction === "neutral") {
+        if (
+          t.direction === "bullish" ||
+          t.direction === "bearish" ||
+          t.direction === "neutral"
+        ) {
           next.direction = t.direction;
         }
-        if (t.comment) {
-          next.comment = t.comment;
-        }
+        if (t.comment) next.comment = t.comment;
         themeById.set(t.id, next);
       }
 
@@ -506,9 +501,7 @@ async function enrichWithAI(
           };
         });
 
-      if (suggestions.length) {
-        updated.suggestions = suggestions;
-      }
+      if (suggestions.length) updated.suggestions = suggestions;
     }
 
     if (typeof parsed.globalConfidence === "number") {

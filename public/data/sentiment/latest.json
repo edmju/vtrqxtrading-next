@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-17T12:18:18.415Z",
+  "generatedAt": "2025-11-17T13:24:52.908Z",
   "globalScore": 57,
   "marketRegime": {
     "label": "Régime haussier modéré",
-    "description": "Le marché montre une confiance majoritairement haussière avec un consensus fort parmi les sources, mais la tension dans les flux d’actualités reste modérée, indiquant une progression stable sans euphorie excessive.",
+    "description": "Le marché affiche un sentiment globalement positif avec un fort consensus haussier et un équilibre des positions bullish très marqué, malgré une température d’actualités modérée qui tempère l’enthousiasme.",
     "confidence": 60
   },
   "themes": [
@@ -24,7 +24,7 @@
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 59,
+      "score": 60,
       "direction": "bullish",
       "comment": ""
     }
@@ -41,16 +41,16 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 97,
-      "value": "97% bull / 3% bear",
+      "score": 98,
+      "value": "98% bull / 2% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 91,
-      "value": "91/100",
+      "score": 90,
+      "value": "90/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
@@ -59,17 +59,17 @@
     {
       "label": "Consensus haussier élevé",
       "weight": 3,
-      "description": "La majorité des sources s’accordent sur une orientation positive, renforçant la confiance dans la tendance haussière."
+      "description": "Une majorité écrasante des sources exprime une vision bullish, soutenant la dynamique positive du marché."
     },
     {
-      "label": "Équilibre bull/bear très favorable",
+      "label": "Balance bull/bear fortement biaisée",
       "weight": 3,
-      "description": "La dominance claire des positions haussières suggère un sentiment de marché robuste et une faible pression vendeuse."
+      "description": "La prédominance des positions acheteuses indique une confiance solide des investisseurs dans la poursuite de la tendance haussière."
     },
     {
-      "label": "Tension d’actualité modérée",
+      "label": "Température d’actualités modérée",
       "weight": 2,
-      "description": "Un flux d’informations stable sans pics de volatilité extrême favorise une progression de marché régulière."
+      "description": "Le flux d’informations reste stable sans excès de volatilité, ce qui limite les risques de retournement soudain."
     }
   ],
   "sources": [
@@ -119,19 +119,19 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 91,
+  "sourceConsensus": 90,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 220,
-  "bearishArticles": 7,
+  "bullishArticles": 221,
+  "bearishArticles": 4,
   "globalConfidence": 80,
   "history": [
     {
-      "timestamp": "2025-11-17T12:18:18.415Z",
+      "timestamp": "2025-11-17T13:24:52.908Z",
       "globalScore": 57,
       "forexScore": 55,
       "stocksScore": 56,
-      "commoditiesScore": 59,
+      "commoditiesScore": 60,
       "totalArticles": 350
     }
   ]

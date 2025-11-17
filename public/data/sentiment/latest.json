@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-17T00:34:03.016Z",
+  "generatedAt": "2025-11-17T00:45:42.733Z",
   "globalScore": 46,
   "themes": [
     {
@@ -7,21 +7,21 @@
       "label": "Forex",
       "score": 39,
       "direction": "bearish",
-      "comment": "Le sentiment forex est globalement baissier avec une forte dispersion des scores, indiquant une volatilité et une incertitude accrues dans les paires majeures. Les investisseurs restent prudents face aux risques macroéconomiques."
+      "comment": "Le sentiment forex est globalement baissier, malgré quelques signaux positifs isolés. Cela peut refléter une aversion au risque et une préférence pour les devises refuges ou une volatilité accrue sur les paires majeures."
     },
     {
       "id": "stocks",
       "label": "Actions",
       "score": 40,
       "direction": "bearish",
-      "comment": "Le sentiment sur les actions est également baissier, suggérant une possible consolidation ou correction à court terme, en lien avec des inquiétudes sur la croissance ou les valorisations élevées."
+      "comment": "Le sentiment actions est également baissier, avec des sources mitigées mais un consensus global vers la prudence voire la vente, probablement lié aux craintes macroéconomiques et aux incertitudes politiques."
     },
     {
       "id": "commodities",
       "label": "Commodities",
       "score": 60,
       "direction": "bullish",
-      "comment": "Les matières premières bénéficient d'un sentiment haussier fort et homogène, soutenu par des facteurs fondamentaux tels que l'inflation persistante et les tensions géopolitiques favorisant les actifs tangibles."
+      "comment": "Les matières premières bénéficient d'un sentiment très positif et stable, indiquant un intérêt fort des investisseurs pour ces actifs, souvent perçus comme des couvertures contre l'inflation ou des relais de croissance."
     }
   ],
   "riskIndicators": [
@@ -52,53 +52,53 @@
   ],
   "focusDrivers": [
     {
-      "label": "Rotation vers les Commodities",
-      "description": "Le sentiment haussier marqué sur les matières premières indique un intérêt accru pour les actifs réels, souvent perçus comme une protection contre l'inflation ou les tensions géopolitiques.",
+      "label": "Incertitude macroéconomique persistante",
+      "description": "Les inquiétudes sur la croissance et la politique monétaire maintiennent un climat prudent, impactant négativement les actions et le forex.",
       "weight": 0.5
     },
     {
-      "label": "Prudence sur le Forex",
-      "description": "Scores forex mitigés et disparates (de 0 à 60) traduisent une incertitude sur les devises, possiblement liée à des divergences de politique monétaire ou à des risques géopolitiques.",
+      "label": "Appétit pour les matières premières",
+      "description": "Le sentiment très positif sur les commodities reflète une demande accrue pour les actifs tangibles, souvent perçus comme une protection contre l'inflation ou le risque géopolitique.",
       "weight": 0.3
     },
     {
-      "label": "Sentiment Baissier sur Actions",
-      "description": "Le sentiment baissier modéré sur les actions reflète des inquiétudes sur la croissance économique ou des prises de bénéfices après une phase haussière récente.",
+      "label": "Divergence entre sources d'information",
+      "description": "La présence de scores extrêmes (0 et 60) dans les mêmes classes d'actifs suggère une volatilité d'opinion importante, renforçant la prudence générale.",
       "weight": 0.2
     }
   ],
   "marketRegime": {
     "label": "Divergent Sentiment Regime",
-    "description": "Le marché présente un sentiment global mitigé avec un score moyen de 46, marqué par un consensus très positif dans les articles (91% bullish) mais un sentiment plus prudent dans les scores des classes d'actifs. Le forex et les actions affichent un sentiment baissier modéré, tandis que les matières premières bénéficient d'un sentiment clairement haussier. Cette divergence suggère une rotation possible des flux vers les commodities, avec une prudence persistante sur les devises et les actions, probablement liée à l'incertitude macroéconomique ou géopolitique.",
-    "confidence": 55
+    "description": "Le sentiment global est modérément baissier (score 46), marqué par une forte divergence entre les classes d'actifs. Le forex et les actions affichent un sentiment nettement baissier, malgré quelques sources ponctuellement positives, tandis que les matières premières bénéficient d'un sentiment très positif et homogène. Cette situation traduit un marché où les investisseurs se replient sur les actifs réels et les matières premières, probablement en quête de protection face à l'incertitude macroéconomique, tandis que les actifs risqués comme les actions et les devises majeures subissent des pressions baissières.",
+    "confidence": 60
   },
   "tradeIdeas": [
     {
       "id": "trade1",
-      "label": "Long Commodities ETF",
-      "asset": "ETF matières premières (ex: DBC, GSG)",
+      "label": "Long matières premières",
+      "asset": "Commodities ETF (ex: GSG, DBC)",
       "direction": "long",
       "horizon": "3-6 mois",
       "confidence": 70,
-      "reasoning": "Le sentiment haussier fort sur les commodities suggère une opportunité de profiter d'une tendance favorable portée par l'inflation et les tensions géopolitiques."
+      "reasoning": "Le sentiment très positif et homogène sur les matières premières suggère une tendance haussière soutenue, justifiée par la demande d'actifs tangibles face à l'incertitude macro."
     },
     {
       "id": "trade2",
-      "label": "Short Indice Actions US",
-      "asset": "S&P 500 ou ETF équivalent",
+      "label": "Short actions globales",
+      "asset": "Indice actions global (ex: MSCI World ET",
       "direction": "short",
       "horizon": "1-3 mois",
-      "confidence": 55,
-      "reasoning": "Le sentiment baissier modéré sur les actions indique un risque de correction ou de consolidation à court terme."
+      "confidence": 60,
+      "reasoning": "Le sentiment baissier sur les actions, combiné à des inquiétudes macroéconomiques, oriente vers une prudence ou une correction à court terme."
     },
     {
       "id": "trade3",
-      "label": "Short EUR/USD",
-      "asset": "EUR/USD",
+      "label": "Short paires de devises risquées",
+      "asset": "Forex paires à risque (ex: AUD/USD, NZD/",
       "direction": "short",
       "horizon": "1-3 mois",
-      "confidence": 50,
-      "reasoning": "Le sentiment forex baissier et la dispersion des scores suggèrent une prudence sur l'euro face au dollar, potentiellement sous pression."
+      "confidence": 55,
+      "reasoning": "Le sentiment forex baissier, malgré quelques signaux positifs, indique une possible pression sur les devises à risque dans un contexte d'aversion au risque."
     }
   ],
   "totalArticles": 350,

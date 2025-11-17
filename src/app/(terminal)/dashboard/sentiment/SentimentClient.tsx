@@ -1,4 +1,5 @@
 // src/app/(terminal)/dashboard/sentiment/SentimentClient.tsx
+
 "use client";
 
 import { useMemo } from "react";
@@ -93,33 +94,10 @@ export default function SentimentClient({ snapshot }: Props) {
   const stocks = themeMap.stocks;
   const commodities = themeMap.commodities;
 
-  const sourcesSummary = useMemo(() => {
-    if (!snapshot.sources || snapshot.sources.length === 0) return null;
-
-    const counts: Record<string, number> = {
-      forex: 0,
-      stocks: 0,
-      commodities: 0,
-      global: 0,
-    };
-
-    snapshot.sources.forEach((s: SentimentSource) => {
-      const key = s.assetClass ?? "global";
-      if (counts[key] === undefined) counts[key] = 0;
-      counts[key] += 1;
-    });
-
-    const total = snapshot.sources.length;
-    const parts: string[] = [];
-    if (counts.forex) parts.push(`${counts.forex} Forex`);
-    if (counts.stocks) parts.push(`${counts.stocks} Actions`);
-    if (counts.commodities) parts.push(`${counts.commodities} Commodities`);
-
-    return {
-      total,
-      breakdown: parts.join(" · "),
-    };
-  }, [snapshot.sources]);
+  const sourcesPresent = useMemo(
+    () => !!(snapshot.sources && snapshot.sources.length > 0),
+    [snapshot.sources]
+  );
 
   const normalizedFocusDrivers = useMemo(() => {
     if (!focusDrivers || focusDrivers.length === 0) return [];
@@ -164,7 +142,7 @@ export default function SentimentClient({ snapshot }: Props) {
           typeof h.globalScore === "number" &&
           !Number.isNaN(h.globalScore)
       )
-      .slice(-30); // max 30 points
+      .slice(-30);
   }, [history]);
 
   const historyMinMax = useMemo(() => {
@@ -196,15 +174,15 @@ export default function SentimentClient({ snapshot }: Props) {
 
   return (
     <main className="py-6 lg:py-8 w-full overflow-x-hidden">
-      <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-950/95 via-neutral-950/90 to-neutral-950/80 shadow-[0_0_40px_rgba(0,0,0,0.75)]">
-        <div className="p-4 sm:p-6 lg:p-7 space-y-5 lg:space-y-6">
-          {/* Header aligné sur la page News */}
-          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-            <div>
+      <div className="rounded-3xl border border-neutral-800/60 bg-gradient-to-b from-neutral-950/90 via-neutral-950/80 to-neutral-950/90 shadow-[0_0_50px_rgba(0,0,0,0.85)] backdrop-blur-xl">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6 lg:space-y-8">
+          {/* Header */}
+          <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div className="space-y-1">
               <h1 className="text-xl sm:text-2xl font-semibold text-neutral-50 tracking-tight">
                 Sentiment de marché (vue IA)
               </h1>
-              <p className="text-xs text-neutral-400 mt-1">
+              <p className="text-xs text-neutral-400">
                 Lecture multi-actifs construite à partir de nos flux
                 d’actualités : forex, actions, commodities & régime global.
               </p>
@@ -215,47 +193,38 @@ export default function SentimentClient({ snapshot }: Props) {
                 Dernière mise à jour :{" "}
                 <span className="text-neutral-200">{formattedDate}</span>
               </div>
-              {sourcesSummary && (
-                <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-neutral-400 max-w-[360px]">
-                  <span>Basé sur</span>
-                  <span className="px-1.5 py-0.5 rounded-full bg-neutral-900/80 border border-neutral-700/70 text-[10px] text-neutral-100 uppercase tracking-wide">
-                    {sourcesSummary.total} flux d’actualités
+              {sourcesPresent && (
+                <div className="flex flex-wrap items-center gap-1 text-neutral-400 max-w-[320px]">
+                  <span className="px-2 py-0.5 rounded-full bg-neutral-900/70 border border-neutral-700/70 text-[10px] text-neutral-100 uppercase tracking-wide">
+                    Flux multi-sources (forex · actions · commodities)
                   </span>
-                  {sourcesSummary.breakdown && (
-                    <>
-                      <span>·</span>
-                      <span className="text-neutral-300">
-                        {sourcesSummary.breakdown}
-                      </span>
-                    </>
-                  )}
                   <span className="text-neutral-500">
-                    (nos sources de marché)
+                    issus de nos sources de marché.
                   </span>
                 </div>
               )}
             </div>
           </header>
 
-          {/* Ligne 1 : score global + régime IA + focus drivers */}
-          <section className="grid gap-3 md:gap-4 md:grid-cols-3 min-w-0">
-            {/* Score global + confiance + consensus sources */}
-            <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40 flex flex-col gap-3 min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(8,47,73,0.8)]">
+          {/* Ligne 1 : score global + régime + drivers */}
+          <section className="grid gap-4 md:grid-cols-3 min-w-0">
+            {/* Global sentiment */}
+            <div className="group rounded-3xl p-4 bg-gradient-to-br from-sky-900/50 via-sky-900/20 to-sky-600/10 border border-sky-500/40 shadow-[0_0_35px_rgba(8,47,73,0.9)] backdrop-blur-2xl flex flex-col gap-3 md:gap-4 min-w-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(8,47,73,1)] hover:border-sky-400/70">
               <div className="flex items-center justify-between gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-sky-300/80">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-sky-200/90">
                   Global sentiment score
                 </div>
                 <div className="flex items-center gap-2 text-[11px]">
-                  <span className="text-sky-100/90">
+                  <span className="px-1.5 py-0.5 rounded-full bg-sky-900/80 border border-sky-400/60 text-sky-100">
                     Confiance IA :{" "}
-                    <span className="font-medium">
+                    <span className="font-semibold">
                       {Math.round(globalConfidence)}/100
                     </span>
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-5">
                 <div className="relative w-24 h-24 shrink-0">
                   <div className="absolute inset-0 rounded-full bg-neutral-950/80" />
                   <div
@@ -278,16 +247,16 @@ export default function SentimentClient({ snapshot }: Props) {
                       {Math.round(globalScore)}
                     </span>
                   </div>
-                  <div className="absolute -inset-1 rounded-full border border-sky-500/30 blur-[1px] opacity-60 group-hover:opacity-100 group-hover:animate-pulse transition duration-500" />
+                  <div className="absolute -inset-1 rounded-full border border-sky-500/40 blur-[2px] opacity-60 group-hover:opacity-100 group-hover:animate-pulse transition duration-500" />
                 </div>
 
-                <div className="flex flex-col gap-1 min-w-0">
+                <div className="flex flex-col gap-1.5 min-w-0">
                   <p className="text-xs text-sky-50 leading-snug">
                     Score agrégé{" "}
                     <span className={scoreToColor(globalScore)}>
                       {Math.round(globalScore)}/100
                     </span>{" "}
-                    calculé à partir de nos flux d’actualités.
+                    calculé à partir de nos flux d’actualités multi-sources.
                   </p>
                   <p className="text-[11px] text-sky-100/80 leading-snug">
                     IA : {shortRegimeDescription || "lecture neutre du marché."}
@@ -312,37 +281,37 @@ export default function SentimentClient({ snapshot }: Props) {
               </div>
             </div>
 
-            {/* Régime de marché IA */}
-            <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40 flex flex-col min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(76,29,149,0.9)]">
+            {/* Régime de marché */}
+            <div className="group rounded-3xl p-4 bg-gradient-to-br from-violet-900/45 via-violet-900/20 to-violet-600/10 border border-violet-500/40 shadow-[0_0_35px_rgba(76,29,149,0.9)] backdrop-blur-2xl flex flex-col min-w-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(76,29,149,1)] hover:border-violet-400/70">
               <div className="flex items-center justify-between gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-violet-300/80">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-violet-200">
                   Régime de marché (IA)
                 </div>
-                <div className="text-[11px] text-neutral-200">
+                <div className="text-[11px] text-neutral-100">
                   Confiance :{" "}
-                  <span className="font-medium">
+                  <span className="font-semibold">
                     {marketRegime.confidence}/100
                   </span>
                 </div>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 space-y-2">
                 <div className="text-sm font-semibold text-emerald-300">
                   {marketRegime.label}
                 </div>
-                <p className="mt-2 text-[12px] text-violet-50 leading-snug">
+                <p className="text-[12px] text-violet-50 leading-snug">
                   {marketRegime.description}
                 </p>
               </div>
             </div>
 
-            {/* Focus drivers IA */}
-            <div className="group rounded-2xl p-3.5 bg-gradient-to-br from-emerald-900/70 via-emerald-800/40 to-emerald-600/20 ring-1 ring-emerald-500/40 shadow-md shadow-emerald-900/40 min-w-0 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_0_30px_rgba(6,95,70,0.9)]">
+            {/* Focus drivers */}
+            <div className="group rounded-3xl p-4 bg-gradient-to-br from-emerald-900/45 via-emerald-900/20 to-emerald-600/10 border border-emerald-500/40 shadow-[0_0_35px_rgba(6,95,70,0.9)] backdrop-blur-2xl min-w-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(6,95,70,1)] hover:border-emerald-400/70">
               <div className="flex items-center justify-between gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-300/80">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-200">
                   Focus drivers (IA)
                 </div>
                 {normalizedFocusDrivers.length > 0 && (
-                  <div className="text-[11px] text-neutral-200">
+                  <div className="text-[11px] text-neutral-100">
                     {normalizedFocusDrivers.length} axes dominants
                   </div>
                 )}
@@ -350,8 +319,8 @@ export default function SentimentClient({ snapshot }: Props) {
 
               {normalizedFocusDrivers.length === 0 ? (
                 <p className="mt-3 text-xs text-neutral-200">
-                  L’IA ne détecte pas de driver dominant sur cette fenêtre :
-                  le flux de news est réparti entre plusieurs thèmes.
+                  L’IA ne détecte pas encore de driver dominant sur cette
+                  fenêtre : le flux est réparti entre plusieurs thèmes.
                 </p>
               ) : (
                 <ul className="mt-3 space-y-2.5">
@@ -391,120 +360,123 @@ export default function SentimentClient({ snapshot }: Props) {
           </section>
 
           {/* Timeline historique */}
-          {historyPoints.length > 1 && (
-            <section className="mt-1 space-y-3">
-              <div className="flex items-center justify-between px-1">
-                <div>
-                  <h2 className="text-[13px] font-semibold text-neutral-100">
-                    Historique du sentiment
-                  </h2>
-                  <p className="text-[11px] text-neutral-400">
-                    Vue compacte du sentiment global et par grande classe
-                    d’actifs sur les dernières mesures.
-                  </p>
-                </div>
+          <section className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <div>
+                <h2 className="text-[13px] font-semibold text-neutral-100">
+                  Historique du sentiment
+                </h2>
+                <p className="text-[11px] text-neutral-400">
+                  Vue compacte du sentiment global et par grande classe
+                  d’actifs sur les dernières mesures.
+                </p>
               </div>
+            </div>
 
-              {/* Global */}
-              <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 px-3 py-2">
-                <div className="flex items-center justify-between text-[11px] text-neutral-300 mb-1.5">
-                  <span>Global</span>
-                  <span>
-                    Dernière valeur :{" "}
-                    <span className={scoreToColor(globalScore)}>
-                      {Math.round(globalScore)}/100
-                    </span>
-                  </span>
+            {/* Global sparkline */}
+            <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl px-3 py-3">
+              {historyPoints.length === 0 ? (
+                <div className="text-[11px] text-neutral-400">
+                  Timeline en cours de construction : elle se remplira au fil
+                  des prochains rafraîchissements.
                 </div>
-                <div className="h-16 w-full relative">
-                  <svg
-                    viewBox="0 0 100 40"
-                    preserveAspectRatio="none"
-                    className="w-full h-full"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="sentimentLine"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop offset="0%" stopColor="#22c55e" />
-                        <stop offset="50%" stopColor="#eab308" />
-                        <stop offset="100%" stopColor="#ef4444" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d={buildAreaPath(historyPoints, historyMinMax)}
-                      fill="url(#sentimentLine)"
-                      fillOpacity={0.15}
-                    />
-                    <path
-                      d={buildLinePath(historyPoints, historyMinMax)}
-                      fill="none"
-                      stroke="url(#sentimentLine)"
-                      strokeWidth="0.9"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <div className="mt-1 flex items-center justify-between text-[11px] text-neutral-400">
-                  <span>
-                    Min{" "}
-                    <span className="text-neutral-200">
-                      {Math.round(historyMinMax.min)}
+              ) : (
+                <>
+                  <div className="flex items-center justify-between text-[11px] text-neutral-300 mb-2">
+                    <span>Global</span>
+                    <span>
+                      Dernière valeur :{" "}
+                      <span className={scoreToColor(globalScore)}>
+                        {Math.round(globalScore)}/100
+                      </span>
                     </span>
-                    /100
-                  </span>
-                  <span>
-                    Max{" "}
-                    <span className="text-neutral-200">
-                      {Math.round(historyMinMax.max)}
+                  </div>
+                  <div className="h-16 w-full relative">
+                    <svg
+                      viewBox="0 0 100 40"
+                      preserveAspectRatio="none"
+                      className="w-full h-full"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="sentimentLine-global"
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="0"
+                        >
+                          <stop offset="0%" stopColor="#22c55e" />
+                          <stop offset="50%" stopColor="#eab308" />
+                          <stop offset="100%" stopColor="#ef4444" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        d={buildAreaPath(historyPoints, historyMinMax)}
+                        fill="url(#sentimentLine-global)"
+                        fillOpacity={0.18}
+                      />
+                      <path
+                        d={buildLinePath(historyPoints, historyMinMax)}
+                        fill="none"
+                        stroke="url(#sentimentLine-global)"
+                        strokeWidth="0.9"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span>
+                      Min{" "}
+                      <span className="text-neutral-200">
+                        {Math.round(historyMinMax.min)}
+                      </span>
+                      /100
                     </span>
-                    /100
-                  </span>
-                </div>
-              </div>
+                    <span>
+                      Max{" "}
+                      <span className="text-neutral-200">
+                        {Math.round(historyMinMax.max)}
+                      </span>
+                      /100
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
 
-              {/* Mini séries par thème */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <MiniHistoryCard
-                  title="Forex"
-                  history={historyPoints}
-                  accessor={(p) =>
-                    typeof p.forexScore === "number"
-                      ? p.forexScore
-                      : undefined
-                  }
-                />
-                <MiniHistoryCard
-                  title="Actions"
-                  history={historyPoints}
-                  accessor={(p) =>
-                    typeof p.stocksScore === "number"
-                      ? p.stocksScore
-                      : undefined
-                  }
-                />
-                <MiniHistoryCard
-                  title="Commodities"
-                  history={historyPoints}
-                  accessor={(p) =>
-                    typeof p.commoditiesScore === "number"
-                      ? p.commoditiesScore
-                      : undefined
-                  }
-                />
-              </div>
-            </section>
-          )}
+            {/* Mini sparklines par thème */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <MiniHistoryCard
+                title="Forex"
+                history={historyPoints}
+                accessor={(p) =>
+                  typeof p.forexScore === "number" ? p.forexScore : undefined
+                }
+              />
+              <MiniHistoryCard
+                title="Actions"
+                history={historyPoints}
+                accessor={(p) =>
+                  typeof p.stocksScore === "number" ? p.stocksScore : undefined
+                }
+              />
+              <MiniHistoryCard
+                title="Commodities"
+                history={historyPoints}
+                accessor={(p) =>
+                  typeof p.commoditiesScore === "number"
+                    ? p.commoditiesScore
+                    : undefined
+                }
+              />
+            </div>
+          </section>
 
-          {/* Ligne 2 : thèmes + indicateurs de risque + suggestions */}
-          <section className="grid gap-5 lg:gap-6 lg:grid-cols-[1.1fr_0.9fr] min-w-0">
-            {/* Thèmes : Forex / Stocks / Commodities */}
-            <div className="space-y-3 min-w-0">
+          {/* Ligne 2 : thèmes + indicateurs + suggestions */}
+          <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] min-w-0">
+            {/* Thèmes + idées sentiment */}
+            <div className="space-y-4 min-w-0">
               <div className="px-1 flex items-baseline justify-between">
                 <div>
                   <h2 className="text-[15px] font-semibold text-neutral-100">
@@ -517,7 +489,7 @@ export default function SentimentClient({ snapshot }: Props) {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 shadow-sm shadow-black/50 p-4 space-y-3 min-w-0">
+              <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,0,0,0.9)] p-4 space-y-3 min-w-0">
                 {[forex, stocks, commodities]
                   .filter(Boolean)
                   .map((t) => {
@@ -528,7 +500,7 @@ export default function SentimentClient({ snapshot }: Props) {
                     return (
                       <div
                         key={theme.id}
-                        className="space-y-1.5 transition-all duration-300 hover:bg-neutral-900/70 rounded-xl px-2 py-1.5 -mx-2"
+                        className="space-y-1.5 transition-all duration-250 hover:bg-neutral-900/70 rounded-2xl px-3 py-2 -mx-3"
                       >
                         <div className="flex items-center justify-between gap-2 text-xs">
                           <div className="flex items-center gap-2 min-w-0">
@@ -591,7 +563,6 @@ export default function SentimentClient({ snapshot }: Props) {
                 )}
               </div>
 
-              {/* Suggestions de trades basées sur le sentiment */}
               {suggestions && suggestions.length > 0 && (
                 <div className="space-y-2">
                   <div className="px-1 flex items-baseline justify-between">
@@ -599,14 +570,14 @@ export default function SentimentClient({ snapshot }: Props) {
                       Idées de positionnement (IA)
                     </h2>
                     <span className="text-[11px] text-neutral-500">
-                      Basées uniquement sur le sentiment agrégé
+                      Basées uniquement sur le sentiment agrégé.
                     </span>
                   </div>
-                  <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 shadow-sm shadow-black/50 p-3 space-y-2.5">
+                  <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,0,0,0.9)] p-3 space-y-2.5">
                     {suggestions.slice(0, 3).map((s: SentimentSuggestion) => (
                       <div
                         key={s.id}
-                        className="rounded-xl px-3 py-2 bg-neutral-900/70 border border-neutral-700/60 flex flex-col gap-1.5 text-xs transition-all duration-200 hover:border-emerald-500/60 hover:bg-neutral-900"
+                        className="rounded-2xl px-3 py-2 bg-neutral-900/70 border border-neutral-700/70 flex flex-col gap-1.5 text-xs transition-all duration-250 hover:border-emerald-500/70 hover:bg-neutral-900 hover:-translate-y-0.5"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
@@ -653,7 +624,7 @@ export default function SentimentClient({ snapshot }: Props) {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 shadow-sm shadow-black/50 p-4 space-y-3 min-w-0">
+              <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,0,0,0.9)] p-4 space-y-3 min-w-0">
                 {(!riskIndicators || riskIndicators.length === 0) && (
                   <div className="space-y-3">
                     <p className="text-[12px] text-neutral-300">
@@ -685,7 +656,7 @@ export default function SentimentClient({ snapshot }: Props) {
                   return (
                     <div
                       key={ind.id}
-                      className="space-y-1.5 transition-all duration-300 hover:bg-neutral-900/70 rounded-xl px-2 py-1.5 -mx-2"
+                      className="space-y-1.5 transition-all duration-250 hover:bg-neutral-900/70 rounded-2xl px-3 py-2 -mx-3"
                     >
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <div className="flex flex-col min-w-0">
@@ -751,9 +722,9 @@ function buildLinePath(
   const span = max - min || 1;
 
   const coords = points.map((p, i) => {
-    const x = i * dx;
+    const x = n === 1 ? 50 : i * dx;
     const norm = (p.globalScore - min) / span;
-    const y = 40 - norm * 30 - 5; // marge en haut/bas
+    const y = 40 - norm * 30 - 5;
     return { x, y };
   });
 
@@ -776,14 +747,15 @@ function buildAreaPath(
   const dx = n === 1 ? 0 : 100 / (n - 1);
 
   const baseY = 40;
-  const startX = 0;
-  const endX = (n - 1) * dx;
+  const startX = n === 1 ? 50 : 0;
+  const endX = n === 1 ? 50 : (n - 1) * dx;
 
   const main = line.replace(/^M/, "L");
   return `M ${startX} ${baseY}${main} L ${endX} ${baseY} Z`;
 }
 
-/* Mini sparkline card */
+/* Mini sparkline par thème */
+
 type MiniHistoryCardProps = {
   title: string;
   history: SentimentHistoryPoint[];
@@ -791,7 +763,19 @@ type MiniHistoryCardProps = {
 };
 
 function MiniHistoryCard({ title, history, accessor }: MiniHistoryCardProps) {
-  if (!history || history.length <= 1) return null;
+  if (!history || history.length === 0) {
+    return (
+      <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl px-3 py-2 space-y-1.5">
+        <div className="flex items-center justify-between text-[11px] text-neutral-300">
+          <span>{title}</span>
+          <span>—</span>
+        </div>
+        <div className="h-12 w-full flex items-center justify-center text-[11px] text-neutral-500">
+          En cours de construction
+        </div>
+      </div>
+    );
+  }
 
   const series = history.map((p) => {
     const v = accessor(p);
@@ -819,13 +803,10 @@ function MiniHistoryCard({ title, history, accessor }: MiniHistoryCardProps) {
     .replace(/\s+/g, "-")}`;
 
   return (
-    <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 px-3 py-2 space-y-1.5">
+    <div className="rounded-3xl border border-neutral-800/70 bg-neutral-950/85 backdrop-blur-2xl px-3 py-2 space-y-1.5">
       <div className="flex items-center justify-between text-[11px] text-neutral-300">
         <span>{title}</span>
-        <span>
-          {Math.round(last)}
-          /100
-        </span>
+        <span>{Math.round(last)}/100</span>
       </div>
       <div className="h-12 w-full relative">
         <svg

@@ -38,6 +38,15 @@ export type MarketRegime = {
   confidence: number; // 0–100
 };
 
+export type SentimentIdea = {
+  id: string;
+  asset: string;
+  direction: "long" | "short";
+  horizon: string;
+  conviction: number; // 0–100
+  rationale: string;
+};
+
 export type SentimentSnapshot = {
   generatedAt: string;
   globalScore: number; // 0–100
@@ -45,9 +54,18 @@ export type SentimentSnapshot = {
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
   marketRegime: MarketRegime;
+  ideas: SentimentIdea[];
   sources: {
     name: string;
     assetClass: AssetClass | "global";
     weight: number;
   }[];
+};
+
+export type SentimentHistoryPoint = {
+  generatedAt: string;
+  globalScore: number;
+  forex?: number;
+  stocks?: number;
+  commodities?: number;
 };

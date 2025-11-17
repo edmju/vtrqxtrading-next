@@ -1,49 +1,12 @@
 // src/app/(terminal)/dashboard/sentiment/page.tsx
 
-import React from "react";
-import path from "path";
-import { promises as fs } from "fs";
+import fs from "node:fs/promises";
+import path from "node:path";
 import SentimentClient from "./SentimentClient";
 
-export const dynamic = "force-dynamic";
+/* ----------------------------- Types partagés ---------------------------- */
 
-export type SentimentThemeId = "forex" | "stocks" | "commodities";
-
-export type SentimentTheme = {
-  id: SentimentThemeId;
-  label: string;
-  score: number; // 0..100
-  direction?: "bullish" | "bearish" | "neutral";
-  comment?: string;
-};
-
-export type RiskIndicator = {
-  id: string;
-  label: string;
-  score: number; // 0..100
-  comment?: string;
-  value?: string;
-  direction?: "up" | "down" | "neutral";
-};
-
-export type FocusDriver = {
-  label: string;
-  weight: number; // intensité relative
-  description?: string;
-  comment?: string;
-};
-
-export type MarketRegime = {
-  label: string;
-  description: string;
-  confidence: number; // 0..100
-};
-
-export type SentimentSource = {
-  name: string;
-  assetClass: SentimentThemeId | "global";
-  weight: number;
-};
+export type AssetClass = "forex" | "stocks" | "commodities" | "global";
 
 export type SentimentHistoryPoint = {
   timestamp: string;
@@ -54,78 +17,122 @@ export type SentimentHistoryPoint = {
   totalArticles?: number;
 };
 
+export type SentimentTheme = {
+  id: string;
+  label: string;
+  score: number;
+  direction: "bullish" | "bearish" | "neutral";
+  comment?: string;
+};
+
+export type MarketRegime = {
+  label: string;
+  description: string;
+  confidence: number;
+};
+
+export type RiskIndicator = {
+  id: string;
+  label: string;
+  score: number;
+  value?: string;
+  direction?: "up" | "down" | "neutral";
+  comment?: string;
+};
+
+export type FocusDriver = {
+  label: string;
+  weight?: number;
+  description?: string;
+};
+
+export type SentimentSource = {
+  name: string;
+  assetClass: AssetClass;
+  weight?: number;
+};
+
 export type SentimentSuggestion = {
   id: string;
   label: string;
-  assetClass: SentimentThemeId | "global";
+  assetClass: AssetClass;
   bias: "long" | "short" | "neutral";
-  confidence: number; // 0..100
+  confidence: number;
   rationale: string;
 };
 
 export type SentimentSnapshot = {
   generatedAt: string;
-  globalScore: number; // 0..100
+  globalScore: number;
   marketRegime: MarketRegime;
   themes: SentimentTheme[];
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
 
-  history?: SentimentHistoryPoint[];
-  globalConfidence?: number;
+  // métriques dérivées
   sourceConsensus?: number;
   tensionScore?: number;
+  totalArticles?: number;
+  bullishArticles?: number;
+  bearishArticles?: number;
+  globalConfidence?: number;
+
+  // ce qu’on veut absolument pour le graph
+  history?: SentimentHistoryPoint[];
+
+  // idées de positionnement
   suggestions?: SentimentSuggestion[];
 };
 
-async function readJson<T>(rel: string, fallback: T): Promise<T> {
+/* ------------------------- Lecture des fichiers ------------------------- */
+
+async function loadSentimentSnapshot(): Promise<SentimentSnapshot | null> {
   try {
-    const full = path.join(process.cwd(), "public", rel);
-    const raw = await fs.readFile(full, "utf8");
-    return JSON.parse(raw) as T;
+    const sentimentDir = path.join(process.cwd(), "public", "data", "sentiment");
+
+    // 1) snapshot principal
+    const latestRaw = await fs.readFile(
+      path.join(sentimentDir, "latest.json"),
+      "utf8"
+    );
+    const snapshot = JSON.parse(latestRaw) as SentimentSnapshot;
+
+    // 2) historique complet (pour alimenter le graphique)
+    try {
+      const historyRaw = await fs.readFile(
+        path.join(sentimentDir, "history.json"),
+        "utf8"
+      );
+      const history = JSON.parse(historyRaw);
+      if (Array.isArray(history)) {
+        snapshot.history = history as SentimentHistoryPoint[];
+      }
+    } catch {
+      // pas d'historique -> on laisse snapshot.history tel quel
+    }
+
+    return snapshot;
   } catch {
-    return fallback;
+    return null;
   }
 }
 
-async function getData() {
-  const sentiment = await readJson<SentimentSnapshot>(
-    "data/sentiment/latest.json",
-    {
-      generatedAt: "",
-      globalScore: 50,
-      marketRegime: {
-        label: "Neutre",
-        description:
-          "Régime neutre : pas de driver clair, sentiment équilibré entre actifs risqués et défensifs.",
-        confidence: 50,
-      },
-      themes: [
-        { id: "forex", label: "Forex", score: 50, direction: "neutral" },
-        { id: "stocks", label: "Actions", score: 50, direction: "neutral" },
-        {
-          id: "commodities",
-          label: "Commodities",
-          score: 50,
-          direction: "neutral",
-        },
-      ],
-      riskIndicators: [],
-      focusDrivers: [],
-      sources: [],
-      history: [],
-      globalConfidence: 50,
-      sourceConsensus: 50,
-      tensionScore: 50,
-      suggestions: [],
-    }
-  );
-
-  return { sentiment };
-}
+/* ------------------------------ Page server ------------------------------ */
 
 export default async function SentimentPage() {
-  const { sentiment } = await getData();
-  return <SentimentClient snapshot={sentiment} />;
+  const snapshot = await loadSentimentSnapshot();
+
+  if (!snapshot) {
+    return (
+      <main className="py-8 lg:py-10 w-full">
+        <div className="rounded-3xl border border-neutral-800/60 bg-neutral-950/90 backdrop-blur-xl p-6 text-sm text-neutral-400">
+          Aucune donnée de sentiment disponible pour l’instant. Le prochain
+          rafraîchissement remplira automatiquement cette vue.
+        </div>
+      </main>
+    );
+  }
+
+  return <SentimentClient snapshot={snapshot} />;
 }

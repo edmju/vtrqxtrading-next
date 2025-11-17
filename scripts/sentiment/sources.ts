@@ -46,7 +46,6 @@ function findScoreCandidate(obj: unknown): number | null {
   const preferredKeys = ["score", "sentiment", "index", "value", "fear_greed"];
 
   const visit = (value: unknown): number | null => {
-    // Essai direct de normalisation
     const direct = toScore0to100(value);
     if (direct !== null) return direct;
 
@@ -61,7 +60,6 @@ function findScoreCandidate(obj: unknown): number | null {
     if (value && typeof value === "object") {
       const rec = value as Record<string, unknown>;
 
-      // 1) clés "intéressantes" en priorité
       for (const k of preferredKeys) {
         if (k in rec) {
           const r = visit(rec[k]);
@@ -69,7 +67,6 @@ function findScoreCandidate(obj: unknown): number | null {
         }
       }
 
-      // 2) sinon, on parcourt tout
       for (const v of Object.values(rec)) {
         const r = visit(v);
         if (r !== null) return r;
@@ -174,7 +171,6 @@ async function buildPointsForEnv(
 ): Promise<SentimentPoint[]> {
   const rawUrl = process.env[envName];
   if (!rawUrl || !rawUrl.trim()) {
-    // pas configuré → on ne fait rien
     return [];
   }
 
@@ -187,7 +183,6 @@ async function buildPointsForEnv(
   let bullishCount = 0;
   let bearishCount = 0;
 
-  // 1) Pattern Alpha Vantage NEWS_SENTIMENT
   const stats = alphaVantageNewsStats(json);
   if (stats) {
     score = stats.score;
@@ -196,7 +191,6 @@ async function buildPointsForEnv(
     bearishCount = stats.bearishCount;
   }
 
-  // 2) Sinon on tente la recherche générique (0–100, 0–1, -1–1)
   if (score === null) {
     score = findScoreCandidate(json);
   }
@@ -223,25 +217,18 @@ async function buildPointsForEnv(
   ];
 }
 
-/**
- * Récupère tous les points de sentiment disponibles à partir
- * des URLs configurées via les variables d'environnement.
- */
 export async function fetchAllSentimentPoints(): Promise<SentimentPoint[]> {
   const tasks: Promise<SentimentPoint[]>[] = [];
 
-  // Forex
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_1", "forex"));
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_2", "forex"));
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_3", "forex"));
 
-  // Actions / indices
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_1", "stocks"));
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_2", "stocks"));
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_3", "stocks"));
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_4", "stocks"));
 
-  // Commodities
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_1", "commodities"));
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_2", "commodities"));
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_3", "commodities"));

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-17T00:45:42.733Z",
+  "generatedAt": "2025-11-17T02:26:56.059Z",
   "globalScore": 46,
   "themes": [
     {
@@ -7,29 +7,29 @@
       "label": "Forex",
       "score": 39,
       "direction": "bearish",
-      "comment": "Le sentiment forex est globalement baissier, malgré quelques signaux positifs isolés. Cela peut refléter une aversion au risque et une préférence pour les devises refuges ou une volatilité accrue sur les paires majeures."
+      "comment": "Le sentiment baissier sur le Forex est marqué par une forte disparité entre sources, avec des scores élevés ponctuels mais aussi des scores nuls, indiquant une volatilité et une incertitude importantes. La tendance générale reste négative, probablement liée à des inquiétudes sur "
     },
     {
       "id": "stocks",
       "label": "Actions",
       "score": 40,
       "direction": "bearish",
-      "comment": "Le sentiment actions est également baissier, avec des sources mitigées mais un consensus global vers la prudence voire la vente, probablement lié aux craintes macroéconomiques et aux incertitudes politiques."
+      "comment": "Les actions affichent un sentiment baissier similaire au Forex, avec des signaux mitigés mais une tendance générale à la prudence et à la prise de bénéfices. Le contexte macroéconomique incertain pèse sur la confiance des investisseurs en actions."
     },
     {
       "id": "commodities",
       "label": "Commodities",
       "score": 60,
-      "direction": "bullish",
-      "comment": "Les matières premières bénéficient d'un sentiment très positif et stable, indiquant un intérêt fort des investisseurs pour ces actifs, souvent perçus comme des couvertures contre l'inflation ou des relais de croissance."
+      "direction": "neutral",
+      "comment": "Les matières premières montrent un sentiment neutre à légèrement positif, soutenu par une demande stable et une possible fonction de couverture contre l'inflation ou les risques géopolitiques. La volatilité est moindre comparée aux autres classes d'actifs."
     }
   ],
   "riskIndicators": [
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 17,
-      "value": "24.8 pts d'écart-type",
+      "score": 18,
+      "value": "24.7 pts d'écart-type",
       "direction": "down",
       "comment": "Les sources de sentiment envoient des signaux divergents, ce qui rend la lecture plus fragile."
     },
@@ -44,67 +44,67 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 91,
-      "value": "91% bull",
+      "score": 90,
+      "value": "90% bull",
       "direction": "up",
-      "comment": "Environ 91% des articles sont classés haussiers contre 3% baissiers, donnant un signal assez lisible du flux."
+      "comment": "Environ 90% des articles sont classés haussiers contre 3% baissiers, donnant un signal assez lisible du flux."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Incertitude macroéconomique persistante",
-      "description": "Les inquiétudes sur la croissance et la politique monétaire maintiennent un climat prudent, impactant négativement les actions et le forex.",
+      "label": "Incertitude macroéconomique",
+      "description": "Les divergences de sentiment entre classes d'actifs indiquent une incertitude sur les perspectives économiques globales, impactant négativement le Forex et les actions.",
       "weight": 0.5
     },
     {
-      "label": "Appétit pour les matières premières",
-      "description": "Le sentiment très positif sur les commodities reflète une demande accrue pour les actifs tangibles, souvent perçus comme une protection contre l'inflation ou le risque géopolitique.",
+      "label": "Aversion au risque accrue",
+      "description": "Le sentiment baissier sur le Forex et les actions suggère une aversion au risque renforcée, poussant les investisseurs vers des actifs plus sûrs ou neutres comme les commodities.",
       "weight": 0.3
     },
     {
-      "label": "Divergence entre sources d'information",
-      "description": "La présence de scores extrêmes (0 et 60) dans les mêmes classes d'actifs suggère une volatilité d'opinion importante, renforçant la prudence générale.",
+      "label": "Stabilité relative des matières premières",
+      "description": "Le sentiment neutre à légèrement positif sur les commodities reflète une demande stable ou une couverture contre l'inflation, malgré le contexte incertain.",
       "weight": 0.2
     }
   ],
   "marketRegime": {
-    "label": "Divergent Sentiment Regime",
-    "description": "Le sentiment global est modérément baissier (score 46), marqué par une forte divergence entre les classes d'actifs. Le forex et les actions affichent un sentiment nettement baissier, malgré quelques sources ponctuellement positives, tandis que les matières premières bénéficient d'un sentiment très positif et homogène. Cette situation traduit un marché où les investisseurs se replient sur les actifs réels et les matières premières, probablement en quête de protection face à l'incertitude macroéconomique, tandis que les actifs risqués comme les actions et les devises majeures subissent des pressions baissières.",
+    "label": "Divergent Sentiment with Risk Aversion",
+    "description": "Le marché présente un sentiment global modéré à légèrement baissier (score 46), marqué par une forte divergence entre les classes d'actifs. Le Forex et les actions affichent un sentiment baissier clair, malgré quelques sources ponctuellement positives, tandis que les matières premières restent neutres avec un sentiment plus stable et légèrement positif. Le volume élevé d'articles bullish contraste avec un score global plus bas, suggérant une incertitude et une volatilité accrue, probablement liée à des facteurs macroéconomiques ou géopolitiques incertains. Ce régime reflète une prudence générale des investisseurs, avec une préférence pour la préservation du capital et une aversion au risque modérée.",
     "confidence": 60
   },
   "tradeIdeas": [
     {
       "id": "trade1",
-      "label": "Long matières premières",
-      "asset": "Commodities ETF (ex: GSG, DBC)",
-      "direction": "long",
-      "horizon": "3-6 mois",
-      "confidence": 70,
-      "reasoning": "Le sentiment très positif et homogène sur les matières premières suggère une tendance haussière soutenue, justifiée par la demande d'actifs tangibles face à l'incertitude macro."
+      "label": "Short EUR/USD à court terme",
+      "asset": "EUR/USD",
+      "direction": "short",
+      "horizon": "1-3 semaines",
+      "confidence": 65,
+      "reasoning": "Le sentiment baissier sur le Forex, combiné à l'incertitude macroéconomique européenne, suggère une pression à la baisse sur l'euro face au dollar."
     },
     {
       "id": "trade2",
-      "label": "Short actions globales",
-      "asset": "Indice actions global (ex: MSCI World ET",
+      "label": "Short indice actions US (S&P 500) à moyen terme",
+      "asset": "S&P 500",
       "direction": "short",
-      "horizon": "1-3 mois",
+      "horizon": "1-2 mois",
       "confidence": 60,
-      "reasoning": "Le sentiment baissier sur les actions, combiné à des inquiétudes macroéconomiques, oriente vers une prudence ou une correction à court terme."
+      "reasoning": "Le sentiment baissier sur les actions et le contexte d'incertitude économique justifient une position prudente à la baisse sur l'indice américain."
     },
     {
       "id": "trade3",
-      "label": "Short paires de devises risquées",
-      "asset": "Forex paires à risque (ex: AUD/USD, NZD/",
-      "direction": "short",
+      "label": "Long or (Gold) en couverture",
+      "asset": "Gold",
+      "direction": "long",
       "horizon": "1-3 mois",
       "confidence": 55,
-      "reasoning": "Le sentiment forex baissier, malgré quelques signaux positifs, indique une possible pression sur les devises à risque dans un contexte d'aversion au risque."
+      "reasoning": "Le sentiment neutre à positif sur les commodities, associé à une aversion au risque accrue, soutient une position longue sur l'or comme valeur refuge."
     }
   ],
   "totalArticles": 350,
-  "bullishArticles": 319,
-  "bearishArticles": 10,
-  "globalConfidence": 55,
+  "bullishArticles": 316,
+  "bearishArticles": 11,
+  "globalConfidence": 60,
   "sources": [
     {
       "name": "SENTIMENT_FOREX_URL_1",

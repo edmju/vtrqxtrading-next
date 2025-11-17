@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { collectSentimentPoints } from "./sources";
+import { fetchAllSentimentPoints } from "./sources";
 import { buildSentimentSnapshot } from "./analyze";
 import type { SentimentHistoryPoint, SentimentSnapshot } from "./types";
 
@@ -54,7 +54,7 @@ async function writeJson(filePath: string, data: unknown) {
     const history: SentimentHistoryPoint[] = await readJson(HISTORY_FILE, []);
 
     // 2) Récupérer tous les points bruts (Alpha Vantage etc.)
-    const rawPoints = await collectSentimentPoints();
+    const rawPoints = await fetchAllSentimentPoints();
     if (!rawPoints || rawPoints.length === 0) {
       console.warn("[sentiment] aucune donnée collectée, abandon.");
       return;
@@ -63,11 +63,13 @@ async function writeJson(filePath: string, data: unknown) {
     console.log("[sentiment] collected points:", rawPoints.length);
 
     // 3) Construire le snapshot enrichi (IA + indicateurs)
-    const snapshot: SentimentSnapshot = await buildSentimentSnapshot(rawPoints, history);
+    const snapshot: SentimentSnapshot = await buildSentimentSnapshot(
+      rawPoints,
+      history
+    );
 
     // 4) Construire le nouveau point d’historique pour les graphes
-    const generatedAt =
-      snapshot.generatedAt || new Date().toISOString();
+    const generatedAt = snapshot.generatedAt || new Date().toISOString();
 
     const getThemeScore = (id: string) =>
       snapshot.themes.find((t) => t.id === id)?.score ?? snapshot.globalScore;

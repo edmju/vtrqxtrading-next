@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-17T10:11:45.684Z",
+  "generatedAt": "2025-11-17T11:08:30.775Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Optimisme modéré avec forte dominance haussière",
-    "description": "Le marché affiche un sentiment globalement positif avec une large majorité d'articles bullish et un consensus élevé, malgré une température du flux d’actualités modérée indiquant une absence de surchauffe informationnelle.",
-    "confidence": 85
+    "label": "Optimisme modéré avec forte conviction",
+    "description": "Le marché affiche un optimisme global soutenu par un consensus élevé et une prédominance nette des opinions haussières, malgré une activité d’actualité modérée. Ce régime suggère une confiance solide dans la tendance haussière, tout en restant attentif à la stabilité de l’environnement informationnel.",
+    "confidence": 60
   },
   "themes": [
     {
@@ -12,21 +12,21 @@
       "label": "Forex",
       "score": 55,
       "direction": "bullish",
-      "comment": "Le sentiment positif soutient une appréciation générale des devises majeures."
+      "comment": ""
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 56,
+      "score": 57,
       "direction": "bullish",
-      "comment": "La forte dominance des opinions haussières favorise une dynamique acheteuse sur les actions."
+      "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 59,
+      "score": 60,
       "direction": "bullish",
-      "comment": "Les matières premières bénéficient également d’un sentiment favorable, soutenant les prix."
+      "comment": ""
     }
   ],
   "riskIndicators": [
@@ -36,40 +36,40 @@
       "score": 50,
       "value": "350 articles",
       "direction": "neutral",
-      "comment": "Flux d’actualités de volume moyen, sans tension particulière."
+      "comment": "Flux de volume moyen."
     },
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 95,
-      "value": "95% bull / 5% bear",
+      "score": 97,
+      "value": "97% bull / 3% bear",
       "direction": "up",
-      "comment": "Légère dominance des articles haussiers dans le flux."
+      "comment": "Légère dominance des articles haussiers."
     },
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 91,
-      "value": "91/100",
+      "score": 90,
+      "value": "90/100",
       "direction": "up",
-      "comment": "Les différentes sources convergent vers une même lecture du marché."
+      "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Balance bull/bear très favorable",
+      "label": "Consensus des sources élevé",
       "weight": 3,
-      "description": "La proportion très élevée d’articles bullish (95%) indique une forte confiance des investisseurs dans la poursuite de la tendance haussière."
+      "description": "Un large accord parmi les sources d’information renforce la confiance dans la direction actuelle du marché."
     },
     {
-      "label": "Consensus des sources élevé",
-      "weight": 2,
-      "description": "Un consensus à 91/100 renforce la cohérence du sentiment positif à travers différentes sources, limitant les risques de divergence."
+      "label": "Balance bull/bear très favorable",
+      "weight": 3,
+      "description": "La domination des opinions haussières indique un sentiment de marché fortement orienté à la hausse."
     },
     {
       "label": "Température du flux d’actualités modérée",
-      "weight": 1,
-      "description": "Avec 350 articles et un score de 50, l’activité informationnelle est stable, évitant une saturation qui pourrait induire un retournement."
+      "weight": 2,
+      "description": "Un volume d’actualité stable et modéré limite les risques de volatilité excessive liée à des événements imprévus."
     }
   ],
   "sources": [
@@ -119,45 +119,19 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 91,
+  "sourceConsensus": 90,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 232,
-  "bearishArticles": 11,
-  "suggestions": [
-    {
-      "id": "long_equities",
-      "label": "Position longue sur actions",
-      "assetClass": "stocks",
-      "bias": "long",
-      "confidence": 85,
-      "rationale": "Le sentiment très bullish et le consensus élevé suggèrent une poursuite de la tendance haussière sur les marchés actions."
-    },
-    {
-      "id": "long_commodities",
-      "label": "Position longue sur matières premières",
-      "assetClass": "commodities",
-      "bias": "long",
-      "confidence": 80,
-      "rationale": "Le sentiment positif sur les commodities est soutenu par une forte cohérence des sources."
-    },
-    {
-      "id": "long_forex",
-      "label": "Position longue sur devises majeures",
-      "assetClass": "forex",
-      "bias": "long",
-      "confidence": 75,
-      "rationale": "Le sentiment bullish modéré sur le forex indique un potentiel de renforcement des devises clés."
-    }
-  ],
-  "globalConfidence": 85,
+  "bullishArticles": 238,
+  "bearishArticles": 7,
+  "globalConfidence": 90,
   "history": [
     {
-      "timestamp": "2025-11-17T10:11:45.684Z",
+      "timestamp": "2025-11-17T11:08:30.775Z",
       "globalScore": 57,
       "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 59,
+      "stocksScore": 57,
+      "commoditiesScore": 60,
       "totalArticles": 350
     }
   ]

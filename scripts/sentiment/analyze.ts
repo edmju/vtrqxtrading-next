@@ -1,4 +1,5 @@
 // scripts/sentiment/analyze.ts
+
 import OpenAI from "openai";
 import {
   AssetClass,
@@ -111,7 +112,7 @@ export async function buildSentimentSnapshot(
   const allScores = points.map((p) => p.score);
   const sourceConsensus = consensusFromStd(stdDev(allScores));
 
-  // Tension du flux (volume d’articles vs historique)
+  // Tension news vs historique
   let tensionScore: number | undefined = undefined;
   let tensionRatio: number | undefined = undefined;
   if (totalArticles > 0) {
@@ -125,12 +126,12 @@ export async function buildSentimentSnapshot(
       tensionRatio = 1;
     } else {
       tensionRatio = totalArticles / pastAvg;
-      const raw = 50 + 25 * (tensionRatio - 1); // +/-25 pts pour +/-100% de variation
+      const raw = 50 + 25 * (tensionRatio - 1);
       tensionScore = clampScore(Math.round(raw));
     }
   }
 
-  // Balance bull / bear
+  // Balance bull/bear globale
   const totalSentimentArticles = bullishArticles + bearishArticles;
   const bullShare =
     totalSentimentArticles > 0 ? bullishArticles / totalSentimentArticles : 0;
@@ -176,11 +177,11 @@ export async function buildSentimentSnapshot(
 
   const riskIndicators: RiskIndicator[] = [];
 
+  // Indicateur de tension du flux
   if (totalArticles > 0) {
     const tScore = tensionScore ?? 50;
     let comment =
       "Flux d’actualités de volume moyen, sans tension particulière.";
-
     if (tensionRatio && tensionRatio >= 1.3) {
       comment =
         "Flux d’actualités nettement plus chargé que d’habitude : environnement plus nerveux à court terme.";
@@ -191,7 +192,7 @@ export async function buildSentimentSnapshot(
 
     riskIndicators.push({
       id: "tension_flux",
-      label: "Tension du flux d’actualités",
+      label: "Température du flux d’actualités",
       score: tScore,
       value: totalArticles ? `${totalArticles} articles` : "—",
       direction:
@@ -200,15 +201,16 @@ export async function buildSentimentSnapshot(
     });
   }
 
+  // Indicateur bull/bear
   riskIndicators.push({
     id: "bull_bear_balance",
-    label: "Balance bull / bear globale",
+    label: "Balance bull/bear globale",
     score: bullBearScore,
     value:
       totalSentimentArticles > 0
-        ? `${Math.round(bullShare * 100)}% haussiers / ${Math.round(
+        ? `${Math.round(bullShare * 100)}% bull / ${Math.round(
             bearShare * 100
-          )}% baissiers`
+          )}% bear`
         : "échantillon limité",
     direction:
       bullBearScore >= 55
@@ -219,9 +221,10 @@ export async function buildSentimentSnapshot(
     comment: bullBearComment,
   });
 
+  // Indicateur de consensus des sources
   riskIndicators.push({
     id: "source_consensus",
-    label: "Consensus entre les sources",
+    label: "Consensus des sources",
     score: sourceConsensus,
     value: `${sourceConsensus}/100`,
     direction:
@@ -232,7 +235,7 @@ export async function buildSentimentSnapshot(
         : ("neutral" as const),
     comment:
       sourceConsensus >= 70
-        ? "Nos différentes sources convergent vers une même lecture du marché."
+        ? "Les différentes sources convergent vers une même lecture du marché."
         : sourceConsensus >= 55
         ? "Consensus raisonnable entre les sources, avec quelques nuances."
         : sourceConsensus >= 40
@@ -240,6 +243,7 @@ export async function buildSentimentSnapshot(
         : "Sources divergentes : le signal de sentiment doit être utilisé avec prudence.",
   });
 
+  // Focus drivers de base (seront raffinés par l’IA)
   const focusDrivers: FocusDriver[] = themes.map((t) => ({
     label: `Biais ${t.label}`,
     weight: 1,
@@ -332,7 +336,9 @@ async function enrichWithAI(
   history: SentimentHistoryPoint[]
 ): Promise<SentimentSnapshot> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return snapshot;
+  if (!apiKey) {
+    return snapshot;
+  }
 
   const client = new OpenAI({ apiKey });
 
@@ -376,7 +382,7 @@ async function enrichWithAI(
           role: "system",
           content:
             "Tu es un stratégiste macro multi-actifs. Tu reçois un résumé numérique du sentiment de marché issu de nos propres flux de données. " +
-            "Tu dois produire une analyse concise et actionnable en JSON (sans texte hors-JSON).",
+            "Tu produis une analyse concise, actionnable et cohérente, sans nommer les fournisseurs de données.",
         },
         {
           role: "user",
@@ -385,15 +391,15 @@ async function enrichWithAI(
             "1) Reformule le régime de marché (label + description + confiance). " +
             "2) Propose 2 à 4 focus drivers (label, weight ~1 à 3, description). " +
             "3) Pour chaque thème (forex, stocks, commodities), donne une direction (bullish/bearish/neutral) + un commentaire très court (1 phrase). " +
-            "4) Propose jusqu’à 3 idées de positionnement basées UNIQUEMENT sur ce sentiment (pas de niveaux de prix, pas de timing précis). " +
+            "4) Propose jusqu’à 3 idées de positionnement basées UNIQUEMENT sur ce sentiment (pas de niveaux de prix, pas de timing précis, pas de mention de fournisseurs). " +
             "5) Si tu juges le signal global très exploitable ou au contraire fragile, ajuste éventuellement une globalConfidence (0–100).\n\n" +
             "Réponds STRICTEMENT avec un JSON de la forme :\n" +
             "{\n" +
-            '  "marketRegime": { "label": string, "description": string, "confidence": number },\n' +
-            '  "focusDrivers": [ { "label": string, "weight": number, "description": string }, ... ],\n' +
-            '  "themes": [ { "id": string, "direction": "bullish" | "bearish" | "neutral", "comment": string }, ... ],\n' +
-            '  "suggestions": [ { "id": string, "label": string, "assetClass": string, "bias": "long" | "short" | "neutral", "confidence": number, "rationale": string }, ... ],\n' +
-            '  "globalConfidence": number\n' +
+            '  \"marketRegime\": { \"label\": string, \"description\": string, \"confidence\": number },\n' +
+            '  \"focusDrivers\": [ { \"label\": string, \"weight\": number, \"description\": string }, ... ],\n' +
+            '  \"themes\": [ { \"id\": string, \"direction\": \"bullish\" | \"bearish\" | \"neutral\", \"comment\": string }, ... ],\n' +
+            '  \"suggestions\": [ { \"id\": string, \"label\": string, \"assetClass\": string, \"bias\": \"long\" | \"short\" | \"neutral\", \"confidence\": number, \"rationale\": string }, ... ],\n' +
+            '  \"globalConfidence\": number\n' +
             "}",
         },
         {
@@ -407,6 +413,7 @@ async function enrichWithAI(
     if (!raw) return snapshot;
 
     const parsed = JSON.parse(raw) as AiResponseShape;
+
     const updated = { ...snapshot };
 
     if (parsed.marketRegime) {
@@ -431,7 +438,9 @@ async function enrichWithAI(
             typeof d.weight === "number" && d.weight > 0 ? d.weight : 1,
           description: d.description || "",
         }));
-      if (drivers.length) updated.focusDrivers = drivers;
+      if (drivers.length) {
+        updated.focusDrivers = drivers;
+      }
     }
 
     if (Array.isArray(parsed.themes) && parsed.themes.length > 0) {
@@ -451,7 +460,9 @@ async function enrichWithAI(
         ) {
           next.direction = t.direction;
         }
-        if (t.comment) next.comment = t.comment;
+        if (t.comment) {
+          next.comment = t.comment;
+        }
         themeById.set(t.id, next);
       }
 
@@ -501,7 +512,9 @@ async function enrichWithAI(
           };
         });
 
-      if (suggestions.length) updated.suggestions = suggestions;
+      if (suggestions.length) {
+        updated.suggestions = suggestions;
+      }
     }
 
     if (typeof parsed.globalConfidence === "number") {

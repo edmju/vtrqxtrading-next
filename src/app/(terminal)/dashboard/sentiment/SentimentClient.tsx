@@ -205,8 +205,8 @@ export default function SentimentClient({ snapshot }: Props) {
                 Sentiment de marché (vue IA)
               </h1>
               <p className="text-xs text-neutral-400 mt-1">
-                Lecture multi-actifs construite à partir du flux d’actualités :
-                forex, actions, commodities & régime global.
+                Lecture multi-actifs construite à partir de nos flux
+                d’actualités : forex, actions, commodities & régime global.
               </p>
             </div>
 
@@ -230,7 +230,7 @@ export default function SentimentClient({ snapshot }: Props) {
                     </>
                   )}
                   <span className="text-neutral-500">
-                    (Alpha Vantage – News Sentiment)
+                    (nos sources de marché)
                   </span>
                 </div>
               )}
@@ -287,7 +287,7 @@ export default function SentimentClient({ snapshot }: Props) {
                     <span className={scoreToColor(globalScore)}>
                       {Math.round(globalScore)}/100
                     </span>{" "}
-                    calculé à partir des flux Alpha Vantage.
+                    calculé à partir de nos flux d’actualités.
                   </p>
                   <p className="text-[11px] text-sky-100/80 leading-snug">
                     IA : {shortRegimeDescription || "lecture neutre du marché."}
@@ -392,26 +392,36 @@ export default function SentimentClient({ snapshot }: Props) {
 
           {/* Timeline historique */}
           {historyPoints.length > 1 && (
-            <section className="mt-1 space-y-2">
+            <section className="mt-1 space-y-3">
               <div className="flex items-center justify-between px-1">
                 <div>
                   <h2 className="text-[13px] font-semibold text-neutral-100">
-                    Historique du sentiment global
+                    Historique du sentiment
                   </h2>
                   <p className="text-[11px] text-neutral-400">
-                    Dernières mesures enregistrées – utile pour voir si le
-                    marché se retourne ou s’installe dans un régime.
+                    Vue compacte du sentiment global et par grande classe
+                    d’actifs sur les dernières mesures.
                   </p>
                 </div>
               </div>
+
+              {/* Global */}
               <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 px-3 py-2">
+                <div className="flex items-center justify-between text-[11px] text-neutral-300 mb-1.5">
+                  <span>Global</span>
+                  <span>
+                    Dernière valeur :{" "}
+                    <span className={scoreToColor(globalScore)}>
+                      {Math.round(globalScore)}/100
+                    </span>
+                  </span>
+                </div>
                 <div className="h-16 w-full relative">
                   <svg
                     viewBox="0 0 100 40"
                     preserveAspectRatio="none"
                     className="w-full h-full"
                   >
-                    {/* fond */}
                     <defs>
                       <linearGradient
                         id="sentimentLine"
@@ -425,13 +435,11 @@ export default function SentimentClient({ snapshot }: Props) {
                         <stop offset="100%" stopColor="#ef4444" />
                       </linearGradient>
                     </defs>
-                    {/* zone */}
                     <path
                       d={buildAreaPath(historyPoints, historyMinMax)}
                       fill="url(#sentimentLine)"
                       fillOpacity={0.15}
                     />
-                    {/* ligne */}
                     <path
                       d={buildLinePath(historyPoints, historyMinMax)}
                       fill="none"
@@ -459,6 +467,37 @@ export default function SentimentClient({ snapshot }: Props) {
                   </span>
                 </div>
               </div>
+
+              {/* Mini séries par thème */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <MiniHistoryCard
+                  title="Forex"
+                  history={historyPoints}
+                  accessor={(p) =>
+                    typeof p.forexScore === "number"
+                      ? p.forexScore
+                      : undefined
+                  }
+                />
+                <MiniHistoryCard
+                  title="Actions"
+                  history={historyPoints}
+                  accessor={(p) =>
+                    typeof p.stocksScore === "number"
+                      ? p.stocksScore
+                      : undefined
+                  }
+                />
+                <MiniHistoryCard
+                  title="Commodities"
+                  history={historyPoints}
+                  accessor={(p) =>
+                    typeof p.commoditiesScore === "number"
+                      ? p.commoditiesScore
+                      : undefined
+                  }
+                />
+              </div>
             </section>
           )}
 
@@ -472,9 +511,8 @@ export default function SentimentClient({ snapshot }: Props) {
                     Sentiment par grand thème
                   </h2>
                   <p className="text-[11px] text-neutral-400">
-                    Forex, actions et commodities – agrégés à partir des flux
-                    externes, même logique que le radar de thèmes de la page
-                    News.
+                    Forex, actions et commodities – agrégés à partir de nos
+                    flux, même logique que le radar de thèmes de la page News.
                   </p>
                 </div>
               </div>
@@ -609,8 +647,9 @@ export default function SentimentClient({ snapshot }: Props) {
                   Indicateurs de risque
                 </h2>
                 <p className="text-[11px] text-neutral-400">
-                  Volatilité, biais bull/bear & intensité du flux – normalisés
-                  sur 0–100 pour compléter la lecture IA du régime global.
+                  Volatilité perçue, balance bull/bear & dynamique du flux –
+                  normalisés sur 0–100 pour compléter la lecture IA du régime
+                  global.
                 </p>
               </div>
 
@@ -618,9 +657,9 @@ export default function SentimentClient({ snapshot }: Props) {
                 {(!riskIndicators || riskIndicators.length === 0) && (
                   <div className="space-y-3">
                     <p className="text-[12px] text-neutral-300">
-                      Les indicateurs chiffrés (VIX, spreads de crédit, etc.)
-                      ne sont pas encore intégrés. Pour l’instant, le risque
-                      est lu via la structure du flux d’actualités.
+                      Les indicateurs chiffrés ne sont pas encore intégrés.
+                      Pour l’instant, le risque est lu via la structure et
+                      l’intensité du flux d’actualités.
                     </p>
                     <div className="space-y-2">
                       <div className="h-1.5 rounded-full bg-neutral-900 overflow-hidden">
@@ -740,7 +779,82 @@ function buildAreaPath(
   const startX = 0;
   const endX = (n - 1) * dx;
 
-  // on transforme "M x0 y0 L x1 y1 ..." en path fermé sous la ligne
   const main = line.replace(/^M/, "L");
   return `M ${startX} ${baseY}${main} L ${endX} ${baseY} Z`;
+}
+
+/* Mini sparkline card */
+type MiniHistoryCardProps = {
+  title: string;
+  history: SentimentHistoryPoint[];
+  accessor: (p: SentimentHistoryPoint) => number | undefined;
+};
+
+function MiniHistoryCard({ title, history, accessor }: MiniHistoryCardProps) {
+  if (!history || history.length <= 1) return null;
+
+  const series = history.map((p) => {
+    const v = accessor(p);
+    return {
+      ...p,
+      globalScore:
+        typeof v === "number" && !Number.isNaN(v) ? v : p.globalScore,
+    };
+  });
+
+  let min = 100;
+  let max = 0;
+  for (const p of series) {
+    if (p.globalScore < min) min = p.globalScore;
+    if (p.globalScore > max) max = p.globalScore;
+  }
+  if (min === max) {
+    min = Math.max(0, min - 5);
+    max = Math.min(100, max + 5);
+  }
+
+  const last = series[series.length - 1]?.globalScore ?? 50;
+  const gradientId = `sentimentLine-${title
+    .toLowerCase()
+    .replace(/\s+/g, "-")}`;
+
+  return (
+    <div className="rounded-2xl border border-neutral-800/80 bg-neutral-950/90 px-3 py-2 space-y-1.5">
+      <div className="flex items-center justify-between text-[11px] text-neutral-300">
+        <span>{title}</span>
+        <span>
+          {Math.round(last)}
+          /100
+        </span>
+      </div>
+      <div className="h-12 w-full relative">
+        <svg
+          viewBox="0 0 100 40"
+          preserveAspectRatio="none"
+          className="w-full h-full"
+        >
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#22c55e" />
+              <stop offset="50%" stopColor="#eab308" />
+              <stop offset="100%" stopColor="#ef4444" />
+            </linearGradient>
+          </defs>
+          <path
+            d={buildAreaPath(series, { min, max })}
+            fill={`url(#${gradientId})`}
+            fillOpacity={0.18}
+          />
+          <path
+            d={buildLinePath(series, { min, max })}
+            fill="none"
+            stroke={`url(#${gradientId})`}
+            strokeWidth="0.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  );
 }

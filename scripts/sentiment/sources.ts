@@ -1,15 +1,15 @@
 // scripts/sentiment/sources.ts
+
 import { AssetClass, SentimentPoint } from "./types";
 
-type RawNewsItem = {
-  overall_sentiment_score?: number;
-  overall_sentiment_label?: string;
-};
-
 type RawNewsResponse = {
-  feed?: RawNewsItem[];
+  feed?: {
+    overall_sentiment_score?: number;
+    overall_sentiment_label?: string;
+  }[];
 };
 
+// Normalise un score -1..1 en 0..100
 function normaliseScore(raw: number | undefined | null): number {
   if (raw == null || Number.isNaN(raw)) return 50;
   const clamped = Math.max(-1, Math.min(1, raw));
@@ -35,7 +35,7 @@ function buildPointFromNews(
   url: string,
   assetClass: AssetClass,
   json: RawNewsResponse | null
-): SentimentPoint | null {
+): SentimentPoint {
   if (!json || !Array.isArray(json.feed) || json.feed.length === 0) {
     return {
       source: url,

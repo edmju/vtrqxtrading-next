@@ -1,10 +1,7 @@
 // src/app/(terminal)/dashboard/sentiment/page.tsx
-
 import fs from "node:fs/promises";
 import path from "node:path";
 import SentimentClient from "./SentimentClient";
-
-/* ----------------------------- types partagés ---------------------------- */
 
 export type AssetClass = "forex" | "stocks" | "commodities" | "global";
 
@@ -69,67 +66,47 @@ export type SentimentSnapshot = {
   riskIndicators: RiskIndicator[];
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
-
   sourceConsensus?: number;
   tensionScore?: number;
   totalArticles?: number;
   bullishArticles?: number;
   bearishArticles?: number;
   globalConfidence?: number;
-
   history?: SentimentHistoryPoint[];
   suggestions?: SentimentSuggestion[];
 };
 
-/* ------------------------- lecture des fichiers -------------------------- */
-
-async function loadSentimentSnapshot(): Promise<SentimentSnapshot | null> {
+async function loadSnapshot(): Promise<SentimentSnapshot | null> {
   try {
-    const sentimentDir = path.join(process.cwd(), "public", "data", "sentiment");
+    const dir = path.join(process.cwd(), "public", "data", "sentiment");
+    const latest = JSON.parse(
+      await fs.readFile(path.join(dir, "latest.json"), "utf8")
+    ) as SentimentSnapshot;
 
-    // 1) snapshot principal (dernier run)
-    const latestRaw = await fs.readFile(
-      path.join(sentimentDir, "latest.json"),
-      "utf8"
-    );
-    const snapshot = JSON.parse(latestRaw) as SentimentSnapshot;
-
-    // 2) historique complet pour les graphes
     try {
-      const historyRaw = await fs.readFile(
-        path.join(sentimentDir, "history.json"),
-        "utf8"
+      const history = JSON.parse(
+        await fs.readFile(path.join(dir, "history.json"), "utf8")
       );
-      const history = JSON.parse(historyRaw);
-      if (Array.isArray(history)) {
-        snapshot.history = history as SentimentHistoryPoint[];
-      }
-    } catch {
-      // pas d'historique → on garde snapshot.history tel quel
-    }
+      if (Array.isArray(history)) latest.history = history;
+    } catch { /* pas d'historique */ }
 
-    return snapshot;
-  } catch (err) {
-    console.error("[sentiment] unable to load snapshot", err);
+    return latest;
+  } catch {
     return null;
   }
 }
 
-/* ------------------------------- page server ----------------------------- */
-
 export default async function SentimentPage() {
-  const snapshot = await loadSentimentSnapshot();
+  const snapshot = await loadSnapshot();
 
   if (!snapshot) {
     return (
       <main className="py-8 lg:py-10 w-full">
         <div className="rounded-3xl border border-neutral-800/60 bg-neutral-950/90 backdrop-blur-xl p-6 text-sm text-neutral-400">
-          Aucune donnée de sentiment disponible pour l’instant. Le prochain
-          rafraîchissement remplira automatiquement cette vue.
+          Aucune donnée disponible. Le prochain rafraîchissement remplira automatiquement cette vue.
         </div>
       </main>
     );
   }
-
   return <SentimentClient snapshot={snapshot} />;
 }

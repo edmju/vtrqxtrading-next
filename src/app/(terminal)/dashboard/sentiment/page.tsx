@@ -71,12 +71,11 @@ export type SentimentSnapshot = {
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
 
-  // champs optionnels injectés par le script de refresh
-  history?: SentimentHistoryPoint[]; // timeline de sentiment
-  globalConfidence?: number; // confiance IA globale
-  sourceConsensus?: number; // consensus des sources 0–100
-  tensionScore?: number; // tension du flux d’actualités 0–100
-  suggestions?: SentimentSuggestion[]; // idées de trades basées sur le sentiment
+  history?: SentimentHistoryPoint[];
+  globalConfidence?: number;
+  sourceConsensus?: number;
+  tensionScore?: number;
+  suggestions?: SentimentSuggestion[];
 };
 
 async function readJson<T>(rel: string, fallback: T): Promise<T> {

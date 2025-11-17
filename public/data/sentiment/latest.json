@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-16T23:08:19.217Z",
+  "generatedAt": "2025-11-17T00:00:56.330Z",
   "globalScore": 47,
   "themes": [
     {
@@ -7,44 +7,61 @@
       "label": "Forex",
       "score": 39,
       "direction": "bearish",
-      "comment": "Forex montre un biais plutôt baissier (39/100)."
+      "comment": "Forex sentiment is subdued with mixed signals but overall leaning bearish, indicating cautious positioning amid uncertainty or risk-off dynamics."
     },
     {
       "id": "stocks",
       "label": "Actions",
       "score": 40,
       "direction": "neutral",
-      "comment": "Actions reste globalement neutre (40/100)."
+      "comment": "Equity sentiment is neutral, showing neither strong bullish nor bearish conviction, suggesting a wait-and-see approach by investors."
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 60,
+      "score": 61,
       "direction": "bullish",
-      "comment": "Commodities montre un biais plutôt haussier (60/100)."
+      "comment": "Commodities sentiment is robustly bullish, driven by strong demand expectations or inflation hedging strategies."
     }
   ],
-  "riskIndicators": [],
+  "riskIndicators": [
+    {
+      "id": "news_heat",
+      "label": "Température du flux d’actualités",
+      "score": 100,
+      "value": "350 articles",
+      "direction": "up",
+      "comment": "Volume agrégé d’environ 350 articles Alpha Vantage sur la fenêtre récente."
+    },
+    {
+      "id": "bull_bear_balance",
+      "label": "Balance bull/bear globale",
+      "score": 91,
+      "value": "91% bull",
+      "direction": "up",
+      "comment": "Environ 91% des articles sont haussiers contre 3% baissiers sur la période analysée."
+    }
+  ],
   "focusDrivers": [
     {
-      "label": "Aversion au risque sur Forex",
-      "description": "Le sentiment baissier sur le Forex reflète une prudence ou une aversion au risque sur les devises, possiblement liée à des incertitudes macroéconomiques ou géopolitiques.",
+      "label": "Forex Risk Aversion",
+      "description": "Despite some positive signals, the aggregated forex sentiment is weak, indicating cautious or risk-averse positioning in currency markets.",
       "weight": 1
     },
     {
-      "label": "Neutralité sur actions",
-      "description": "Le sentiment neutre sur les actions suggère une absence de tendance claire, avec un équilibre entre optimisme et prudence des investisseurs sur les marchés actions.",
+      "label": "Commodities Bullish Momentum",
+      "description": "Strong and consistent bullish sentiment in commodities suggests demand-driven optimism, possibly linked to inflation hedging or supply concerns.",
       "weight": 1
     },
     {
-      "label": "Appétit pour le risque sur commodities",
-      "description": "Le sentiment haussier fort sur les commodities indique un intérêt accru pour les matières premières, souvent perçues comme des actifs refuges ou des bénéficiaires de pressions inflationnistes.",
+      "label": "Equities Neutral Uncertainty",
+      "description": "Equity sentiment is balanced around neutral, reflecting investor indecision or awaiting clearer macroeconomic signals.",
       "weight": 1
     }
   ],
   "marketRegime": {
-    "label": "Mixed Sentiment with Commodity Optimism",
-    "description": "Le marché présente un sentiment global mitigé avec une aversion modérée sur le Forex, une neutralité sur les actions, et un optimisme marqué sur les commodities, indiquant une préférence pour les actifs liés aux matières premières dans un contexte d'incertitude générale.",
+    "label": "Divergent Sentiment Regime",
+    "description": "Global sentiment is mixed with bearish bias in forex, neutral stance on equities, and bullish momentum in commodities, reflecting risk-off tendencies in currencies but selective optimism in raw materials.",
     "confidence": 65
   },
   "sources": [

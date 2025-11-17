@@ -4,11 +4,6 @@ import type { AssetClass, SentimentPoint } from "./types";
 
 /**
  * Normalise une valeur numérique / string vers un score 0–100.
- * Gère :
- * - 0–100 → inchangé
- * - 0–1   → ×100
- * - -1–1  → (x + 1) * 50
- * - strings numériques ("42", "0.7", "-0.3")
  */
 function toScore0to100(value: unknown): number | null {
   if (typeof value === "number") {
@@ -40,7 +35,6 @@ function toScore0to100(value: unknown): number | null {
 
 /**
  * Recherche récursive d'un score (0–100 après normalisation) dans un objet JSON.
- * On privilégie les clés qui ressemblent à score/sentiment/index/value/fear_greed.
  */
 function findScoreCandidate(obj: unknown): number | null {
   const preferredKeys = ["score", "sentiment", "index", "value", "fear_greed"];
@@ -84,12 +78,7 @@ function findScoreCandidate(obj: unknown): number | null {
 }
 
 /**
- * Cas particulier pour Alpha Vantage NEWS_SENTIMENT :
- * - json.feed = tableau
- * - overall_sentiment_score ∈ [-1, 1]
- * On renvoie :
- * - score moyen converti en 0–100
- * - nb d’articles, nb bull & nb bear
+ * Cas particulier Alpha Vantage NEWS_SENTIMENT.
  */
 function alphaVantageNewsStats(json: any): {
   score: number | null;
@@ -220,15 +209,18 @@ async function buildPointsForEnv(
 export async function fetchAllSentimentPoints(): Promise<SentimentPoint[]> {
   const tasks: Promise<SentimentPoint[]>[] = [];
 
+  // Forex
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_1", "forex"));
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_2", "forex"));
   tasks.push(buildPointsForEnv("SENTIMENT_FOREX_URL_3", "forex"));
 
+  // Actions / indices
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_1", "stocks"));
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_2", "stocks"));
   tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_3", "stocks"));
-  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_4", "stocks"));
+  tasks.push(buildPointsForEnv("SENTIMENT_STOCKS_URL_4", "stocks")); // optionnel
 
+  // Commodities
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_1", "commodities"));
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_2", "commodities"));
   tasks.push(buildPointsForEnv("SENTIMENT_COMMOD_URL_3", "commodities"));

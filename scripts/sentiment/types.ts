@@ -38,34 +38,42 @@ export type MarketRegime = {
   confidence: number; // 0–100
 };
 
-export type SentimentIdea = {
+export type SentimentTradeIdea = {
   id: string;
-  asset: string;
+  label: string;
+  asset: string; // ex: "US500", "EURUSD", "Gold"
   direction: "long" | "short";
-  horizon: string;
-  conviction: number; // 0–100
-  rationale: string;
-};
-
-export type SentimentSnapshot = {
-  generatedAt: string;
-  globalScore: number; // 0–100
-  themes: ThemeSentiment[];
-  riskIndicators: RiskIndicator[];
-  focusDrivers: FocusDriver[];
-  marketRegime: MarketRegime;
-  ideas: SentimentIdea[];
-  sources: {
-    name: string;
-    assetClass: AssetClass | "global";
-    weight: number;
-  }[];
+  horizon: string; // ex: "intraday", "1–3 jours"
+  confidence: number; // 0–100
+  reasoning: string;
 };
 
 export type SentimentHistoryPoint = {
   generatedAt: string;
   globalScore: number;
-  forex?: number;
-  stocks?: number;
-  commodities?: number;
+  forexScore: number;
+  stocksScore: number;
+  commoditiesScore: number;
+  totalArticles: number;
+  bullishArticles: number;
+  bearishArticles: number;
+};
+
+export type SentimentSnapshot = {
+  generatedAt: string;
+  globalScore: number;
+  themes: ThemeSentiment[];
+  riskIndicators: RiskIndicator[];
+  focusDrivers: FocusDriver[];
+  marketRegime: MarketRegime;
+  tradeIdeas: SentimentTradeIdea[];
+  totalArticles: number;
+  bullishArticles: number;
+  bearishArticles: number;
+  globalConfidence: number;
+  sources: {
+    name: string;
+    assetClass: AssetClass | "global";
+    weight: number;
+  }[];
 };

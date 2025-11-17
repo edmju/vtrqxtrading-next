@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import SentimentClient from "./SentimentClient";
 
-/* ----------------------------- Types partagés ---------------------------- */
+/* ----------------------------- types partagés ---------------------------- */
 
 export type AssetClass = "forex" | "stocks" | "commodities" | "global";
 
@@ -70,7 +70,6 @@ export type SentimentSnapshot = {
   focusDrivers: FocusDriver[];
   sources: SentimentSource[];
 
-  // métriques dérivées
   sourceConsensus?: number;
   tensionScore?: number;
   totalArticles?: number;
@@ -78,27 +77,24 @@ export type SentimentSnapshot = {
   bearishArticles?: number;
   globalConfidence?: number;
 
-  // ce qu’on veut absolument pour le graph
   history?: SentimentHistoryPoint[];
-
-  // idées de positionnement
   suggestions?: SentimentSuggestion[];
 };
 
-/* ------------------------- Lecture des fichiers ------------------------- */
+/* ------------------------- lecture des fichiers -------------------------- */
 
 async function loadSentimentSnapshot(): Promise<SentimentSnapshot | null> {
   try {
     const sentimentDir = path.join(process.cwd(), "public", "data", "sentiment");
 
-    // 1) snapshot principal
+    // 1) snapshot principal (dernier run)
     const latestRaw = await fs.readFile(
       path.join(sentimentDir, "latest.json"),
       "utf8"
     );
     const snapshot = JSON.parse(latestRaw) as SentimentSnapshot;
 
-    // 2) historique complet (pour alimenter le graphique)
+    // 2) historique complet pour les graphes
     try {
       const historyRaw = await fs.readFile(
         path.join(sentimentDir, "history.json"),
@@ -109,16 +105,17 @@ async function loadSentimentSnapshot(): Promise<SentimentSnapshot | null> {
         snapshot.history = history as SentimentHistoryPoint[];
       }
     } catch {
-      // pas d'historique -> on laisse snapshot.history tel quel
+      // pas d'historique → on garde snapshot.history tel quel
     }
 
     return snapshot;
-  } catch {
+  } catch (err) {
+    console.error("[sentiment] unable to load snapshot", err);
     return null;
   }
 }
 
-/* ------------------------------ Page server ------------------------------ */
+/* ------------------------------- page server ----------------------------- */
 
 export default async function SentimentPage() {
   const snapshot = await loadSentimentSnapshot();

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-17T17:10:00.023Z",
+  "generatedAt": "2025-11-17T18:13:05.367Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Régime haussier modéré",
-    "description": "Le marché affiche une confiance majoritairement haussière avec un consensus élevé parmi les sources, soutenu par un flux d'actualités équilibré. La dynamique est positive mais sans excès, indiquant un environnement propice à une progression stable.",
+    "label": "Optimisme modéré avec vigilance",
+    "description": "Le sentiment global est positivement orienté avec une forte dominance des opinions haussières, mais la température des flux d’actualités reste modérée, suggérant une prudence face à une possible volatilité à court terme.",
     "confidence": 60
   },
   "themes": [
@@ -41,8 +41,8 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 98,
-      "value": "98% bull / 2% bear",
+      "score": 99,
+      "value": "99% bull / 1% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus haussier fort",
+      "label": "Domination haussière",
       "weight": 3,
-      "description": "Une majorité écrasante des sources s'accorde sur une orientation positive, ce qui soutient la confiance générale du marché."
+      "description": "Une écrasante majorité des sources et articles expriment un optimisme marqué, renforçant la dynamique positive sur les marchés."
     },
     {
-      "label": "Flux d'actualités équilibré",
+      "label": "Consensus élevé",
       "weight": 2,
-      "description": "Le volume d'articles est conséquent mais la tonalité reste modérée, limitant les risques de volatilité excessive."
+      "description": "Un fort accord entre les différentes sources d’information soutient la cohérence du sentiment positif."
     },
     {
-      "label": "Sentiment bullish dominant",
-      "weight": 3,
-      "description": "La proportion élevée d'articles haussiers par rapport aux baissiers renforce la tendance favorable."
+      "label": "Flux d’actualités modéré",
+      "weight": 2,
+      "description": "Le volume et la température des articles sont moyens, ce qui limite les risques de surchauffe mais incite à la prudence."
     }
   ],
   "sources": [
@@ -122,12 +122,20 @@
   "sourceConsensus": 90,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 234,
-  "bearishArticles": 5,
+  "bullishArticles": 197,
+  "bearishArticles": 2,
   "globalConfidence": 80,
   "history": [
     {
       "timestamp": "2025-11-17T17:10:00.023Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 56,
+      "commoditiesScore": 60,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-17T18:13:05.367Z",
       "globalScore": 57,
       "forexScore": 56,
       "stocksScore": 56,

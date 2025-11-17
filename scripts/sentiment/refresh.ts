@@ -14,7 +14,8 @@ const DATA_DIR = path.join(process.cwd(), "public", "data", "sentiment");
 const LATEST_FILE = path.join(DATA_DIR, "latest.json");
 const HISTORY_FILE = path.join(DATA_DIR, "history.json");
 
-const HISTORY_MAX_POINTS = 7 * 24; // 1 semaine en hourly
+// 1 semaine en hourly
+const HISTORY_MAX_POINTS = 7 * 24;
 
 async function ensureDir(dir: string) {
   await fs.mkdir(dir, { recursive: true });
@@ -30,20 +31,20 @@ async function writeJson(filePath: string, data: unknown) {
   try {
     await ensureDir(DATA_DIR);
 
-    // 1) lire l'historique existant
+    // 1) Charge l'historique existant
     const history: SentimentHistoryPoint[] = await readJson(HISTORY_FILE, []);
 
-    // 2) récupérer les points bruts (multi-sources)
+    // 2) Récupère les points bruts (sources de marché)
     const rawPoints = await fetchAllSentimentPoints();
     if (!rawPoints?.length) {
       console.warn("[sentiment] aucune donnée collectée.");
       return;
     }
 
-    // 3) construire le snapshot enrichi (indicateurs + IA)
+    // 3) Construit le snapshot enrichi (IA + indicateurs)
     const snapshot: SentimentSnapshot = await buildSentimentSnapshot(rawPoints, history);
 
-    // 4) construire le nouveau point historique
+    // 4) Construit le point historique (APPEND, pas d’écrasement)
     const getTheme = (id: string) => snapshot.themes.find(t => t.id === id)?.score ?? snapshot.globalScore;
     const newPoint: SentimentHistoryPoint = {
       timestamp: snapshot.generatedAt || new Date().toISOString(),
@@ -53,14 +54,10 @@ async function writeJson(filePath: string, data: unknown) {
       commoditiesScore: getTheme("commodities"),
       totalArticles: snapshot.totalArticles ?? 0,
     };
-
-    // 5) APPEND (et coupe aux plus anciens si > 7j)
     const nextHistory = [...history, newPoint].slice(-HISTORY_MAX_POINTS);
 
-    // 6) inclure l'historique complet dans le snapshot (pour la page)
+    // 5) Persistance + injection pour le front
     snapshot.history = nextHistory;
-
-    // 7) écrire les fichiers
     await writeJson(HISTORY_FILE, nextHistory);
     await writeJson(LATEST_FILE, snapshot);
 

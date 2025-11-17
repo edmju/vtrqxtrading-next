@@ -1,3 +1,5 @@
+// src/app/layout.tsx
+
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Orbitron } from "next/font/google";
 import "./globals.css";
@@ -11,16 +13,18 @@ export const metadata: Metadata = {
   description: "Institutional-grade data, AI insights, and trading tools.",
   icons: {
     icon: [
+      { url: "/favicon/favicon.ico", sizes: "any" },
       { url: "/favicon/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/favicon/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
     ],
+    apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     other: [{ rel: "manifest", url: "/favicon/site.webmanifest" }],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${orbitron.variable}`}>
+    <html lang="fr" className={`${jakarta.variable} ${orbitron.variable}`}>
       <body>
         <AppProviders>{children}</AppProviders>
       </body>

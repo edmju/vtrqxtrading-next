@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-17T21:08:41.280Z",
+  "generatedAt": "2025-11-17T22:09:29.204Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Régime haussier modéré",
-    "description": "Le sentiment global est positivement orienté avec une forte dominance des positions acheteuses, un consensus élevé entre les sources et une activité d’actualité modérée, suggérant un environnement favorable mais sans excès d’enthousiasme.",
+    "label": "Régime modérément haussier consensuel",
+    "description": "Le sentiment global est modérément positif avec un fort consensus haussier parmi les sources et une balance bull/bear très favorable, indiquant une confiance généralisée dans la poursuite d’une tendance haussière modérée. La tension des flux d’actualités est neutre, suggérant une absence de volatilité ou d’incertitude marquée.",
     "confidence": 60
   },
   "themes": [
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance bull marquée",
+      "label": "Consensus haussier très fort",
       "weight": 3,
-      "description": "Une majorité claire des positions est orientée à l’achat, indiquant une confiance robuste des investisseurs dans la poursuite de la tendance positive."
+      "description": "Un très large consensus parmi les sources indique une confiance élevée dans la tendance haussière, soutenant une dynamique positive durable."
     },
     {
-      "label": "Consensus élevé entre sources",
+      "label": "Balance bull/bear extrêmement favorable",
+      "weight": 3,
+      "description": "La dominance nette des positions bullish sur bearish renforce la probabilité d’une poursuite de la tendance haussière."
+    },
+    {
+      "label": "Tension des flux d’actualités neutre",
       "weight": 2,
-      "description": "Les analyses et opinions convergent fortement, renforçant la validité du sentiment haussier actuel."
-    },
-    {
-      "label": "Activité d’actualité modérée",
-      "weight": 1,
-      "description": "Le flux d’informations est stable sans pics de tension, ce qui limite les risques de volatilité soudaine."
+      "description": "Un niveau modéré de tension dans les actualités suggère un environnement de marché stable sans catalyseurs majeurs de volatilité."
     }
   ],
   "sources": [
@@ -122,8 +122,8 @@
   "sourceConsensus": 91,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 185,
-  "bearishArticles": 6,
+  "bullishArticles": 192,
+  "bearishArticles": 5,
   "globalConfidence": 80,
   "history": [
     {
@@ -160,6 +160,14 @@
     },
     {
       "timestamp": "2025-11-17T21:08:41.280Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 55,
+      "commoditiesScore": 59,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-17T22:09:29.204Z",
       "globalScore": 57,
       "forexScore": 56,
       "stocksScore": 55,

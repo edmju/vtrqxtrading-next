@@ -11,17 +11,12 @@ import type { SentimentHistoryPoint, SentimentSnapshot } from "./types";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// dossiers de sortie
 const DATA_DIR = path.join(process.cwd(), "public", "data", "sentiment");
 const LATEST_FILE = path.join(DATA_DIR, "latest.json");
 const HISTORY_FILE = path.join(DATA_DIR, "history.json");
 
-// nombre max de points historiques conservés
-const HISTORY_MAX_POINTS = 7 * 24; // 1 semaine en hourly
-
-/* -------------------------------------------------------------------------- */
-/* Helpers                                                                    */
-/* -------------------------------------------------------------------------- */
+// 1 semaine en hourly
+const HISTORY_MAX_POINTS = 7 * 24;
 
 async function ensureDir(dir: string) {
   await fs.mkdir(dir, { recursive: true });
@@ -41,40 +36,36 @@ async function writeJson(filePath: string, data: unknown) {
   await fs.writeFile(filePath, json + "\n", "utf8");
 }
 
-/* -------------------------------------------------------------------------- */
-/* Main                                                                       */
-/* -------------------------------------------------------------------------- */
-
 (async () => {
   try {
     console.log("[sentiment] output dir:", DATA_DIR);
     await ensureDir(DATA_DIR);
 
-    // 1) Charger l’historique existant (pour tension flux + graphique)
+    // 1) lire l'historique existant
     const history: SentimentHistoryPoint[] = await readJson(HISTORY_FILE, []);
+    console.log("[sentiment] history loaded:", history.length, "points");
 
-    // 2) Récupérer tous les points bruts (Alpha Vantage etc.)
+    // 2) récupérer les points bruts (Alpha Vantage, etc.)
     const rawPoints = await fetchAllSentimentPoints();
     if (!rawPoints || rawPoints.length === 0) {
       console.warn("[sentiment] aucune donnée collectée, abandon.");
       return;
     }
-
     console.log("[sentiment] collected points:", rawPoints.length);
 
-    // 3) Construire le snapshot enrichi (IA + indicateurs)
+    // 3) construire le snapshot enrichi
     const snapshot: SentimentSnapshot = await buildSentimentSnapshot(
       rawPoints,
       history
     );
 
-    // 4) Construire le nouveau point d’historique pour les graphes
+    // 4) construire le nouveau point historique
     const generatedAt = snapshot.generatedAt || new Date().toISOString();
 
     const getThemeScore = (id: string) =>
       snapshot.themes.find((t) => t.id === id)?.score ?? snapshot.globalScore;
 
-    const newHistoryPoint: SentimentHistoryPoint = {
+    const newPoint: SentimentHistoryPoint = {
       timestamp: generatedAt,
       globalScore: snapshot.globalScore,
       forexScore: getThemeScore("forex"),
@@ -83,17 +74,24 @@ async function writeJson(filePath: string, data: unknown) {
       totalArticles: snapshot.totalArticles ?? 0,
     };
 
-    const nextHistory = [...history, newHistoryPoint].slice(-HISTORY_MAX_POINTS);
+    // 5) APPEND : on ajoute au tableau existant, puis on coupe les plus anciens
+    const nextHistory = [...history, newPoint].slice(-HISTORY_MAX_POINTS);
+    console.log(
+      "[sentiment] history updated:",
+      history.length,
+      "->",
+      nextHistory.length
+    );
 
-    // 5) Attacher l’historique dans le snapshot (pour la page Sentiment)
+    // 6) on met tout l'historique dans le snapshot pour la page
     snapshot.history = nextHistory;
 
-    // 6) Écrire latest.json + history.json
+    // 7) écrire history.json + latest.json
     await writeJson(HISTORY_FILE, nextHistory);
     await writeJson(LATEST_FILE, snapshot);
 
-    console.log("[sentiment] history points:", nextHistory.length);
-    console.log("[sentiment] snapshot written to:", LATEST_FILE);
+    console.log("[sentiment] history file:", HISTORY_FILE);
+    console.log("[sentiment] latest file:", LATEST_FILE);
   } catch (err) {
     console.error("[sentiment] refresh error:", err);
     process.exitCode = 1;

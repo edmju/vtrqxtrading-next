@@ -1,3 +1,6 @@
+// path: src/components/site/Hero.tsx
+// (Hero – halos néon, glassy, intact avec Sparkline)
+// Source d'origine: :contentReference[oaicite:6]{index=6}
 "use client";
 import Button from "@/components/ui/Button";
 import GlassCard from "@/components/ui/GlassCard";
@@ -5,13 +8,22 @@ import Sparkline from "@/components/charts/Sparkline";
 import Link from "next/link";
 import { useLang } from "@/components/providers/LangProvider";
 
-const chart = [24,22,23,25,26,27,25,26,29,30,33,31,36,39,38,41,45,48,47,50];
+const chart = [24, 22, 23, 25, 26, 27, 25, 26, 29, 30, 33, 31, 36, 39, 38, 41, 45, 48, 47, 50];
 
 export default function Hero() {
   const { t } = useLang();
 
   return (
-    <section className="mt-8 md:mt-12">
+    <section className="mt-8 md:mt-12 relative">
+      {/* halos */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(800px 240px at 20% -10%, rgba(255,213,74,0.15), transparent), radial-gradient(800px 240px at 80% 0%, rgba(34,211,238,0.15), transparent)",
+        }}
+      />
       <div className="mx-auto max-w-7xl px-5 grid md:grid-cols-2 gap-8 items-stretch">
         {/* Texte */}
         <div className="flex flex-col justify-center">
@@ -19,17 +31,19 @@ export default function Hero() {
             <span className="block">{t("hero.title1", "AI‑POWERED")}</span>
             <span className="block text-white/90">{t("hero.title2", "TRADING")}</span>
           </h1>
-          <p className="mt-4 text-white/70 max-w-xl">
-            {t("hero.subtitle")}
-          </p>
+          <p className="mt-4 text-white/70 max-w-xl">{t("hero.subtitle")}</p>
           <div className="mt-6 flex items-center gap-3">
-            <Link href="/profile"><Button>{t("cta.get_started", "GET STARTED")}</Button></Link>
-            <a href="/features" className="text-sm text-primary hover:underline">Explore features →</a>
+            <Link href="/profile">
+              <Button>{t("cta.get_started", "GET STARTED")}</Button>
+            </Link>
+            <a href="/features" className="text-sm text-primary hover:underline">
+              Explore features →
+            </a>
           </div>
         </div>
 
         {/* Carte Chart */}
-        <GlassCard className="p-6 md:p-8 flex flex-col justify-between">
+        <GlassCard className="p-6 md:p-8 flex flex-col justify-between bg-gradient-to-b from-white/5 to-white/0">
           <div>
             <div className="flex items-baseline justify-between">
               <div>

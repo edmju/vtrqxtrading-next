@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2025-11-18T18:14:38.380Z",
+  "generatedAt": "2025-11-18T19:08:20.640Z",
   "globalScore": 58,
   "marketRegime": {
-    "label": "Régime d’optimisme modéré",
-    "description": "Le sentiment global reste positif avec une forte dominance des positions haussières et un consensus élevé, bien que la température des flux d’actualités soit modérée, suggérant un optimisme prudent et stable sur les marchés.",
+    "label": "Régime modérément haussier avec prudence",
+    "description": "Le sentiment global reste positif avec une prédominance claire des opinions haussières, mais la température modérée du flux d’actualités suggère une vigilance face à une possible volatilité ou incertitude à court terme.",
     "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 56,
+      "score": 55,
       "direction": "bullish",
       "comment": ""
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Balance bull/bear très favorable",
+      "label": "Dominance haussière forte",
       "weight": 3,
-      "description": "Une nette prédominance des opinions haussières sur les marchés, qui soutient un biais positif général."
+      "description": "La balance bull/bear est nettement en faveur des positions haussières, indiquant un consensus très positif sur les marchés."
     },
     {
-      "label": "Consensus des sources élevé",
+      "label": "Consensus élevé entre sources",
       "weight": 2,
-      "description": "Les analyses convergent majoritairement vers une vision optimiste, renforçant la cohérence du sentiment."
+      "description": "Les sources d’information convergent largement vers une vision optimiste, renforçant la crédibilité du sentiment positif."
     },
     {
-      "label": "Température du flux d’actualités modérée",
+      "label": "Flux d’actualités modérément tempéré",
       "weight": 1,
-      "description": "Un flux d’informations actif mais sans excès de tension, indiquant une ambiance de marché calme et stable."
+      "description": "Le volume et la tonalité des articles sont modérés, ce qui tempère l’exubérance et invite à une certaine prudence."
     }
   ],
   "sources": [
@@ -122,9 +122,9 @@
   "sourceConsensus": 89,
   "tensionScore": 44,
   "totalArticles": 350,
-  "bullishArticles": 229,
-  "bearishArticles": 4,
-  "globalConfidence": 80,
+  "bullishArticles": 232,
+  "bearishArticles": 5,
+  "globalConfidence": 70,
   "history": [
     {
       "timestamp": "2025-11-14T12:00:00Z",
@@ -930,6 +930,14 @@
       "timestamp": "2025-11-18T18:14:38.380Z",
       "globalScore": 58,
       "forexScore": 56,
+      "stocksScore": 57,
+      "commoditiesScore": 61,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-18T19:08:20.640Z",
+      "globalScore": 58,
+      "forexScore": 55,
       "stocksScore": 57,
       "commoditiesScore": 61,
       "totalArticles": 350

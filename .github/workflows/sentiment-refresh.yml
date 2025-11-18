@@ -1,14 +1,17 @@
+# path: .github/workflows/sentiment-refresh.yml
 name: Hourly Sentiment Refresh
 
 on:
   schedule:
-    # toutes les heures
-    - cron: "0 * * * *"
-  # déclenchement manuel possible depuis l’UI GitHub
+    - cron: "0 * * * *" # toutes les heures
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+# ✅ IMPORTANT : on force l'env Prisma pour TOUT le workflow
+env:
+  PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
 
 jobs:
   build-sentiment:
@@ -18,7 +21,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Même stack que pour News : pnpm + Node 20
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -31,8 +33,11 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      # ✅ Prisma 500 FIX : on repasse encore la variable dans la commande
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: |
+          echo "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=$PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING"
+          PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=$PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING pnpm install --no-frozen-lockfile
 
       - name: Generate sentiment data
         run: pnpm run sentiment:refresh
@@ -54,7 +59,6 @@ jobs:
           SENTIMENT_COMMOD_URL_2: ${{ secrets.SENTIMENT_COMMOD_URL_2 }}
           SENTIMENT_COMMOD_URL_3: ${{ secrets.SENTIMENT_COMMOD_URL_3 }}
 
-          # chemin de sortie du snapshot
           SENTIMENT_OUTPUT_FILE: public/data/sentiment/latest.json
 
       - name: Commit sentiment data
@@ -62,7 +66,6 @@ jobs:
           git config user.name "sentiment-bot"
           git config user.email "sentiment-bot@users.noreply.github.com"
 
-          # ⬅️ IMPORTANT : on commit latest.json ET history.json
           git add public/data/sentiment/latest.json public/data/sentiment/history.json || true
 
           git commit -m "chore(sentiment): refresh data $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes"

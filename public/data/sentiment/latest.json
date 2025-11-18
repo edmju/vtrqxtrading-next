@@ -1,30 +1,30 @@
 {
-  "generatedAt": "2025-11-18T11:08:50.972Z",
-  "globalScore": 56,
+  "generatedAt": "2025-11-18T12:18:33.142Z",
+  "globalScore": 57,
   "marketRegime": {
     "label": "Sentiment Positif Modéré",
-    "description": "Le sentiment global est modérément positif avec une forte dominance des opinions haussières et un consensus élevé parmi les sources, malgré une température d’actualité relativement basse indiquant une certaine stabilité et peu de tensions immédiates.",
-    "confidence": 75
+    "description": "Le marché affiche un sentiment globalement optimiste avec une forte dominance des opinions haussières, mais la température du flux d’actualités reste modérée, suggérant une prudence sous-jacente.",
+    "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 55,
+      "score": 56,
       "direction": "bullish",
       "comment": ""
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 56,
+      "score": 57,
       "direction": "bullish",
       "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 58,
+      "score": 59,
       "direction": "bullish",
       "comment": ""
     }
@@ -33,7 +33,7 @@
     {
       "id": "tension_flux",
       "label": "Température du flux d’actualités",
-      "score": 47,
+      "score": 44,
       "value": "350 articles",
       "direction": "neutral",
       "comment": "Flux de volume moyen."
@@ -41,35 +41,35 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 94,
-      "value": "94% bull / 6% bear",
+      "score": 95,
+      "value": "95% bull / 5% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 91,
-      "value": "91/100",
+      "score": 90,
+      "value": "90/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Balance Bull/Bear Très Favorable",
+      "label": "Balance Bull/Bear Très Haussière",
       "weight": 3,
-      "description": "La majorité écrasante des opinions est haussière, ce qui soutient un biais positif sur les marchés."
+      "description": "Une nette prédominance des opinions haussières domine le consensus, ce qui soutient un climat de confiance sur les marchés."
     },
     {
       "label": "Consensus des Sources Élevé",
       "weight": 2,
-      "description": "Un fort accord entre les sources d’information renforce la fiabilité du sentiment positif observé."
+      "description": "Un fort accord entre les différentes sources d’information renforce la crédibilité du sentiment positif observé."
     },
     {
-      "label": "Température du Flux d’Actualités Faible",
+      "label": "Température du Flux d’Actualités Modérée",
       "weight": 1,
-      "description": "Le faible niveau de tension dans les actualités suggère une absence de catalyseurs négatifs majeurs à court terme."
+      "description": "Le volume et l’intensité des actualités ne sont pas excessifs, indiquant une dynamique stable sans excès d’euphorie ou de panique."
     }
   ],
   "sources": [
@@ -119,211 +119,787 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 91,
-  "tensionScore": 47,
+  "sourceConsensus": 90,
+  "tensionScore": 44,
   "totalArticles": 350,
   "bullishArticles": 210,
-  "bearishArticles": 14,
+  "bearishArticles": 11,
   "globalConfidence": 80,
   "history": [
     {
-      "timestamp": "2025-11-17T12:00:00Z",
-      "globalScore": 56,
-      "forexScore": 57,
-      "stocksScore": 56,
-      "commoditiesScore": 54,
-      "totalArticles": 360
+      "timestamp": "2025-11-14T12:00:00Z",
+      "globalScore": 50,
+      "forexScore": 49,
+      "stocksScore": 51,
+      "commoditiesScore": 48,
+      "totalArticles": 320
     },
     {
-      "timestamp": "2025-11-17T13:00:00Z",
+      "timestamp": "2025-11-14T13:00:00Z",
+      "globalScore": 50,
+      "forexScore": 50,
+      "stocksScore": 50,
+      "commoditiesScore": 50,
+      "totalArticles": 323
+    },
+    {
+      "timestamp": "2025-11-14T14:00:00Z",
+      "globalScore": 51,
+      "forexScore": 51,
+      "stocksScore": 51,
+      "commoditiesScore": 51,
+      "totalArticles": 326
+    },
+    {
+      "timestamp": "2025-11-14T15:00:00Z",
+      "globalScore": 51,
+      "forexScore": 50,
+      "stocksScore": 52,
+      "commoditiesScore": 49,
+      "totalArticles": 329
+    },
+    {
+      "timestamp": "2025-11-14T16:00:00Z",
+      "globalScore": 51,
+      "forexScore": 51,
+      "stocksScore": 51,
+      "commoditiesScore": 51,
+      "totalArticles": 332
+    },
+    {
+      "timestamp": "2025-11-14T17:00:00Z",
+      "globalScore": 52,
+      "forexScore": 52,
+      "stocksScore": 52,
+      "commoditiesScore": 52,
+      "totalArticles": 335
+    },
+    {
+      "timestamp": "2025-11-14T18:00:00Z",
+      "globalScore": 52,
+      "forexScore": 51,
+      "stocksScore": 52,
+      "commoditiesScore": 50,
+      "totalArticles": 338
+    },
+    {
+      "timestamp": "2025-11-14T19:00:00Z",
+      "globalScore": 53,
+      "forexScore": 53,
+      "stocksScore": 53,
+      "commoditiesScore": 53,
+      "totalArticles": 341
+    },
+    {
+      "timestamp": "2025-11-14T20:00:00Z",
+      "globalScore": 53,
+      "forexScore": 53,
+      "stocksScore": 54,
+      "commoditiesScore": 51,
+      "totalArticles": 344
+    },
+    {
+      "timestamp": "2025-11-14T21:00:00Z",
+      "globalScore": 54,
+      "forexScore": 54,
+      "stocksScore": 54,
+      "commoditiesScore": 54,
+      "totalArticles": 347
+    },
+    {
+      "timestamp": "2025-11-14T22:00:00Z",
+      "globalScore": 54,
+      "forexScore": 53,
+      "stocksScore": 55,
+      "commoditiesScore": 52,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-14T23:00:00Z",
+      "globalScore": 55,
+      "forexScore": 55,
+      "stocksScore": 55,
+      "commoditiesScore": 55,
+      "totalArticles": 353
+    },
+    {
+      "timestamp": "2025-11-15T00:00:00Z",
+      "globalScore": 55,
+      "forexScore": 54,
+      "stocksScore": 55,
+      "commoditiesScore": 53,
+      "totalArticles": 356
+    },
+    {
+      "timestamp": "2025-11-15T01:00:00Z",
+      "globalScore": 55,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 55,
+      "totalArticles": 359
+    },
+    {
+      "timestamp": "2025-11-15T02:00:00Z",
+      "globalScore": 56,
+      "forexScore": 56,
+      "stocksScore": 56,
+      "commoditiesScore": 56,
+      "totalArticles": 362
+    },
+    {
+      "timestamp": "2025-11-15T03:00:00Z",
+      "globalScore": 56,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 54,
+      "totalArticles": 365
+    },
+    {
+      "timestamp": "2025-11-15T04:00:00Z",
+      "globalScore": 56,
+      "forexScore": 56,
+      "stocksScore": 57,
+      "commoditiesScore": 56,
+      "totalArticles": 368
+    },
+    {
+      "timestamp": "2025-11-15T05:00:00Z",
+      "globalScore": 57,
+      "forexScore": 57,
+      "stocksScore": 57,
+      "commoditiesScore": 57,
+      "totalArticles": 371
+    },
+    {
+      "timestamp": "2025-11-15T06:00:00Z",
       "globalScore": 57,
       "forexScore": 56,
       "stocksScore": 58,
-      "commoditiesScore": 56,
-      "totalArticles": 363
+      "commoditiesScore": 55,
+      "totalArticles": 374
     },
     {
-      "timestamp": "2025-11-17T14:00:00Z",
+      "timestamp": "2025-11-15T07:00:00Z",
       "globalScore": 58,
       "forexScore": 58,
       "stocksScore": 58,
-      "commoditiesScore": 59,
-      "totalArticles": 366
+      "commoditiesScore": 58,
+      "totalArticles": 377
     },
     {
-      "timestamp": "2025-11-17T15:00:00Z",
+      "timestamp": "2025-11-15T08:00:00Z",
+      "globalScore": 58,
+      "forexScore": 57,
+      "stocksScore": 59,
+      "commoditiesScore": 56,
+      "totalArticles": 380
+    },
+    {
+      "timestamp": "2025-11-15T09:00:00Z",
+      "globalScore": 58,
+      "forexScore": 58,
+      "stocksScore": 58,
+      "commoditiesScore": 58,
+      "totalArticles": 383
+    },
+    {
+      "timestamp": "2025-11-15T10:00:00Z",
       "globalScore": 59,
+      "forexScore": 59,
+      "stocksScore": 59,
+      "commoditiesScore": 59,
+      "totalArticles": 386
+    },
+    {
+      "timestamp": "2025-11-15T11:00:00Z",
+      "globalScore": 59,
+      "forexScore": 58,
+      "stocksScore": 60,
+      "commoditiesScore": 57,
+      "totalArticles": 389
+    },
+    {
+      "timestamp": "2025-11-15T12:00:00Z",
+      "globalScore": 59,
+      "forexScore": 59,
+      "stocksScore": 59,
+      "commoditiesScore": 59,
+      "totalArticles": 392
+    },
+    {
+      "timestamp": "2025-11-15T13:00:00Z",
+      "globalScore": 60,
       "forexScore": 60,
       "stocksScore": 60,
-      "commoditiesScore": 61,
-      "totalArticles": 369
+      "commoditiesScore": 60,
+      "totalArticles": 395
     },
     {
-      "timestamp": "2025-11-17T16:00:00Z",
+      "timestamp": "2025-11-15T14:00:00Z",
       "globalScore": 60,
       "forexScore": 59,
-      "stocksScore": 60,
+      "stocksScore": 61,
       "commoditiesScore": 58,
-      "totalArticles": 372
+      "totalArticles": 398
     },
     {
-      "timestamp": "2025-11-17T17:00:00Z",
+      "timestamp": "2025-11-15T15:00:00Z",
+      "globalScore": 60,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 60,
+      "totalArticles": 401
+    },
+    {
+      "timestamp": "2025-11-15T16:00:00Z",
       "globalScore": 61,
+      "forexScore": 61,
+      "stocksScore": 61,
+      "commoditiesScore": 61,
+      "totalArticles": 404
+    },
+    {
+      "timestamp": "2025-11-15T17:00:00Z",
+      "globalScore": 61,
+      "forexScore": 60,
+      "stocksScore": 62,
+      "commoditiesScore": 59,
+      "totalArticles": 407
+    },
+    {
+      "timestamp": "2025-11-15T18:00:00Z",
+      "globalScore": 61,
+      "forexScore": 61,
+      "stocksScore": 61,
+      "commoditiesScore": 61,
+      "totalArticles": 410
+    },
+    {
+      "timestamp": "2025-11-15T19:00:00Z",
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 62,
+      "commoditiesScore": 62,
+      "totalArticles": 413
+    },
+    {
+      "timestamp": "2025-11-15T20:00:00Z",
+      "globalScore": 62,
       "forexScore": 61,
       "stocksScore": 62,
       "commoditiesScore": 60,
-      "totalArticles": 375
+      "totalArticles": 416
+    },
+    {
+      "timestamp": "2025-11-15T21:00:00Z",
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 63,
+      "commoditiesScore": 62,
+      "totalArticles": 419
+    },
+    {
+      "timestamp": "2025-11-15T22:00:00Z",
+      "globalScore": 63,
+      "forexScore": 63,
+      "stocksScore": 63,
+      "commoditiesScore": 63,
+      "totalArticles": 422
+    },
+    {
+      "timestamp": "2025-11-15T23:00:00Z",
+      "globalScore": 63,
+      "forexScore": 62,
+      "stocksScore": 63,
+      "commoditiesScore": 61,
+      "totalArticles": 425
+    },
+    {
+      "timestamp": "2025-11-16T00:00:00Z",
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 62,
+      "commoditiesScore": 62,
+      "totalArticles": 428
+    },
+    {
+      "timestamp": "2025-11-16T01:00:00Z",
+      "globalScore": 62,
+      "forexScore": 61,
+      "stocksScore": 63,
+      "commoditiesScore": 60,
+      "totalArticles": 431
+    },
+    {
+      "timestamp": "2025-11-16T02:00:00Z",
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 62,
+      "commoditiesScore": 62,
+      "totalArticles": 434
+    },
+    {
+      "timestamp": "2025-11-16T03:00:00Z",
+      "globalScore": 63,
+      "forexScore": 63,
+      "stocksScore": 63,
+      "commoditiesScore": 63,
+      "totalArticles": 437
+    },
+    {
+      "timestamp": "2025-11-16T04:00:00Z",
+      "globalScore": 63,
+      "forexScore": 62,
+      "stocksScore": 63,
+      "commoditiesScore": 61,
+      "totalArticles": 440
+    },
+    {
+      "timestamp": "2025-11-16T05:00:00Z",
+      "globalScore": 63,
+      "forexScore": 63,
+      "stocksScore": 64,
+      "commoditiesScore": 63,
+      "totalArticles": 443
+    },
+    {
+      "timestamp": "2025-11-16T06:00:00Z",
+      "globalScore": 64,
+      "forexScore": 64,
+      "stocksScore": 64,
+      "commoditiesScore": 64,
+      "totalArticles": 446
+    },
+    {
+      "timestamp": "2025-11-16T07:00:00Z",
+      "globalScore": 64,
+      "forexScore": 63,
+      "stocksScore": 64,
+      "commoditiesScore": 62,
+      "totalArticles": 449
+    },
+    {
+      "timestamp": "2025-11-16T08:00:00Z",
+      "globalScore": 64,
+      "forexScore": 64,
+      "stocksScore": 65,
+      "commoditiesScore": 64,
+      "totalArticles": 452
+    },
+    {
+      "timestamp": "2025-11-16T09:00:00Z",
+      "globalScore": 65,
+      "forexScore": 65,
+      "stocksScore": 65,
+      "commoditiesScore": 65,
+      "totalArticles": 455
+    },
+    {
+      "timestamp": "2025-11-16T10:00:00Z",
+      "globalScore": 65,
+      "forexScore": 64,
+      "stocksScore": 65,
+      "commoditiesScore": 63,
+      "totalArticles": 458
+    },
+    {
+      "timestamp": "2025-11-16T11:00:00Z",
+      "globalScore": 65,
+      "forexScore": 65,
+      "stocksScore": 66,
+      "commoditiesScore": 65,
+      "totalArticles": 461
+    },
+    {
+      "timestamp": "2025-11-16T12:00:00Z",
+      "globalScore": 66,
+      "forexScore": 66,
+      "stocksScore": 66,
+      "commoditiesScore": 66,
+      "totalArticles": 464
+    },
+    {
+      "timestamp": "2025-11-16T13:00:00Z",
+      "globalScore": 66,
+      "forexScore": 65,
+      "stocksScore": 67,
+      "commoditiesScore": 64,
+      "totalArticles": 467
+    },
+    {
+      "timestamp": "2025-11-16T14:00:00Z",
+      "globalScore": 66,
+      "forexScore": 66,
+      "stocksScore": 66,
+      "commoditiesScore": 66,
+      "totalArticles": 470
+    },
+    {
+      "timestamp": "2025-11-16T15:00:00Z",
+      "globalScore": 67,
+      "forexScore": 67,
+      "stocksScore": 67,
+      "commoditiesScore": 67,
+      "totalArticles": 473
+    },
+    {
+      "timestamp": "2025-11-16T16:00:00Z",
+      "globalScore": 67,
+      "forexScore": 66,
+      "stocksScore": 68,
+      "commoditiesScore": 65,
+      "totalArticles": 476
+    },
+    {
+      "timestamp": "2025-11-16T17:00:00Z",
+      "globalScore": 67,
+      "forexScore": 67,
+      "stocksScore": 67,
+      "commoditiesScore": 67,
+      "totalArticles": 479
+    },
+    {
+      "timestamp": "2025-11-16T18:00:00Z",
+      "globalScore": 68,
+      "forexScore": 68,
+      "stocksScore": 68,
+      "commoditiesScore": 68,
+      "totalArticles": 482
+    },
+    {
+      "timestamp": "2025-11-16T19:00:00Z",
+      "globalScore": 68,
+      "forexScore": 67,
+      "stocksScore": 68,
+      "commoditiesScore": 66,
+      "totalArticles": 485
+    },
+    {
+      "timestamp": "2025-11-16T20:00:00Z",
+      "globalScore": 68,
+      "forexScore": 68,
+      "stocksScore": 69,
+      "commoditiesScore": 68,
+      "totalArticles": 488
+    },
+    {
+      "timestamp": "2025-11-16T21:00:00Z",
+      "globalScore": 69,
+      "forexScore": 69,
+      "stocksScore": 69,
+      "commoditiesScore": 69,
+      "totalArticles": 491
+    },
+    {
+      "timestamp": "2025-11-16T22:00:00Z",
+      "globalScore": 69,
+      "forexScore": 68,
+      "stocksScore": 69,
+      "commoditiesScore": 67,
+      "totalArticles": 494
+    },
+    {
+      "timestamp": "2025-11-16T23:00:00Z",
+      "globalScore": 69,
+      "forexScore": 69,
+      "stocksScore": 70,
+      "commoditiesScore": 69,
+      "totalArticles": 497
+    },
+    {
+      "timestamp": "2025-11-17T00:00:00Z",
+      "globalScore": 70,
+      "forexScore": 70,
+      "stocksScore": 70,
+      "commoditiesScore": 70,
+      "totalArticles": 500
+    },
+    {
+      "timestamp": "2025-11-17T01:00:00Z",
+      "globalScore": 69,
+      "forexScore": 69,
+      "stocksScore": 69,
+      "commoditiesScore": 68,
+      "totalArticles": 503
+    },
+    {
+      "timestamp": "2025-11-17T02:00:00Z",
+      "globalScore": 69,
+      "forexScore": 69,
+      "stocksScore": 69,
+      "commoditiesScore": 69,
+      "totalArticles": 506
+    },
+    {
+      "timestamp": "2025-11-17T03:00:00Z",
+      "globalScore": 68,
+      "forexScore": 68,
+      "stocksScore": 69,
+      "commoditiesScore": 67,
+      "totalArticles": 509
+    },
+    {
+      "timestamp": "2025-11-17T04:00:00Z",
+      "globalScore": 68,
+      "forexScore": 68,
+      "stocksScore": 68,
+      "commoditiesScore": 68,
+      "totalArticles": 512
+    },
+    {
+      "timestamp": "2025-11-17T05:00:00Z",
+      "globalScore": 68,
+      "forexScore": 67,
+      "stocksScore": 69,
+      "commoditiesScore": 66,
+      "totalArticles": 515
+    },
+    {
+      "timestamp": "2025-11-17T06:00:00Z",
+      "globalScore": 67,
+      "forexScore": 67,
+      "stocksScore": 67,
+      "commoditiesScore": 67,
+      "totalArticles": 518
+    },
+    {
+      "timestamp": "2025-11-17T07:00:00Z",
+      "globalScore": 67,
+      "forexScore": 67,
+      "stocksScore": 68,
+      "commoditiesScore": 65,
+      "totalArticles": 521
+    },
+    {
+      "timestamp": "2025-11-17T08:00:00Z",
+      "globalScore": 67,
+      "forexScore": 67,
+      "stocksScore": 67,
+      "commoditiesScore": 67,
+      "totalArticles": 524
+    },
+    {
+      "timestamp": "2025-11-17T09:00:00Z",
+      "globalScore": 66,
+      "forexScore": 66,
+      "stocksScore": 66,
+      "commoditiesScore": 66,
+      "totalArticles": 527
+    },
+    {
+      "timestamp": "2025-11-17T10:00:00Z",
+      "globalScore": 66,
+      "forexScore": 66,
+      "stocksScore": 67,
+      "commoditiesScore": 64,
+      "totalArticles": 530
+    },
+    {
+      "timestamp": "2025-11-17T11:00:00Z",
+      "globalScore": 66,
+      "forexScore": 66,
+      "stocksScore": 66,
+      "commoditiesScore": 66,
+      "totalArticles": 533
+    },
+    {
+      "timestamp": "2025-11-17T12:00:00Z",
+      "globalScore": 65,
+      "forexScore": 65,
+      "stocksScore": 65,
+      "commoditiesScore": 65,
+      "totalArticles": 536
+    },
+    {
+      "timestamp": "2025-11-17T13:00:00Z",
+      "globalScore": 65,
+      "forexScore": 64,
+      "stocksScore": 66,
+      "commoditiesScore": 63,
+      "totalArticles": 539
+    },
+    {
+      "timestamp": "2025-11-17T14:00:00Z",
+      "globalScore": 65,
+      "forexScore": 65,
+      "stocksScore": 65,
+      "commoditiesScore": 65,
+      "totalArticles": 542
+    },
+    {
+      "timestamp": "2025-11-17T15:00:00Z",
+      "globalScore": 64,
+      "forexScore": 64,
+      "stocksScore": 64,
+      "commoditiesScore": 64,
+      "totalArticles": 545
+    },
+    {
+      "timestamp": "2025-11-17T16:00:00Z",
+      "globalScore": 64,
+      "forexScore": 63,
+      "stocksScore": 65,
+      "commoditiesScore": 62,
+      "totalArticles": 548
+    },
+    {
+      "timestamp": "2025-11-17T17:00:00Z",
+      "globalScore": 64,
+      "forexScore": 64,
+      "stocksScore": 64,
+      "commoditiesScore": 64,
+      "totalArticles": 551
     },
     {
       "timestamp": "2025-11-17T18:00:00Z",
-      "globalScore": 60,
-      "forexScore": 61,
-      "stocksScore": 60,
-      "commoditiesScore": 61,
-      "totalArticles": 378
+      "globalScore": 63,
+      "forexScore": 63,
+      "stocksScore": 63,
+      "commoditiesScore": 63,
+      "totalArticles": 554
     },
     {
       "timestamp": "2025-11-17T19:00:00Z",
-      "globalScore": 59,
-      "forexScore": 58,
-      "stocksScore": 60,
+      "globalScore": 63,
+      "forexScore": 62,
+      "stocksScore": 64,
       "commoditiesScore": 61,
-      "totalArticles": 381
+      "totalArticles": 557
     },
     {
       "timestamp": "2025-11-17T20:00:00Z",
-      "globalScore": 58,
-      "forexScore": 58,
-      "stocksScore": 58,
-      "commoditiesScore": 56,
-      "totalArticles": 384
+      "globalScore": 63,
+      "forexScore": 63,
+      "stocksScore": 63,
+      "commoditiesScore": 63,
+      "totalArticles": 560
     },
     {
       "timestamp": "2025-11-17T21:00:00Z",
-      "globalScore": 57,
-      "forexScore": 58,
-      "stocksScore": 58,
-      "commoditiesScore": 56,
-      "totalArticles": 387
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 62,
+      "commoditiesScore": 62,
+      "totalArticles": 563
     },
     {
       "timestamp": "2025-11-17T22:00:00Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 57,
-      "totalArticles": 390
+      "globalScore": 62,
+      "forexScore": 61,
+      "stocksScore": 63,
+      "commoditiesScore": 60,
+      "totalArticles": 566
     },
     {
       "timestamp": "2025-11-17T23:00:00Z",
-      "globalScore": 55,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 57,
-      "totalArticles": 393
+      "globalScore": 62,
+      "forexScore": 62,
+      "stocksScore": 62,
+      "commoditiesScore": 62,
+      "totalArticles": 569
     },
     {
       "timestamp": "2025-11-18T00:00:00Z",
-      "globalScore": 54,
-      "forexScore": 55,
-      "stocksScore": 54,
-      "commoditiesScore": 52,
-      "totalArticles": 396
+      "globalScore": 61,
+      "forexScore": 61,
+      "stocksScore": 61,
+      "commoditiesScore": 61,
+      "totalArticles": 572
     },
     {
       "timestamp": "2025-11-18T01:00:00Z",
-      "globalScore": 55,
-      "forexScore": 54,
-      "stocksScore": 56,
-      "commoditiesScore": 54,
-      "totalArticles": 399
-    },
-    {
-      "timestamp": "2025-11-18T02:00:00Z",
-      "globalScore": 56,
-      "forexScore": 56,
-      "stocksScore": 56,
-      "commoditiesScore": 57,
-      "totalArticles": 402
-    },
-    {
-      "timestamp": "2025-11-18T03:00:00Z",
-      "globalScore": 57,
-      "forexScore": 58,
-      "stocksScore": 58,
-      "commoditiesScore": 59,
-      "totalArticles": 405
-    },
-    {
-      "timestamp": "2025-11-18T04:00:00Z",
-      "globalScore": 58,
-      "forexScore": 57,
-      "stocksScore": 58,
-      "commoditiesScore": 56,
-      "totalArticles": 408
-    },
-    {
-      "timestamp": "2025-11-18T05:00:00Z",
-      "globalScore": 59,
-      "forexScore": 59,
-      "stocksScore": 60,
-      "commoditiesScore": 58,
-      "totalArticles": 411
-    },
-    {
-      "timestamp": "2025-11-18T06:00:00Z",
-      "globalScore": 60,
-      "forexScore": 61,
-      "stocksScore": 60,
-      "commoditiesScore": 61,
-      "totalArticles": 414
-    },
-    {
-      "timestamp": "2025-11-18T07:00:00Z",
       "globalScore": 61,
       "forexScore": 60,
       "stocksScore": 62,
-      "commoditiesScore": 63,
-      "totalArticles": 417
+      "commoditiesScore": 59,
+      "totalArticles": 575
     },
     {
-      "timestamp": "2025-11-18T08:00:00Z",
+      "timestamp": "2025-11-18T02:00:00Z",
+      "globalScore": 61,
+      "forexScore": 61,
+      "stocksScore": 61,
+      "commoditiesScore": 61,
+      "totalArticles": 578
+    },
+    {
+      "timestamp": "2025-11-18T03:00:00Z",
       "globalScore": 60,
       "forexScore": 60,
       "stocksScore": 60,
+      "commoditiesScore": 60,
+      "totalArticles": 581
+    },
+    {
+      "timestamp": "2025-11-18T04:00:00Z",
+      "globalScore": 60,
+      "forexScore": 60,
+      "stocksScore": 61,
       "commoditiesScore": 58,
-      "totalArticles": 420
+      "totalArticles": 584
+    },
+    {
+      "timestamp": "2025-11-18T05:00:00Z",
+      "globalScore": 60,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 60,
+      "totalArticles": 587
+    },
+    {
+      "timestamp": "2025-11-18T06:00:00Z",
+      "globalScore": 59,
+      "forexScore": 59,
+      "stocksScore": 59,
+      "commoditiesScore": 59,
+      "totalArticles": 590
+    },
+    {
+      "timestamp": "2025-11-18T07:00:00Z",
+      "globalScore": 59,
+      "forexScore": 58,
+      "stocksScore": 60,
+      "commoditiesScore": 57,
+      "totalArticles": 593
+    },
+    {
+      "timestamp": "2025-11-18T08:00:00Z",
+      "globalScore": 59,
+      "forexScore": 59,
+      "stocksScore": 59,
+      "commoditiesScore": 59,
+      "totalArticles": 596
     },
     {
       "timestamp": "2025-11-18T09:00:00Z",
-      "globalScore": 59,
+      "globalScore": 60,
       "forexScore": 60,
       "stocksScore": 60,
-      "commoditiesScore": 58,
-      "totalArticles": 423
+      "commoditiesScore": 60,
+      "totalArticles": 599
     },
     {
       "timestamp": "2025-11-18T10:00:00Z",
-      "globalScore": 58,
-      "forexScore": 57,
-      "stocksScore": 58,
-      "commoditiesScore": 59,
-      "totalArticles": 426
+      "globalScore": 60,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 60,
+      "totalArticles": 602
     },
     {
       "timestamp": "2025-11-18T11:00:00Z",
-      "globalScore": 57,
-      "forexScore": 57,
-      "stocksScore": 58,
-      "commoditiesScore": 59,
-      "totalArticles": 429
+      "globalScore": 60,
+      "forexScore": 59,
+      "stocksScore": 60,
+      "commoditiesScore": 60,
+      "totalArticles": 605
     },
     {
-      "timestamp": "2025-11-18T11:08:50.972Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 58,
+      "timestamp": "2025-11-18T12:18:33.142Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 57,
+      "commoditiesScore": 59,
       "totalArticles": 350
     }
   ]

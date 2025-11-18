@@ -1,213 +1,211 @@
+// src/components/charts/NeonAreaChart.tsx
 "use client";
 
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import type { FC } from "react";
 
-/**
- * Petit chart SVG réactif, sans dépendance.
- * - Aire lissée (bezier), grille, tooltip, glow néon.
- * - Responsive via viewBox, évite tout CSS global.
- */
+export type NeonAreaPoint = { t: string; v: number };
 
-export type Point = { x: number; y: number };
+type SparkRange = { min: number; max: number };
+
+function project(score: number, i: number, n: number, range: SparkRange) {
+  const span = Math.max(1, range.max - range.min);
+  const x = n === 1 ? 50 : (i * 100) / (n - 1);
+  const y = 40 - ((score - range.min) / span) * 30 - 5;
+  return { x, y };
+}
+
+function buildLine(points: number[], range: SparkRange) {
+  if (!points.length) return "";
+  const n = points.length;
+  let d = `M ${project(points[0], 0, n, range).x} ${
+    project(points[0], 0, n, range).y
+  }`;
+  for (let i = 1; i < n; i++) {
+    const p = project(points[i], i, n, range);
+    d += ` L ${p.x} ${p.y}`;
+  }
+  return d;
+}
+
+function buildArea(points: number[], range: SparkRange) {
+  if (!points.length) return "";
+  const n = points.length;
+  const baseY = 40;
+  const startX = n === 1 ? 50 : 0;
+  let d = `M ${startX} ${baseY} L ${project(points[0], 0, n, range).x} ${
+    project(points[0], 0, n, range).y
+  }`;
+  for (let i = 1; i < n; i++) {
+    const p = project(points[i], i, n, range);
+    d += ` L ${p.x} ${p.y}`;
+  }
+  const last = project(points[n - 1], n - 1, n, range);
+  d += ` L ${last.x} ${baseY} Z`;
+  return d;
+}
+
+function buildTicks(ts: string[], maxTicks = 6) {
+  if (!ts.length) return [];
+  const n = ts.length;
+  const idx =
+    n <= maxTicks
+      ? Array.from({ length: n }, (_, i) => i)
+      : [
+          0,
+          Math.floor(n / 5),
+          Math.floor((2 * n) / 5),
+          Math.floor((3 * n) / 5),
+          Math.floor((4 * n) / 5),
+          n - 1,
+        ];
+  const multiDay =
+    new Date(ts[0]).toDateString() !== new Date(ts[n - 1]).toDateString();
+  return idx.map((i) => {
+    const x = n === 1 ? 50 : (i * 100) / (n - 1);
+    const d = new Date(ts[i]);
+    const label = multiDay
+      ? d.toLocaleString(undefined, {
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      : d.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+    return { x, label };
+  });
+}
 
 type Props = {
-  data: Point[];
-  height?: number;             // px du viewBox (largeur fixe 800)
-  min?: number | null;         // borne min Y (auto si null)
-  max?: number | null;         // borne max Y (auto si null)
-  accent?: "yellow" | "cyan" | "blue";
-  className?: string;
-  smooth?: boolean;
-  showGrid?: boolean;
-  unit?: string;               // suffixe de valeur (ex: "/100")
-  formatX?: (x: number) => string;
-  formatY?: (y: number) => string;
+  points: NeonAreaPoint[];
+  height?: number;
+  showTicks?: boolean;
 };
 
-const W = 800;
+const NeonAreaChart: FC<Props> = ({ points, height = 200, showTicks = true }) => {
+  if (!points?.length) {
+    return (
+      <div className="h-[200px] w-full rounded-3xl border border-neutral-800/70 bg-neutral-950/90 backdrop-blur-2xl flex items-center justify-center text-[11px] text-neutral-500">
+        Historique en construction…
+      </div>
+    );
+  }
 
-export default function NeonAreaChart({
-  data,
-  height = 240,
-  min = null,
-  max = null,
-  accent = "cyan",
-  className,
-  smooth = true,
-  showGrid = true,
-  unit = "",
-  formatX,
-  formatY,
-}: Props) {
-  const H = height;
-  const box = `${W} ${H}`;
-  const pad = 16;
+  const values = points.map((p) => p.v);
+  let min = Math.min(...values);
+  let max = Math.max(...values);
+  if (min === max) {
+    min = Math.max(0, min - 5);
+    max = Math.min(100, max + 5);
+  }
+  const range = { min, max };
 
-  const xs = data.map((d) => d.x);
-  const ys = data.map((d) => d.y);
-  const xmin = xs.length ? Math.min(...xs) : 0;
-  const xmax = xs.length ? Math.max(...xs) : 1;
-  const ymin = min ?? (ys.length ? Math.min(...ys) : 0);
-  const ymax = max ?? (ys.length ? Math.max(...ys) : 1);
-  const xr = Math.max(1, xmax - xmin);
-  const yr = Math.max(1, ymax - ymin);
-
-  const sx = (x: number) =>
-    pad + ((x - xmin) / xr) * (W - pad * 2);
-  const sy = (y: number) =>
-    H - pad - ((y - ymin) / yr) * (H - pad * 2);
-
-  // Path lissé (Bezier) ou polyline
-  const d = useMemo(() => {
-    if (data.length === 0) return "";
-    if (!smooth || data.length < 3) {
-      return `M ${sx(data[0].x)},${sy(data[0].y)} ` + data.slice(1).map(p => `L ${sx(p.x)},${sy(p.y)}`).join(" ");
-    }
-    const pts = data.map(p => [sx(p.x), sy(p.y)]);
-    let path = `M ${pts[0][0]},${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [x0, y0] = pts[i - 1];
-      const [x1, y1] = pts[i];
-      const xm = (x0 + x1) / 2;
-      path += ` Q ${x0},${y0} ${xm},${(y0 + y1) / 2}`;
-      path += ` T ${x1},${y1}`;
-    }
-    return path;
-  }, [data, smooth, xmin, xmax, ymin, ymax]);
-
-  // Aire fermée pour le fill
-  const dArea = d
-    ? d +
-      ` L ${sx(xmax)},${sy(ymin)} L ${sx(xmin)},${sy(ymin)} Z`
-    : "";
-
-  // Tooltip
-  const ref = useRef<SVGSVGElement | null>(null);
-  const [hoverX, setHoverX] = useState<number | null>(null);
-  const [hover, setHover] = useState<{ x: number; y: number; px: number; py: number } | null>(null);
-
-  useEffect(() => {
-    if (hoverX == null || !data.length) {
-      setHover(null);
-      return;
-    }
-    // Cherche le point le plus proche
-    const left = data.reduce((a, b) => (Math.abs(a.x - hoverX) < Math.abs(b.x - hoverX) ? a : b));
-    setHover({ x: left.x, y: left.y, px: sx(left.x), py: sy(left.y) });
-  }, [hoverX, data]);
-
-  const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    const px = e.clientX - r.left;
-    // convertit px -> x (inverse de sx)
-    const t = (px - pad) / (W - pad * 2);
-    const x = xmin + t * xr;
-    setHoverX(x);
-  };
-
-  const onLeave = () => setHoverX(null);
-
-  const palette = {
-    yellow: { stroke: "#FFD54A", fill: "url(#grad-yellow)", glow: "url(#glow-yellow)" },
-    cyan:   { stroke: "#22D3EE", fill: "url(#grad-cyan)",   glow: "url(#glow-cyan)"   },
-    blue:   { stroke: "#3B82F6", fill: "url(#grad-blue)",   glow: "url(#glow-blue)"   },
-  }[accent];
-
-  const grid = useMemo(() => {
-    if (!showGrid) return [];
-    const lines: number[] = [];
-    const steps = 4;
-    for (let i = 1; i < steps; i++) lines.push(pad + (i / steps) * (H - pad * 2));
-    return lines;
-  }, [H, showGrid]);
-
-  const fmtX = formatX ?? ((x: number) => new Date(x).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-  const fmtY = formatY ?? ((y: number) => `${Math.round(y)}${unit}`);
+  const area = buildArea(values, range);
+  const line = buildLine(values, range);
+  const n = points.length;
+  const last = points[n - 1];
+  const lastProj = project(last.v, n - 1, n, range);
 
   return (
-    <svg
-      ref={ref}
-      viewBox={`0 0 ${box}`}
-      className={className}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      role="img"
-      aria-label="chart"
-    >
-      <defs>
-        <linearGradient id="grad-cyan" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#22D3EE" stopOpacity="0.00" />
-        </linearGradient>
-        <linearGradient id="grad-yellow" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#FFD54A" stopOpacity="0.38" />
-          <stop offset="100%" stopColor="#FFD54A" stopOpacity="0.00" />
-        </linearGradient>
-        <linearGradient id="grad-blue" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.30" />
-          <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.00" />
-        </linearGradient>
+    <div className="relative w-full" style={{ height }}>
+      <svg
+        viewBox="0 0 100 40"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full"
+      >
+        <defs>
+          <linearGradient id="nlc-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.25" />
+            <stop offset="70%" stopColor="#22d3ee" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.0" />
+          </linearGradient>
+          <linearGradient id="nlc-line" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#8b5cf6" />
+            <stop offset="50%" stopColor="#a78bfa" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+          <filter id="nlc-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="1.8" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-        <filter id="glow-cyan">
-          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id="glow-yellow">
-          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <filter id="glow-blue">
-          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      {/* Grille */}
-      {grid.map((y, i) => (
-        <line key={i} x1={pad} x2={W - pad} y1={y} y2={y} stroke="rgba(255,255,255,0.06)" strokeDasharray="4 6" />
-      ))}
-
-      {/* Aire */}
-      {dArea && <path d={dArea} fill={palette.fill} />}
-
-      {/* Courbe */}
-      {d && (
-        <path
-          d={d}
-          fill="none"
-          stroke={palette.stroke}
-          strokeWidth={2}
-          filter={palette.glow}
-          style={{ paintOrder: "stroke" }}
+        {/* fond + grille */}
+        <rect
+          x="0"
+          y="0"
+          width="100"
+          height="40"
+          fill="url(#nlc-area)"
+          opacity="0.25"
         />
-      )}
+        {[0, 10, 20, 30, 40].map((y) => (
+          <line
+            key={y}
+            x1="0"
+            x2="100"
+            y1={y}
+            y2={y}
+            stroke="rgba(148,163,184,0.15)"
+            strokeWidth="0.25"
+          />
+        ))}
 
-      {/* Hover / Tooltip */}
-      {hover && (
-        <>
-          <line x1={hover.px} x2={hover.px} y1={pad} y2={H - pad} stroke="rgba(255,255,255,0.08)" />
-          <circle cx={hover.px} cy={hover.py} r={5} fill={palette.stroke} />
-          <g transform={`translate(${Math.min(W - 180, Math.max(24, hover.px + 8))}, ${Math.max(36, hover.py - 24)})`}>
-            <rect width="160" height="40" rx="8" fill="rgba(6,10,14,0.9)" stroke="rgba(255,255,255,0.08)" />
-            <text x="10" y="18" fill="#fff" fontSize="12" fontFamily="ui-sans-serif, system-ui">
-              {fmtX(hover.x)}
-            </text>
-            <text x="10" y="34" fill="#FFD54A" fontSize="12" fontFamily="ui-sans-serif, system-ui">
-              {fmtY(hover.y)}
-            </text>
-          </g>
-        </>
+        {/* aire + ligne néon */}
+        <path d={area} fill="url(#nlc-area)" opacity="0.55" />
+        <path
+          d={line}
+          fill="none"
+          stroke="url(#nlc-line)"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#nlc-glow)"
+        />
+
+        {/* point live + ripple */}
+        <circle cx={lastProj.x} cy={lastProj.y} r="2.6" fill="#22d3ee" />
+        <circle cx={lastProj.x} cy={lastProj.y} r="7" fill="#22d3ee" opacity="0.18">
+          <animate
+            attributeName="r"
+            values="6;10;6"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values="0.25;0;0.25"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </svg>
+
+      {showTicks && (
+        <div className="absolute inset-x-0 bottom-0 h-6 text-[10px] text-neutral-500">
+          <div className="relative w-full h-full">
+            {buildTicks(points.map((p) => p.t), 6).map((t) => (
+              <div
+                key={`${t.x}-${t.label}`}
+                className="absolute top-0 -translate-x-1/2 flex flex-col items-center gap-0.5"
+                style={{ left: `${t.x}%` }}
+              >
+                <div className="h-[6px] w-px bg-neutral-700/70" />
+                <div className="whitespace-nowrap">{t.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
-    </svg>
+    </div>
   );
-}
+};
+
+export default NeonAreaChart;

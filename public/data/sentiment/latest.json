@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-18T03:38:52.507Z",
+  "generatedAt": "2025-11-18T04:13:41.363Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Régime haussier modéré",
-    "description": "Le sentiment de marché est globalement positif avec un fort consensus haussier et un équilibre bull/bear très favorable, malgré une température d’actualité modérée indiquant une moindre volatilité informationnelle.",
+    "label": "Optimisme modéré avec consensus fort",
+    "description": "Le marché affiche un sentiment globalement positif avec une majorité d’opinions bullish très marquée et un consensus élevé entre les sources, malgré une pression d’actualité modérée. Ce régime suggère une confiance raisonnable dans la poursuite de la tendance haussière, sans excès d’euphorie ni de tension.",
     "confidence": 60
   },
   "themes": [
@@ -41,8 +41,8 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 95,
-      "value": "95% bull / 5% bear",
+      "score": 94,
+      "value": "94% bull / 6% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus haussier élevé",
+      "label": "Consensus élevé entre sources",
       "weight": 3,
-      "description": "Un très fort consensus entre les sources d’information soutient une dynamique positive générale."
+      "description": "Un accord très fort entre les différentes sources d’information renforce la fiabilité du sentiment positif observé."
     },
     {
       "label": "Balance bull/bear très favorable",
       "weight": 3,
-      "description": "La prédominance nette des positions haussières indique une confiance marquée des investisseurs."
+      "description": "La nette domination des positions bullish indique un biais haussier marqué, soutenant les perspectives de marché."
     },
     {
-      "label": "Température d’actualité modérée",
+      "label": "Pression médiatique modérée",
       "weight": 2,
-      "description": "Le flux d’informations est stable, ce qui limite les risques de volatilité soudaine."
+      "description": "Le volume d’articles est conséquent mais la température du flux reste neutre, limitant les risques de volatilité excessive."
     }
   ],
   "sources": [
@@ -122,8 +122,8 @@
   "sourceConsensus": 91,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 203,
-  "bearishArticles": 10,
+  "bullishArticles": 202,
+  "bearishArticles": 12,
   "globalConfidence": 80,
   "history": [
     {
@@ -152,6 +152,14 @@
     },
     {
       "timestamp": "2025-11-18T03:38:52.507Z",
+      "globalScore": 56,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 58,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-18T04:13:41.363Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 56,

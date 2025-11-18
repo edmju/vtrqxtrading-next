@@ -1,4 +1,6 @@
-// src/app/(terminal)/dashboard/news/NewsClient.tsx
+// path: src/app/(terminal)/dashboard/news/NewsClient.tsx
+// (UI néon/glassy MASSIVE, toutes fonctions conservées: filtres, tri, clusters, desk IA, auto‑refresh, superhot)
+// Source d'origine: :contentReference[oaicite:2]{index=2}
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -113,12 +115,9 @@ function badgeDir(d: "BUY" | "SELL") {
 }
 
 function badgeConf(c: number) {
-  if (c >= 80)
-    return "bg-green-500/20 text-green-300 ring-1 ring-green-600/40";
-  if (c >= 60)
-    return "bg-lime-500/20 text-lime-300 ring-1 ring-lime-600/40";
-  if (c >= 40)
-    return "bg-amber-500/20 text-amber-300 ring-1 ring-amber-600/40";
+  if (c >= 80) return "bg-green-500/20 text-green-300 ring-1 ring-green-600/40";
+  if (c >= 60) return "bg-lime-500/20 text-lime-300 ring-1 ring-lime-600/40";
+  if (c >= 40) return "bg-amber-500/20 text-amber-300 ring-1 ring-amber-600/40";
   return "bg-rose-500/20 text-rose-300 ring-1 ring-rose-600/40";
 }
 
@@ -130,8 +129,7 @@ function getHeatLevel(article: Article): HeatLevel {
   const imp = impactLabel(score, article.publishedAt);
 
   if ((imp === "High" && h <= 12) || score >= 20) return "superhot";
-  if (imp === "High" || (imp === "Medium" && h <= 48) || score >= 10)
-    return "hot";
+  if (imp === "High" || (imp === "Medium" && h <= 48) || score >= 10) return "hot";
   if (imp === "Medium" || score >= 4) return "medium";
   return "low";
 }
@@ -162,31 +160,15 @@ function heatPillClass(level: HeatLevel) {
   }
 }
 
-function inferMarketRegime(
-  themes: AITheme[],
-  actions: AIAction[],
-  regime?: AIMarketRegime
-) {
+function inferMarketRegime(themes: AITheme[], actions: AIAction[], regime?: AIMarketRegime) {
   if (regime && regime.label && regime.description) {
     return regime.description;
   }
 
-  const text = (
-    themes.map((t) => t.label + " " + (t.summary || "")).join(" ") +
-    " " +
-    actions.map((a) => a.reason).join(" ")
-  ).toLowerCase();
+  const text = (themes.map((t) => t.label + " " + (t.summary || "")).join(" ") + " " + actions.map((a) => a.reason).join(" ")).toLowerCase();
 
-  const hasDovish =
-    text.includes("dovish") ||
-    text.includes("assouplissement") ||
-    text.includes("rate cut") ||
-    text.includes("pivot");
-  const hasHawkish =
-    text.includes("hawkish") ||
-    text.includes("durcissement") ||
-    text.includes("rate hike") ||
-    text.includes("tightening");
+  const hasDovish = text.includes("dovish") || text.includes("assouplissement") || text.includes("rate cut") || text.includes("pivot");
+  const hasHawkish = text.includes("hawkish") || text.includes("durcissement") || text.includes("rate hike") || text.includes("tightening");
   const hasRiskOff =
     text.includes("tariff") ||
     text.includes("sanction") ||
@@ -194,12 +176,7 @@ function inferMarketRegime(
     text.includes("crisis") ||
     text.includes("shutdown") ||
     text.includes("default");
-  const hasEnergyShock =
-    text.includes("opec") ||
-    text.includes("production cut") ||
-    text.includes("refinery") ||
-    text.includes("gas") ||
-    text.includes("oil");
+  const hasEnergyShock = text.includes("opec") || text.includes("production cut") || text.includes("refinery") || text.includes("gas") || text.includes("oil");
 
   if (hasDovish && !hasRiskOff && !hasHawkish) {
     return "Régime plutôt risk-on : narratif d’assouplissement monétaire dominant.";
@@ -215,10 +192,7 @@ function inferMarketRegime(
 
 function inferFocus(themes: AITheme[], focusDrivers?: AIFocusDriver[]) {
   if (focusDrivers && focusDrivers.length) {
-    const top = focusDrivers
-      .slice(0, 3)
-      .map((d) => d.label)
-      .join(" · ");
+    const top = focusDrivers.slice(0, 3).map((d) => d.label).join(" · ");
     return `Focales du moment : ${top}.`;
   }
   if (!themes.length) return "Pas de cluster clair, flux de news dispersé.";
@@ -228,31 +202,20 @@ function inferFocus(themes: AITheme[], focusDrivers?: AIFocusDriver[]) {
 
 function fallbackExplanation(action: AIAction, proofsCount: number) {
   const verb = action.direction === "BUY" ? "acheter" : "vendre";
-  const bias =
-    action.direction === "BUY" ? "biais haussier" : "biais baissier";
+  const bias = action.direction === "BUY" ? "biais haussier" : "biais baissier";
   const theme = action.themeLabel || "le thème principal suivi par l’IA";
   const articles = action.articleCount ?? proofsCount;
-  return `Setup synthèse : ${theme}, ${articles} article(s) alignés, ${bias} (conviction ${action.conviction}/10, confiance ${action.confidence}/100) → idée : ${verb.toUpperCase()} ${
-    action.symbol
-  }.`;
+  return `Setup synthèse : ${theme}, ${articles} article(s) alignés, ${bias} (conviction ${action.conviction}/10, confiance ${action.confidence}/100) → idée : ${verb.toUpperCase()} ${action.symbol}.`;
 }
 
 /* -------------------------------------------------------------------------- */
 /*  Action Card (Desk de trades IA)                                           */
 /* -------------------------------------------------------------------------- */
 
-function ActionCard({
-  action,
-  proofs,
-}: {
-  action: AIAction;
-  proofs: Article[];
-}) {
+function ActionCard({ action, proofs }: { action: AIAction; proofs: Article[] }) {
   const [open, setOpen] = useState(false);
   const totalSources = proofs.length;
-  const shortText =
-    (action.explanation || "").split("\n")[0]?.slice(0, 260) ||
-    fallbackExplanation(action, totalSources);
+  const shortText = (action.explanation || "").split("\n")[0]?.slice(0, 260) || fallbackExplanation(action, totalSources);
   const horizon = action.horizon;
   const themeLabel = action.themeLabel;
   const articleCount = action.articleCount ?? totalSources;
@@ -261,18 +224,11 @@ function ActionCard({
     <li className="p-3 rounded-2xl bg-neutral-900/90 ring-1 ring-neutral-700/70 shadow-sm shadow-black/60 hover:ring-neutral-500/80 hover:-translate-y-0.5 transition min-w-0">
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-1 min-w-0">
-          <div
-            className={
-              "inline-flex items-center justify-center text-[11px] px-2.5 py-1 rounded-full font-semibold " +
-              badgeDir(action.direction)
-            }
-          >
+          <div className={"inline-flex items-center justify-center text-[11px] px-2.5 py-1 rounded-full font-semibold " + badgeDir(action.direction)}>
             {action.direction}
           </div>
           <div className="inline-flex flex-wrap items-center gap-1 text-[11px] text-neutral-300">
-            <span className="font-medium text-neutral-100">
-              Conviction {action.conviction}/10
-            </span>
+            <span className="font-medium text-neutral-100">Conviction {action.conviction}/10</span>
             {horizon && (
               <>
                 <span className="opacity-50">•</span>
@@ -283,17 +239,8 @@ function ActionCard({
         </div>
 
         <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-[11px] px-2.5 py-1 rounded-full bg-neutral-800 text-neutral-100">
-            {action.symbol}
-          </span>
-          <span
-            className={
-              "text-[11px] px-2.5 py-1 rounded-full font-medium " +
-              badgeConf(action.confidence)
-            }
-          >
-            Conf {action.confidence}/100
-          </span>
+          <span className="text-[11px] px-2.5 py-1 rounded-full bg-neutral-800 text-neutral-100">{action.symbol}</span>
+          <span className={"text-[11px] px-2.5 py-1 rounded-full font-medium " + badgeConf(action.confidence)}>Conf {action.confidence}/100</span>
         </div>
       </header>
 
@@ -303,9 +250,7 @@ function ActionCard({
             <span className="text-neutral-400">Thème</span>
             <span className="font-medium text-neutral-100 truncate">
               {themeLabel}
-              {articleCount
-                ? ` · ${articleCount} article(s)`
-                : ""}
+              {articleCount ? ` · ${articleCount} article(s)` : ""}
             </span>
           </>
         )}
@@ -320,12 +265,8 @@ function ActionCard({
             onClick={() => setOpen((v) => !v)}
             className="text-[11px] inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700/80 transition"
           >
-            <span>
-              Basé sur {totalSources} source{totalSources > 1 ? "s" : ""}
-            </span>
-            <span className="text-[9px] opacity-80">
-              {open ? "▲ cacher" : "▼ voir"}
-            </span>
+            <span>Basé sur {totalSources} source{totalSources > 1 ? "s" : ""}</span>
+            <span className="text-[9px] opacity-80">{open ? "▲ cacher" : "▼ voir"}</span>
           </button>
 
           {open && (
@@ -333,12 +274,7 @@ function ActionCard({
               {proofs.map((p) => (
                 <li key={p.id} className="text-[11px] text-neutral-400">
                   •{" "}
-                  <a
-                    className="underline hover:text-neutral-100"
-                    href={p.url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a className="underline hover:text-neutral-100" href={p.url} target="_blank" rel="noreferrer">
                     {p.source}: {p.title}
                   </a>
                 </li>
@@ -366,10 +302,7 @@ export default function NewsClient({ news, ai }: Props) {
     return () => clearInterval(id);
   }, [router]);
 
-  const index = useMemo(
-    () => new Map(news.articles.map((a) => [a.id, a] as const)),
-    [news.articles]
-  );
+  const index = useMemo(() => new Map(news.articles.map((a) => [a.id, a] as const)), [news.articles]);
 
   const articleThemes = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -403,21 +336,14 @@ export default function NewsClient({ news, ai }: Props) {
   const totalThemes = ai.mainThemes.length;
   const totalActions = ai.actions.length;
 
-  const regimeText = inferMarketRegime(
-    ai.mainThemes,
-    ai.actions,
-    ai.marketRegime
-  );
+  const regimeText = inferMarketRegime(ai.mainThemes, ai.actions, ai.marketRegime);
   const focusText = inferFocus(ai.mainThemes, ai.focusDrivers);
 
   const superHotNews = useMemo(
     () =>
       news.articles
         .filter((a) => getHeatLevel(a) === "superhot")
-        .sort(
-          (a, b) =>
-            +new Date(b.publishedAt) - +new Date(a.publishedAt)
-        )
+        .sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt))
         .slice(0, 12),
     [news.articles]
   );
@@ -447,8 +373,7 @@ export default function NewsClient({ news, ai }: Props) {
       items = items.filter((a) => {
         if (a.title.toLowerCase().includes(q)) return true;
         if (a.source.toLowerCase().includes(q)) return true;
-        if (a.description && a.description.toLowerCase().includes(q))
-          return true;
+        if (a.description && a.description.toLowerCase().includes(q)) return true;
         return false;
       });
     }
@@ -460,14 +385,7 @@ export default function NewsClient({ news, ai }: Props) {
     });
 
     return items;
-  }, [
-    news.articles,
-    heatFilter,
-    themeFilter,
-    searchTerm,
-    sortOrder,
-    articleThemes,
-  ]);
+  }, [news.articles, heatFilter, themeFilter, searchTerm, sortOrder, articleThemes]);
 
   const previewCount = 6;
   const primaryNews = filteredNews.slice(0, previewCount);
@@ -479,18 +397,10 @@ export default function NewsClient({ news, ai }: Props) {
     const heat = getHeatLevel(a);
 
     return (
-      <li
-        key={a.id}
-        className="p-3 hover:bg-neutral-900/70 transition-colors"
-      >
+      <li key={a.id} className="p-3 hover:bg-neutral-900/70 transition-colors">
         <div className="flex items-start justify-between gap-2 min-w-0">
           <div className="space-y-1 min-w-0">
-            <a
-              href={a.url}
-              target="_blank"
-              rel="noreferrer"
-              className="font-semibold text-[14px] text-neutral-100 hover:text-sky-200 hover:underline line-clamp-2"
-            >
+            <a href={a.url} target="_blank" rel="noreferrer" className="font-semibold text-[14px] text-neutral-100 hover:text-sky-200 hover:underline line-clamp-2">
               {a.title}
             </a>
             <div className="text-[11px] text-neutral-400 flex flex-wrap items-center gap-2">
@@ -502,40 +412,21 @@ export default function NewsClient({ news, ai }: Props) {
                 })}
               </span>
               {typeof a.score === "number" && (
-                <span className="px-1.5 py-0.5 rounded bg-neutral-800/80 text-neutral-200 ring-1 ring-neutral-600/60">
-                  score {a.score}
-                </span>
+                <span className="px-1.5 py-0.5 rounded bg-neutral-800/80 text-neutral-200 ring-1 ring-neutral-600/60">score {a.score}</span>
               )}
             </div>
           </div>
 
           <div className="flex flex-col items-end gap-1 shrink-0">
-            <span
-              className={
-                "text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap " +
-                impactClass(impLabel)
-              }
-            >
-              Impact {impLabel}
-            </span>
-            <span
-              className={
-                "text-[10px] px-1.5 py-0.5 rounded-full " +
-                heatPillClass(heat)
-              }
-            >
-              {heatLabel(heat)}
-            </span>
+            <span className={"text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap " + impactClass(impLabel)}>Impact {impLabel}</span>
+            <span className={"text-[10px] px-1.5 py-0.5 rounded-full " + heatPillClass(heat)}>{heatLabel(heat)}</span>
           </div>
         </div>
 
         {themesForArticle.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {themesForArticle.map((label) => (
-              <span
-                key={label}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-200 ring-1 ring-violet-600/40"
-              >
+              <span key={label} className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-200 ring-1 ring-violet-600/40">
                 {label}
               </span>
             ))}
@@ -545,21 +436,14 @@ export default function NewsClient({ news, ai }: Props) {
         {a.hits && a.hits.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {a.hits.slice(0, 4).map((h, idxHit) => (
-              <span
-                key={idxHit}
-                className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-200 ring-1 ring-indigo-600/40"
-              >
+              <span key={idxHit} className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-200 ring-1 ring-indigo-600/40">
                 {h}
               </span>
             ))}
           </div>
         )}
 
-        {a.description && (
-          <p className="mt-2 text-[12px] text-neutral-300 line-clamp-2">
-            {a.description}
-          </p>
-        )}
+        {a.description && <p className="mt-2 text-[12px] text-neutral-300 line-clamp-2">{a.description}</p>}
       </li>
     );
   };
@@ -574,22 +458,12 @@ export default function NewsClient({ news, ai }: Props) {
         className="inline-flex flex-col justify-between w-56 max-w-xs p-3 rounded-xl bg-black/30 border border-red-600/60 hover:border-orange-400/80 hover:bg-black/60 transition mr-3"
       >
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-medium text-red-100 truncate">
-            {a.source}
-          </span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">
-            Super hot
-          </span>
+          <span className="text-[11px] font-medium text-red-100 truncate">{a.source}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-600 text-white">Super hot</span>
         </div>
-        <div className="mt-1 text-[12px] font-semibold text-neutral-50 line-clamp-2">
-          {a.title}
-        </div>
+        <div className="mt-1 text-[12px] font-semibold text-neutral-50 line-clamp-2">{a.title}</div>
         <div className="mt-1 text-[10px] text-red-100/80">
-          {new Date(a.publishedAt).toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          })}
+          {new Date(a.publishedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false })}
         </div>
       </a>
     );
@@ -603,93 +477,53 @@ export default function NewsClient({ news, ai }: Props) {
           <section className="grid gap-3 md:gap-4 md:grid-cols-3 min-w-0">
             <div className="rounded-2xl p-3.5 bg-gradient-to-br from-sky-900/70 via-sky-800/40 to-sky-600/20 ring-1 ring-sky-500/40 shadow-md shadow-sky-900/40 min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <div className="text-[11px] font-semibold uppercase tracking-wide text-sky-300/80">
-                  Flux d’actualités tradables
-                </div>
-                <button
-                  type="button"
-                  onClick={() => router.refresh()}
-                  className="text-[11px] px-2 py-0.5 rounded-full bg-sky-900/70 text-sky-100 hover:bg-sky-800/80 transition"
-                >
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-sky-300/80">Flux d’actualités tradables</div>
+                <button type="button" onClick={() => router.refresh()} className="text-[11px] px-2 py-0.5 rounded-full bg-sky-900/70 text-sky-100 hover:bg-sky-800/80 transition">
                   Refresh
                 </button>
               </div>
               <div className="mt-2.5 flex gap-4 text-[13px] text-sky-100">
                 <div>
                   <div className="text-xl font-semibold">{totalNews}</div>
-                  <div className="text-[11px] text-sky-300/80">
-                    news filtrées
-                  </div>
+                  <div className="text-[11px] text-sky-300/80">news filtrées</div>
                 </div>
                 <div>
-                  <div className="text-xl font-semibold">
-                    {totalThemes}
-                  </div>
-                  <div className="text-[11px] text-sky-300/80">
-                    thèmes IA
-                  </div>
+                  <div className="text-xl font-semibold">{totalThemes}</div>
+                  <div className="text-[11px] text-sky-300/80">thèmes IA</div>
                 </div>
                 <div>
-                  <div className="text-xl font-semibold">
-                    {totalActions}
-                  </div>
-                  <div className="text-[11px] text-sky-300/80">
-                    trades IA
-                  </div>
+                  <div className="text-xl font-semibold">{totalActions}</div>
+                  <div className="text-[11px] text-sky-300/80">trades IA</div>
                 </div>
               </div>
               <div className="mt-2 text-[10px] text-sky-200/80 space-y-0.5">
-                <div>
-                  Dernière collecte :{" "}
-                  {news.generatedAt
-                    ? new Date(news.generatedAt).toLocaleString()
-                    : "—"}
-                </div>
-                <div>
-                  Auto-refresh : toutes les 1h (tant que la page reste
-                  ouverte).
-                </div>
+                <div>Dernière collecte : {news.generatedAt ? new Date(news.generatedAt).toLocaleString() : "—"}</div>
+                <div>Auto-refresh : toutes les 1h (tant que la page reste ouverte).</div>
               </div>
             </div>
 
             <div className="rounded-2xl p-3.5 bg-gradient-to-br from-violet-900/70 via-violet-800/40 to-violet-600/20 ring-1 ring-violet-500/40 shadow-md shadow-violet-900/40 min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-violet-300/80">
-                Régime de marché (vue IA)
-              </div>
-              <p className="mt-2 text-[13px] text-violet-50 leading-snug line-clamp-4">
-                {regimeText}
-              </p>
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-violet-300/80">Régime de marché (vue IA)</div>
+              <p className="mt-2 text-[13px] text-violet-50 leading-snug line-clamp-4">{regimeText}</p>
             </div>
 
             <div className="rounded-2xl p-3.5 bg-gradient-to-br from-emerald-900/70 via-emerald-800/40 to-emerald-600/20 ring-1 ring-emerald-500/40 shadow-md shadow-emerald-900/40 min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-300/80">
-                Focales du moment
-              </div>
-              <p className="mt-2 text-[13px] text-emerald-50 leading-snug line-clamp-4">
-                {focusText}
-              </p>
+              <div className="text-[11px] font-semibold uppercase tracking-wide text-emerald-300/80">Focales du moment</div>
+              <p className="mt-2 text-[13px] text-emerald-50 leading-snug line-clamp-4">{focusText}</p>
             </div>
           </section>
 
           {superHotNews.length > 0 && (
             <section className="rounded-2xl border border-red-700/60 bg-gradient-to-r from-red-900/80 via-red-800/70 to-orange-700/70 shadow-sm shadow-black/40 overflow-hidden">
-            <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
-              <span className="text-xs font-semibold uppercase tracking-wide text-red-100">
-                Super hot du moment
-              </span>
-              <span className="text-[10px] text-red-100/80">
-                {superHotNews.length} news très sensibles
-              </span>
-            </div>
-
-            <div className="superhot-marquee-outer py-3">
-              <div className="superhot-marquee-track">
-                {superHotCards}
-                {superHotCards}
+              <div className="px-4 py-2 flex items-center justify-between border-b border-red-700/60">
+                <span className="text-xs font-semibold uppercase tracking-wide text-red-100">Super hot du moment</span>
+                <span className="text-[10px] text-red-100/80">{superHotNews.length} news très sensibles</span>
               </div>
-            </div>
-          </section>
 
+              <div className="superhot-marquee-outer py-3">
+                <div className="superhot-marquee-track">{superHotCards}{superHotCards}</div>
+              </div>
+            </section>
           )}
 
           {/* Layout principal 3 colonnes (sans overflow horizontal) */}
@@ -698,12 +532,8 @@ export default function NewsClient({ news, ai }: Props) {
             <section className="space-y-2 min-w-0">
               <div className="px-1 flex items-baseline justify-between">
                 <div>
-                  <h2 className="text-[15px] font-semibold text-neutral-100">
-                    Flux d’actualités tradables
-                  </h2>
-                  <p className="text-[11px] text-neutral-400">
-                    Impact estimé par score + fraîcheur
-                  </p>
+                  <h2 className="text-[15px] font-semibold text-neutral-100">Flux d’actualités tradables</h2>
+                  <p className="text-[11px] text-neutral-400">Impact estimé par score + fraîcheur</p>
                 </div>
               </div>
 
@@ -711,9 +541,7 @@ export default function NewsClient({ news, ai }: Props) {
                 {/* Filtres */}
                 <div className="px-3 pt-2.5 pb-2 border-b border-neutral-800/80 flex flex-wrap items-center gap-3 justify-between">
                   <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-                    <span className="text-neutral-400 mr-1">
-                      Température :
-                    </span>
+                    <span className="text-neutral-400 mr-1">Température :</span>
                     {[
                       { key: "all", label: "Tous" as const },
                       { key: "superhot", label: "Super hot" as const },
@@ -724,9 +552,7 @@ export default function NewsClient({ news, ai }: Props) {
                       <button
                         key={opt.key}
                         type="button"
-                        onClick={() =>
-                          setHeatFilter(opt.key as "all" | HeatLevel)
-                        }
+                        onClick={() => setHeatFilter(opt.key as "all" | HeatLevel)}
                         className={
                           "px-2 py-0.5 rounded-full border text-[11px] " +
                           (heatFilter === opt.key
@@ -742,9 +568,7 @@ export default function NewsClient({ news, ai }: Props) {
                   <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                     <select
                       value={sortOrder}
-                      onChange={(e) =>
-                        setSortOrder(e.target.value as "recent" | "oldest")
-                      }
+                      onChange={(e) => setSortOrder(e.target.value as "recent" | "oldest")}
                       className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-[11px] rounded-full px-2 py-0.5 focus:outline-none"
                     >
                       <option value="recent">Plus récentes</option>
@@ -759,7 +583,7 @@ export default function NewsClient({ news, ai }: Props) {
                       <option value="all">Tous les thèmes</option>
                       {themeOptions.map((label) => (
                         <option key={label} value={label}>
-                          {label}
+                          {label} {themeCounts[label] ? `(${themeCounts[label]})` : ""}
                         </option>
                       ))}
                     </select>
@@ -773,18 +597,11 @@ export default function NewsClient({ news, ai }: Props) {
                   </div>
                 </div>
 
-                {/* Liste (scroll vertical via page, pas de scroll interne horizontal) */}
+                {/* Liste */}
                 <ul className="divide-y divide-neutral-800/80">
                   {primaryNews.map((a) => renderNewsItem(a))}
-
-                  {showAllNews &&
-                    extraNews.map((a) => renderNewsItem(a))}
-
-                  {filteredNews.length === 0 && (
-                    <li className="p-4 text-sm text-neutral-400">
-                      Aucune actualité ne correspond aux filtres.
-                    </li>
-                  )}
+                  {showAllNews && extraNews.map((a) => renderNewsItem(a))}
+                  {filteredNews.length === 0 && <li className="p-4 text-sm text-neutral-400">Aucune actualité ne correspond aux filtres.</li>}
                 </ul>
 
                 {extraNews.length > 0 && (
@@ -794,9 +611,7 @@ export default function NewsClient({ news, ai }: Props) {
                       onClick={() => setShowAllNews((v) => !v)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-neutral-800/90 text-neutral-50 hover:bg-neutral-700/90 transition"
                     >
-                      {showAllNews
-                        ? "Réduire la liste"
-                        : `Dérouler (${extraNews.length} news)`}
+                      {showAllNews ? "Réduire la liste" : `Dérouler (${extraNews.length} news)`}
                     </button>
                   </div>
                 )}
@@ -807,101 +622,49 @@ export default function NewsClient({ news, ai }: Props) {
             <section className="space-y-2 min-w-0">
               <div className="px-1 flex items-baseline justify-between">
                 <div>
-                  <h2 className="text-[15px] font-semibold text-neutral-100">
-                    Radar de thèmes (IA)
-                  </h2>
-                  <p className="text-[11px] text-neutral-400">
-                    Pondération 0–100 basée sur le flux de titres
-                  </p>
+                  <h2 className="text-[15px] font-semibold text-neutral-100">Radar de thèmes (IA)</h2>
+                  <p className="text-[11px] text-neutral-400">Pondération 0–100 basée sur le flux de titres</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0">
                 <ul className="px-2.5 py-2 space-y-2.5">
                   {ai.mainThemes.map((t) => {
-                    const w = Math.max(0.05, Math.min(1, t.weight || 0));
-                    const count = themeCounts[t.label] ?? 0;
+                    const w = Math.max(0.05, Math.min(1, t.weight));
+                    const pct = Math.round(w * 100);
                     return (
-                      <li
-                        key={t.label}
-                        className="p-3 rounded-2xl bg-neutral-900/90 ring-1 ring-neutral-700/70 shadow-sm shadow-black/50 hover:ring-violet-500/70 transition min-w-0"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="min-w-0">
-                            <div className="text-[13px] text-neutral-100 font-semibold truncate">
-                              {t.label}
-                            </div>
-                            <div className="text-[11px] text-neutral-400">
-                              {count} article(s) liés
-                            </div>
-                          </div>
-                          <div className="text-[11px] text-neutral-300 shrink-0">
-                            poids {(w * 100).toFixed(0)}/100
-                          </div>
+                      <li key={t.label} className="rounded-xl px-2.5 py-2 bg-neutral-900/70 border border-neutral-700/70 hover:border-violet-400/60 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] transition">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-[13px] font-medium text-neutral-100 truncate">{t.label}</div>
+                          <div className="text-[11px] text-neutral-300">{pct}/100</div>
                         </div>
-
-                        <div className="mt-1.5 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-emerald-400 transition-all duration-500"
-                            style={{ width: `${w * 100}%` }}
-                          />
+                        <div className="mt-2 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-violet-400 via-sky-400 to-cyan-300" style={{ width: `${pct}%` }} />
                         </div>
-
-                        {t.summary && (
-                          <p className="mt-1.5 text-[12px] text-neutral-300 line-clamp-3">
-                            {t.summary}
-                          </p>
-                        )}
+                        {t.summary && <p className="mt-1 text-[11px] text-neutral-300 line-clamp-2">{t.summary}</p>}
+                        {themeCounts[t.label] ? <p className="mt-1 text-[10px] text-neutral-500">{themeCounts[t.label]} article(s) associés</p> : null}
                       </li>
                     );
                   })}
-
-                  {ai.mainThemes.length === 0 && (
-                    <li className="text-sm text-neutral-400 px-1">
-                      Aucun thème clé détecté par l’IA sur la fenêtre
-                      actuelle.
-                    </li>
-                  )}
                 </ul>
               </div>
             </section>
 
-            {/* Colonne 3 : desk de trades IA */}
+            {/* Colonne 3 : desk IA */}
             <section className="space-y-2 min-w-0">
               <div className="px-1 flex items-baseline justify-between">
                 <div>
-                  <h2 className="text-[15px] font-semibold text-neutral-100">
-                    Desk de trades (IA)
-                  </h2>
-                  <p className="text-[11px] text-neutral-400">
-                    Propositions basées sur les thèmes &amp; news
-                  </p>
+                  <h2 className="text-[15px] font-semibold text-neutral-100">Desk de trades (IA)</h2>
+                  <p className="text-[11px] text-neutral-400">Idées triées par confiance & conviction</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-neutral-800/70 bg-neutral-950/80 shadow-sm shadow-black/50 min-w-0">
                 <ul className="px-2.5 py-2 space-y-2.5">
-                  {ai.actions.map((action) => {
-                    const proofs = (action.evidenceIds || [])
-                      .map((id) => index.get(id))
-                      .filter(Boolean) as Article[];
-                    return (
-                      <ActionCard
-                        key={`${action.symbol}-${action.direction}-${action.confidence}-${action.conviction}`}
-                        action={action}
-                        proofs={proofs}
-                      />
-                    );
+                  {ai.actions.map((a) => {
+                    const proofs = (a.evidenceIds || []).map((id) => (id ? index.get(id) : null)).filter(Boolean) as Article[];
+                    return <ActionCard key={`${a.symbol}-${a.direction}-${a.conviction}-${a.confidence}`} action={a} proofs={proofs} />;
                   })}
-
-                  {ai.actions.length === 0 && (
-                    <li className="text-sm text-neutral-400 px-1">
-                      Aucune action proposée aujourd’hui (pas de signal
-                      suffisamment robuste). Utilise quand même le radar
-                      de thèmes comme lecture rapide du narratif de
-                      marché.
-                    </li>
-                  )}
                 </ul>
               </div>
             </section>

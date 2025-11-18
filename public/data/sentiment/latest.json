@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-17T23:09:14.962Z",
+  "generatedAt": "2025-11-18T00:44:03.312Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Optimisme modéré avec forte conviction",
-    "description": "Le marché affiche un sentiment globalement positif avec une forte dominance des opinions haussières, soutenue par un consensus élevé entre les sources. La tension dans le flux d’actualités est neutre, indiquant une absence de volatilité excessive ou de stress majeur.",
+    "label": "Optimisme Modéré",
+    "description": "Le sentiment de marché est globalement positif avec un consensus élevé et une dominance nette des opinions haussières, bien que la tension des flux d'actualités soit neutre, indiquant une confiance modérée sans excès d'enthousiasme.",
     "confidence": 60
   },
   "themes": [
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance haussière marquée",
+      "label": "Consensus Fort",
       "weight": 3,
-      "description": "La balance bull/bear montre une nette prédominance des positions haussières, ce qui soutient un biais positif dans l’ensemble des actifs."
+      "description": "Un accord marqué entre les sources d'information soutient une vision haussière stable et cohérente."
     },
     {
-      "label": "Consensus élevé entre sources",
+      "label": "Dominance Haussière",
+      "weight": 3,
+      "description": "La prépondérance des opinions positives crée un environnement favorable aux actifs risqués."
+    },
+    {
+      "label": "Flux d’actualités Neutre",
       "weight": 2,
-      "description": "Un fort accord entre les différents flux d’information renforce la crédibilité du sentiment positif observé."
-    },
-    {
-      "label": "Flux d’actualités modérément actif",
-      "weight": 1,
-      "description": "Le volume d’articles est conséquent mais la température du flux reste neutre, suggérant une information abondante mais sans excès d’émotion ou de panique."
+      "description": "L'absence de tension excessive dans les nouvelles limite les risques de volatilité soudaine."
     }
   ],
   "sources": [
@@ -122,12 +122,20 @@
   "sourceConsensus": 92,
   "tensionScore": 50,
   "totalArticles": 350,
-  "bullishArticles": 195,
-  "bearishArticles": 4,
+  "bullishArticles": 196,
+  "bearishArticles": 5,
   "globalConfidence": 85,
   "history": [
     {
       "timestamp": "2025-11-17T23:09:14.962Z",
+      "globalScore": 56,
+      "forexScore": 55,
+      "stocksScore": 55,
+      "commoditiesScore": 58,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-18T00:44:03.312Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 55,

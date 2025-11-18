@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-18T08:14:04.635Z",
+  "generatedAt": "2025-11-18T09:11:57.309Z",
   "globalScore": 56,
   "marketRegime": {
     "label": "Optimisme modéré avec consensus élevé",
-    "description": "Le marché affiche un sentiment global modérément positif soutenu par un consensus très fort parmi les sources d’information et une nette dominance des opinions haussières. La tension dans le flux d’actualités est neutre, indiquant peu de volatilité immédiate.",
+    "description": "Le marché présente un sentiment globalement positif avec un fort consensus parmi les sources, malgré une tension informationnelle modérée. Cette configuration suggère une confiance prudente des investisseurs, sans euphorie excessive ni inquiétude majeure.",
     "confidence": 60
   },
   "themes": [
@@ -24,7 +24,7 @@
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 58,
+      "score": 57,
       "direction": "bullish",
       "comment": ""
     }
@@ -49,27 +49,27 @@
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 90,
-      "value": "90/100",
+      "score": 91,
+      "value": "91/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Consensus très fort",
+      "label": "Consensus très élevé",
       "weight": 3,
-      "description": "Un large accord parmi les sources d’information renforce la confiance dans la tendance haussière modérée observée."
+      "description": "Un large accord entre les sources d’information soutient une vision haussière stable et crédible, renforçant la confiance dans la tendance actuelle."
     },
     {
-      "label": "Balance bull/bear très favorable",
+      "label": "Balance bull/bear fortement biaisée vers le bull",
       "weight": 3,
-      "description": "La prédominance marquée des opinions haussières soutient une dynamique positive sur les marchés."
+      "description": "La nette domination des positions haussières indique un optimisme marqué, mais peut aussi signaler un risque de surchauffe ou de correction à surveiller."
     },
     {
-      "label": "Tension d’actualité modérée",
+      "label": "Tension informationnelle modérée",
       "weight": 2,
-      "description": "Un flux d’actualités équilibré limite les risques de volatilité soudaine, favorisant un environnement stable."
+      "description": "Le flux d’actualités est actif mais sans excès, ce qui limite les risques de volatilité extrême tout en maintenant l’attention des investisseurs."
     }
   ],
   "sources": [
@@ -119,83 +119,19 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 90,
+  "sourceConsensus": 91,
   "tensionScore": 50,
   "totalArticles": 350,
   "bullishArticles": 201,
-  "bearishArticles": 18,
-  "globalConfidence": 80,
+  "bearishArticles": 17,
+  "globalConfidence": 85,
   "history": [
     {
-      "timestamp": "2025-11-17T23:09:14.962Z",
+      "timestamp": "2025-11-18T09:11:57.309Z",
       "globalScore": 56,
       "forexScore": 55,
-      "stocksScore": 55,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T00:44:03.312Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 55,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T02:25:22.520Z",
-      "globalScore": 50,
-      "forexScore": 50,
-      "stocksScore": 50,
-      "commoditiesScore": 50,
-      "totalArticles": 0
-    },
-    {
-      "timestamp": "2025-11-18T03:38:52.507Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T04:13:41.363Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T05:10:22.506Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T06:15:08.191Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 55,
-      "commoditiesScore": 58,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T07:10:01.532Z",
-      "globalScore": 56,
-      "forexScore": 56,
       "stocksScore": 56,
       "commoditiesScore": 57,
-      "totalArticles": 350
-    },
-    {
-      "timestamp": "2025-11-18T08:14:04.635Z",
-      "globalScore": 56,
-      "forexScore": 55,
-      "stocksScore": 56,
-      "commoditiesScore": 58,
       "totalArticles": 350
     }
   ]

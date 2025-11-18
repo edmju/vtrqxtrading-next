@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-18T10:12:13.316Z",
+  "generatedAt": "2025-11-18T11:08:50.972Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Optimisme modéré avec consensus élevé",
-    "description": "Le marché affiche un sentiment globalement positif avec une forte dominance des positions haussières et un consensus élevé parmi les sources, malgré une tension d’actualité modérée qui tempère légèrement l’enthousiasme.",
-    "confidence": 60
+    "label": "Sentiment Positif Modéré",
+    "description": "Le sentiment global est modérément positif avec une forte dominance des opinions haussières et un consensus élevé parmi les sources, malgré une température d’actualité relativement basse indiquant une certaine stabilité et peu de tensions immédiates.",
+    "confidence": 75
   },
   "themes": [
     {
@@ -33,7 +33,7 @@
     {
       "id": "tension_flux",
       "label": "Température du flux d’actualités",
-      "score": 50,
+      "score": 47,
       "value": "350 articles",
       "direction": "neutral",
       "comment": "Flux de volume moyen."
@@ -41,8 +41,8 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 93,
-      "value": "93% bull / 7% bear",
+      "score": 94,
+      "value": "94% bull / 6% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance haussière marquée",
+      "label": "Balance Bull/Bear Très Favorable",
       "weight": 3,
-      "description": "La balance bull/bear montre une nette prédominance des opinions haussières, ce qui soutient un biais positif sur les actifs."
+      "description": "La majorité écrasante des opinions est haussière, ce qui soutient un biais positif sur les marchés."
     },
     {
-      "label": "Consensus élevé entre sources",
+      "label": "Consensus des Sources Élevé",
       "weight": 2,
-      "description": "Un accord fort entre les différentes sources d’information renforce la crédibilité du sentiment positif observé."
+      "description": "Un fort accord entre les sources d’information renforce la fiabilité du sentiment positif observé."
     },
     {
-      "label": "Tension d’actualité modérée",
+      "label": "Température du Flux d’Actualités Faible",
       "weight": 1,
-      "description": "Le flux d’actualités est abondant mais la température du flux reste moyenne, limitant les risques d’emballement ou de panique."
+      "description": "Le faible niveau de tension dans les actualités suggère une absence de catalyseurs négatifs majeurs à court terme."
     }
   ],
   "sources": [
@@ -120,22 +120,206 @@
     }
   ],
   "sourceConsensus": 91,
-  "tensionScore": 50,
+  "tensionScore": 47,
   "totalArticles": 350,
-  "bullishArticles": 212,
-  "bearishArticles": 17,
-  "globalConfidence": 85,
+  "bullishArticles": 210,
+  "bearishArticles": 14,
+  "globalConfidence": 80,
   "history": [
     {
-      "timestamp": "2025-11-18T09:11:57.309Z",
+      "timestamp": "2025-11-17T12:00:00Z",
+      "globalScore": 56,
+      "forexScore": 57,
+      "stocksScore": 56,
+      "commoditiesScore": 54,
+      "totalArticles": 360
+    },
+    {
+      "timestamp": "2025-11-17T13:00:00Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 58,
+      "commoditiesScore": 56,
+      "totalArticles": 363
+    },
+    {
+      "timestamp": "2025-11-17T14:00:00Z",
+      "globalScore": 58,
+      "forexScore": 58,
+      "stocksScore": 58,
+      "commoditiesScore": 59,
+      "totalArticles": 366
+    },
+    {
+      "timestamp": "2025-11-17T15:00:00Z",
+      "globalScore": 59,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 61,
+      "totalArticles": 369
+    },
+    {
+      "timestamp": "2025-11-17T16:00:00Z",
+      "globalScore": 60,
+      "forexScore": 59,
+      "stocksScore": 60,
+      "commoditiesScore": 58,
+      "totalArticles": 372
+    },
+    {
+      "timestamp": "2025-11-17T17:00:00Z",
+      "globalScore": 61,
+      "forexScore": 61,
+      "stocksScore": 62,
+      "commoditiesScore": 60,
+      "totalArticles": 375
+    },
+    {
+      "timestamp": "2025-11-17T18:00:00Z",
+      "globalScore": 60,
+      "forexScore": 61,
+      "stocksScore": 60,
+      "commoditiesScore": 61,
+      "totalArticles": 378
+    },
+    {
+      "timestamp": "2025-11-17T19:00:00Z",
+      "globalScore": 59,
+      "forexScore": 58,
+      "stocksScore": 60,
+      "commoditiesScore": 61,
+      "totalArticles": 381
+    },
+    {
+      "timestamp": "2025-11-17T20:00:00Z",
+      "globalScore": 58,
+      "forexScore": 58,
+      "stocksScore": 58,
+      "commoditiesScore": 56,
+      "totalArticles": 384
+    },
+    {
+      "timestamp": "2025-11-17T21:00:00Z",
+      "globalScore": 57,
+      "forexScore": 58,
+      "stocksScore": 58,
+      "commoditiesScore": 56,
+      "totalArticles": 387
+    },
+    {
+      "timestamp": "2025-11-17T22:00:00Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 56,
       "commoditiesScore": 57,
-      "totalArticles": 350
+      "totalArticles": 390
     },
     {
-      "timestamp": "2025-11-18T10:12:13.316Z",
+      "timestamp": "2025-11-17T23:00:00Z",
+      "globalScore": 55,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 57,
+      "totalArticles": 393
+    },
+    {
+      "timestamp": "2025-11-18T00:00:00Z",
+      "globalScore": 54,
+      "forexScore": 55,
+      "stocksScore": 54,
+      "commoditiesScore": 52,
+      "totalArticles": 396
+    },
+    {
+      "timestamp": "2025-11-18T01:00:00Z",
+      "globalScore": 55,
+      "forexScore": 54,
+      "stocksScore": 56,
+      "commoditiesScore": 54,
+      "totalArticles": 399
+    },
+    {
+      "timestamp": "2025-11-18T02:00:00Z",
+      "globalScore": 56,
+      "forexScore": 56,
+      "stocksScore": 56,
+      "commoditiesScore": 57,
+      "totalArticles": 402
+    },
+    {
+      "timestamp": "2025-11-18T03:00:00Z",
+      "globalScore": 57,
+      "forexScore": 58,
+      "stocksScore": 58,
+      "commoditiesScore": 59,
+      "totalArticles": 405
+    },
+    {
+      "timestamp": "2025-11-18T04:00:00Z",
+      "globalScore": 58,
+      "forexScore": 57,
+      "stocksScore": 58,
+      "commoditiesScore": 56,
+      "totalArticles": 408
+    },
+    {
+      "timestamp": "2025-11-18T05:00:00Z",
+      "globalScore": 59,
+      "forexScore": 59,
+      "stocksScore": 60,
+      "commoditiesScore": 58,
+      "totalArticles": 411
+    },
+    {
+      "timestamp": "2025-11-18T06:00:00Z",
+      "globalScore": 60,
+      "forexScore": 61,
+      "stocksScore": 60,
+      "commoditiesScore": 61,
+      "totalArticles": 414
+    },
+    {
+      "timestamp": "2025-11-18T07:00:00Z",
+      "globalScore": 61,
+      "forexScore": 60,
+      "stocksScore": 62,
+      "commoditiesScore": 63,
+      "totalArticles": 417
+    },
+    {
+      "timestamp": "2025-11-18T08:00:00Z",
+      "globalScore": 60,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 58,
+      "totalArticles": 420
+    },
+    {
+      "timestamp": "2025-11-18T09:00:00Z",
+      "globalScore": 59,
+      "forexScore": 60,
+      "stocksScore": 60,
+      "commoditiesScore": 58,
+      "totalArticles": 423
+    },
+    {
+      "timestamp": "2025-11-18T10:00:00Z",
+      "globalScore": 58,
+      "forexScore": 57,
+      "stocksScore": 58,
+      "commoditiesScore": 59,
+      "totalArticles": 426
+    },
+    {
+      "timestamp": "2025-11-18T11:00:00Z",
+      "globalScore": 57,
+      "forexScore": 57,
+      "stocksScore": 58,
+      "commoditiesScore": 59,
+      "totalArticles": 429
+    },
+    {
+      "timestamp": "2025-11-18T11:08:50.972Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 56,

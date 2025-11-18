@@ -8,7 +8,10 @@ import { fileURLToPath } from "node:url";
 
 import { fetchAllSentimentPoints } from "./sources";
 import { buildSentimentSnapshot } from "./analyze";
-import type { SentimentHistoryPoint, SentimentSnapshot } from "./types";
+import type {
+  SentimentHistoryPoint,
+  SentimentSnapshot,
+} from "./types";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,18 +43,23 @@ async function writeJson(filePath: string, data: unknown) {
     console.log("[sentiment] output dir:", DATA_DIR);
     await ensureDir(DATA_DIR);
 
-    // 1) Charger l'historique existant (peut être très long, y compris ton gros fichier)
-    const existingHistory: SentimentHistoryPoint[] = await readJson(
+    // 1) Charger l'historique existant (tableau ou vide si fichier manquant/cassé)
+    const existingHistory = await readJson<SentimentHistoryPoint[]>(
       HISTORY_FILE,
       []
     );
+
+    const historyArray: SentimentHistoryPoint[] = Array.isArray(existingHistory)
+      ? existingHistory
+      : [];
+
     console.log(
       "[sentiment] history loaded:",
-      existingHistory.length,
+      historyArray.length,
       "points"
     );
 
-    // 2) Récupérer les points bruts des sources de marché (Alpha Vantage, etc.)
+    // 2) Récupérer les points bruts des sources de marché
     const rawPoints = await fetchAllSentimentPoints();
     if (!rawPoints || rawPoints.length === 0) {
       console.warn("[sentiment] aucune donnée collectée, abandon.");
@@ -62,7 +70,7 @@ async function writeJson(filePath: string, data: unknown) {
     // 3) Construire le snapshot enrichi (agrégations + texte IA)
     const snapshot: SentimentSnapshot = await buildSentimentSnapshot(
       rawPoints,
-      existingHistory
+      historyArray
     );
 
     // 4) Construire le nouveau point historique à partir du snapshot
@@ -82,15 +90,20 @@ async function writeJson(filePath: string, data: unknown) {
       totalArticles: snapshot.totalArticles ?? 0,
     };
 
-    // 5) APPEND : on ajoute la nouvelle valeur au tableau EXISTANT
+    // 5) APPEND : on garde tout ce qu'il y avait déjà, puis on ajoute le nouveau point.
+    //    On enlève juste un éventuel doublon sur le même timestamp.
+    const withoutDupe = historyArray.filter(
+      (h) => h.timestamp !== newHistoryPoint.timestamp
+    );
+
     const updatedHistory: SentimentHistoryPoint[] = [
-      ...existingHistory,
+      ...withoutDupe,
       newHistoryPoint,
     ];
 
     console.log(
       "[sentiment] history updated:",
-      existingHistory.length,
+      historyArray.length,
       "->",
       updatedHistory.length
     );

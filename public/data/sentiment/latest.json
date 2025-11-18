@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-18T20:22:08.489Z",
+  "generatedAt": "2025-11-18T22:09:16.708Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Optimisme modéré avec prudence",
-    "description": "Le sentiment global reste positif avec une forte dominance des opinions haussières, mais la dynamique montre un léger recul et une tension modérée dans les flux d’actualités, suggérant une prudence croissante sur les marchés.",
-    "confidence": 60
+    "label": "Régime haussier modéré",
+    "description": "Le sentiment global reste positif avec une prédominance nette des opinions bullish, mais la dynamique montre une légère décélération. La température du flux d’actualités est modérée, indiquant un intérêt soutenu mais sans excès de tension. Ce régime suggère une confiance prudente dans la poursuite de la tendance haussière.",
+    "confidence": 75
   },
   "themes": [
     {
@@ -41,8 +41,8 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 98,
-      "value": "98% bull / 2% bear",
+      "score": 99,
+      "value": "99% bull / 1% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
@@ -59,17 +59,17 @@
     {
       "label": "Balance bull/bear très favorable",
       "weight": 3,
-      "description": "Un net avantage des opinions haussières domine, soutenant un biais positif sur les actifs risqués."
+      "description": "Une écrasante majorité des articles exprime un sentiment bullish, ce qui soutient fortement l’orientation positive des marchés."
     },
     {
       "label": "Consensus des sources élevé",
       "weight": 2,
-      "description": "Un fort accord entre les sources d’information renforce la fiabilité du sentiment positif observé."
+      "description": "Un fort accord entre les différentes sources d’information renforce la fiabilité du sentiment haussier observé."
     },
     {
-      "label": "Tension modérée dans le flux d’actualités",
-      "weight": 2,
-      "description": "Un volume important d’articles avec une température modérée indique une attention soutenue mais sans panique, ce qui peut tempérer l’enthousiasme."
+      "label": "Température du flux modérée",
+      "weight": 1,
+      "description": "Le niveau d’activité médiatique est stable sans excès, ce qui limite les risques de volatilité soudaine liée aux nouvelles."
     }
   ],
   "sources": [
@@ -122,9 +122,9 @@
   "sourceConsensus": 90,
   "tensionScore": 44,
   "totalArticles": 350,
-  "bullishArticles": 218,
-  "bearishArticles": 4,
-  "globalConfidence": 75,
+  "bullishArticles": 219,
+  "bearishArticles": 3,
+  "globalConfidence": 70,
   "history": [
     {
       "timestamp": "2025-11-14T12:00:00Z",
@@ -944,6 +944,14 @@
     },
     {
       "timestamp": "2025-11-18T20:22:08.489Z",
+      "globalScore": 57,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 60,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-18T22:09:16.708Z",
       "globalScore": 57,
       "forexScore": 55,
       "stocksScore": 56,

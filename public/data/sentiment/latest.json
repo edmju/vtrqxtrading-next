@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-18T17:10:20.753Z",
+  "generatedAt": "2025-11-18T18:14:38.380Z",
   "globalScore": 58,
   "marketRegime": {
-    "label": "Optimisme modéré avec prudence",
-    "description": "Le sentiment global reste positif avec une dominance claire des positions haussières, mais la température du flux d’actualités est modérée, suggérant une vigilance face à d’éventuelles volatilités. La confiance dans le consensus est élevée, renforçant la solidité de ce régime.",
-    "confidence": 75
+    "label": "Régime d’optimisme modéré",
+    "description": "Le sentiment global reste positif avec une forte dominance des positions haussières et un consensus élevé, bien que la température des flux d’actualités soit modérée, suggérant un optimisme prudent et stable sur les marchés.",
+    "confidence": 60
   },
   "themes": [
     {
@@ -17,14 +17,14 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 56,
+      "score": 57,
       "direction": "bullish",
       "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 62,
+      "score": 61,
       "direction": "bullish",
       "comment": ""
     }
@@ -59,17 +59,17 @@
     {
       "label": "Balance bull/bear très favorable",
       "weight": 3,
-      "description": "Une nette prédominance des opinions haussières sur le marché soutient un climat d’investissement positif."
+      "description": "Une nette prédominance des opinions haussières sur les marchés, qui soutient un biais positif général."
     },
     {
       "label": "Consensus des sources élevé",
       "weight": 2,
-      "description": "La forte convergence des sources d’information renforce la cohérence et la fiabilité du sentiment global."
+      "description": "Les analyses convergent majoritairement vers une vision optimiste, renforçant la cohérence du sentiment."
     },
     {
       "label": "Température du flux d’actualités modérée",
-      "weight": 2,
-      "description": "Un niveau moyen de tension dans les actualités limite les risques de mouvements brusques, mais invite à rester attentif."
+      "weight": 1,
+      "description": "Un flux d’informations actif mais sans excès de tension, indiquant une ambiance de marché calme et stable."
     }
   ],
   "sources": [
@@ -122,7 +122,7 @@
   "sourceConsensus": 89,
   "tensionScore": 44,
   "totalArticles": 350,
-  "bullishArticles": 247,
+  "bullishArticles": 229,
   "bearishArticles": 4,
   "globalConfidence": 80,
   "history": [
@@ -924,6 +924,14 @@
       "forexScore": 56,
       "stocksScore": 56,
       "commoditiesScore": 62,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-18T18:14:38.380Z",
+      "globalScore": 58,
+      "forexScore": 56,
+      "stocksScore": 57,
+      "commoditiesScore": 61,
       "totalArticles": 350
     }
   ]

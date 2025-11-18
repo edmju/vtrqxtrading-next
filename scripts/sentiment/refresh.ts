@@ -1,4 +1,4 @@
-// scripts/sentiment/refresh.ts
+// path: scripts/sentiment/refresh.ts
 // Rafraîchit le snapshot de sentiment ET ajoute la nouvelle mesure
 // à la fin de public/data/sentiment/history.json (APPEND, pas de remplacement).
 

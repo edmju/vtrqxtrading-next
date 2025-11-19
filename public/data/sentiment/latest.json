@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-19T22:09:25.519Z",
+  "generatedAt": "2025-11-19T23:09:18.754Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Optimisme modéré avec vigilance",
-    "description": "Le sentiment global est positivement orienté avec un fort consensus haussier et une faible tension dans les flux d’actualités, indiquant une confiance générale dans la progression des marchés. Cependant, la légère baisse récente suggère une prudence nécessaire face à des signaux potentiellement fragiles.",
-    "confidence": 75
+    "label": "Régime haussier modéré",
+    "description": "Le sentiment global est positivement orienté avec une forte dominance des opinions bullish et un consensus élevé, malgré une faible tension dans le flux d’actualités. Cela indique un environnement favorable aux actifs risqués mais sans euphorie excessive.",
+    "confidence": 60
   },
   "themes": [
     {
@@ -17,7 +17,7 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 56,
+      "score": 55,
       "direction": "bullish",
       "comment": ""
     },
@@ -41,8 +41,8 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 97,
-      "value": "97% bull / 3% bear",
+      "score": 96,
+      "value": "96% bull / 4% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus haussier très fort",
+      "label": "Balance bull/bear très favorable",
       "weight": 3,
-      "description": "Une majorité écrasante des sources et des articles exprime un sentiment haussier, renforçant la confiance dans la tendance positive."
+      "description": "La nette prédominance des opinions bullish soutient un biais positif structurel sur les marchés."
     },
     {
-      "label": "Tension faible dans les flux d’actualités",
+      "label": "Consensus élevé entre sources",
       "weight": 2,
-      "description": "Le faible niveau de tension indique un environnement d’information calme, limitant les risques de volatilité soudaine."
+      "description": "Un fort accord entre différentes sources renforce la robustesse du signal haussier."
     },
     {
-      "label": "Stabilité relative des scores sectoriels",
-      "weight": 2,
-      "description": "Les scores des différentes classes d’actifs restent proches, suggérant une dynamique équilibrée sans excès dans un secteur particulier."
+      "label": "Faible tension dans le flux d’actualités",
+      "weight": 1,
+      "description": "Le faible niveau de tension réduit les risques de volatilité soudaine liée à des événements négatifs."
     }
   ],
   "sources": [
@@ -122,9 +122,9 @@
   "sourceConsensus": 91,
   "tensionScore": 45,
   "totalArticles": 350,
-  "bullishArticles": 203,
-  "bearishArticles": 6,
-  "globalConfidence": 70,
+  "bullishArticles": 210,
+  "bearishArticles": 8,
+  "globalConfidence": 80,
   "history": [
     {
       "timestamp": "2025-11-14T12:00:00Z",
@@ -1139,6 +1139,14 @@
       "globalScore": 56,
       "forexScore": 54,
       "stocksScore": 56,
+      "commoditiesScore": 59,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-19T23:09:18.754Z",
+      "globalScore": 56,
+      "forexScore": 54,
+      "stocksScore": 55,
       "commoditiesScore": 59,
       "totalArticles": 350
     }

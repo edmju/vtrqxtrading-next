@@ -1,30 +1,30 @@
 {
-  "generatedAt": "2025-11-19T19:08:33.000Z",
+  "generatedAt": "2025-11-19T20:10:13.415Z",
   "globalScore": 57,
   "marketRegime": {
-    "label": "Optimisme modéré avec biais haussier",
-    "description": "Le sentiment global reste positivement orienté avec une forte dominance d’articles bullish et un consensus élevé, malgré une température d’actualité modérée qui tempère l’enthousiasme. Le régime reflète une confiance prudente dans la poursuite des tendances haussières, sans euphorie excessive.",
+    "label": "Optimisme modéré avec prudence",
+    "description": "Le sentiment global reste positif avec un consensus fortement haussier, mais la température du flux d’actualités est modérée, suggérant un environnement d’investissement confiant mais attentif aux risques potentiels.",
     "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 56,
+      "score": 55,
       "direction": "bullish",
       "comment": ""
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 54,
-      "direction": "neutral",
+      "score": 57,
+      "direction": "bullish",
       "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 61,
+      "score": 60,
       "direction": "bullish",
       "comment": ""
     }
@@ -33,10 +33,10 @@
     {
       "id": "tension_flux",
       "label": "Température du flux d’actualités",
-      "score": 42,
-      "value": "300 articles",
+      "score": 45,
+      "value": "350 articles",
       "direction": "neutral",
-      "comment": "Flux plus calme que la moyenne récente."
+      "comment": "Flux de volume moyen."
     },
     {
       "id": "bull_bear_balance",
@@ -49,27 +49,27 @@
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 87,
-      "value": "87/100",
+      "score": 90,
+      "value": "90/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Dominance bullish",
+      "label": "Consensus haussier élevé",
       "weight": 3,
-      "description": "Une large majorité d’articles et d’opinions soutiennent un biais haussier, renforçant la conviction positive sur les marchés."
+      "description": "Une majorité nette des sources exprime un sentiment haussier, renforçant la confiance dans la tendance positive actuelle."
     },
     {
-      "label": "Consensus élevé",
+      "label": "Température modérée du flux d’actualités",
       "weight": 2,
-      "description": "Les sources convergent fortement vers une vision optimiste, ce qui stabilise le sentiment général."
+      "description": "Le volume et la tonalité des articles restent modérés, indiquant une exposition limitée aux nouvelles potentiellement perturbatrices."
     },
     {
-      "label": "Température modérée du flux",
-      "weight": 1,
-      "description": "Le volume d’actualités est conséquent mais l’intensité des tensions reste modérée, limitant les risques de volatilité extrême."
+      "label": "Stabilité des scores sectoriels",
+      "weight": 2,
+      "description": "Les scores dans les différentes classes d’actifs montrent peu de volatilité, suggérant une tendance stable sans signaux de retournement immédiat."
     }
   ],
   "sources": [
@@ -119,10 +119,10 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 87,
-  "tensionScore": 42,
-  "totalArticles": 300,
-  "bullishArticles": 211,
+  "sourceConsensus": 90,
+  "tensionScore": 45,
+  "totalArticles": 350,
+  "bullishArticles": 222,
   "bearishArticles": 3,
   "globalConfidence": 80,
   "history": [
@@ -1117,6 +1117,14 @@
       "stocksScore": 54,
       "commoditiesScore": 61,
       "totalArticles": 300
+    },
+    {
+      "timestamp": "2025-11-19T20:10:13.415Z",
+      "globalScore": 57,
+      "forexScore": 55,
+      "stocksScore": 57,
+      "commoditiesScore": 60,
+      "totalArticles": 350
     }
   ]
 }

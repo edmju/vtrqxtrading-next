@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-19T02:24:50.111Z",
+  "generatedAt": "2025-11-19T03:38:23.696Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Régime d'optimisme modéré avec vigilance",
-    "description": "Le sentiment global reste positif avec une large majorité d’articles bullish et un consensus élevé, mais la température du flux d’actualités est modérée, indiquant une attention accrue aux risques potentiels. La confiance dans ce régime est moyenne, suggérant une tendance favorable mais avec des signaux à surveiller.",
-    "confidence": 65
+    "label": "Optimisme modéré avec vigilance",
+    "description": "Le marché affiche un sentiment globalement positif soutenu par un fort consensus haussier, mais la température des flux d’actualités reste modérée, indiquant une prudence sous-jacente. La dynamique est stable mais sans euphorie, suggérant un environnement propice à des positions prudentes.",
+    "confidence": 60
   },
   "themes": [
     {
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance bullish forte",
+      "label": "Consensus haussier élevé",
       "weight": 3,
-      "description": "La balance bull/bear est fortement orientée vers le bullish, soutenant un sentiment global positif malgré une légère baisse récente des scores."
+      "description": "Une large majorité des sources exprime un sentiment positif, renforçant la confiance dans une tendance haussière globale."
     },
     {
-      "label": "Consensus élevé des sources",
+      "label": "Température modérée des actualités",
       "weight": 2,
-      "description": "Un consensus très élevé entre les sources d’information renforce la crédibilité du sentiment positif observé sur les marchés."
+      "description": "Le flux d’actualités n’est pas excessivement tendu, ce qui limite les risques de volatilité brutale à court terme."
     },
     {
-      "label": "Température du flux modérée",
-      "weight": 2,
-      "description": "Le volume d’articles est conséquent mais la tension dans le flux d’actualités reste modérée, signalant une vigilance sur les risques potentiels."
+      "label": "Sentiment bull/bear très déséquilibré",
+      "weight": 3,
+      "description": "La dominance des positions haussières est très marquée, ce qui peut indiquer une certaine saturation mais aussi une forte dynamique acheteuse."
     }
   ],
   "sources": [
@@ -122,8 +122,8 @@
   "sourceConsensus": 92,
   "tensionScore": 44,
   "totalArticles": 350,
-  "bullishArticles": 194,
-  "bearishArticles": 7,
+  "bullishArticles": 193,
+  "bearishArticles": 5,
   "globalConfidence": 70,
   "history": [
     {
@@ -976,6 +976,14 @@
     },
     {
       "timestamp": "2025-11-19T02:24:50.111Z",
+      "globalScore": 56,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 58,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-19T03:38:23.696Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 56,

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-19T03:38:23.696Z",
+  "generatedAt": "2025-11-19T04:13:35.482Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Optimisme modéré avec vigilance",
-    "description": "Le marché affiche un sentiment globalement positif soutenu par un fort consensus haussier, mais la température des flux d’actualités reste modérée, indiquant une prudence sous-jacente. La dynamique est stable mais sans euphorie, suggérant un environnement propice à des positions prudentes.",
+    "label": "Régime haussier modéré avec prudence",
+    "description": "Le sentiment global est positivement orienté avec un fort consensus bullish, mais la faible tension dans les flux d’actualités et la légère baisse récente des scores indiquent une prudence à court terme. Le marché semble favorable mais avec des signaux de consolidation ou d’attentisme.",
     "confidence": 60
   },
   "themes": [
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus haussier élevé",
+      "label": "Consensus bullish élevé",
       "weight": 3,
-      "description": "Une large majorité des sources exprime un sentiment positif, renforçant la confiance dans une tendance haussière globale."
+      "description": "Une large majorité des sources exprime un sentiment positif, soutenant une dynamique haussière dominante."
     },
     {
-      "label": "Température modérée des actualités",
+      "label": "Faible tension dans les actualités",
       "weight": 2,
-      "description": "Le flux d’actualités n’est pas excessivement tendu, ce qui limite les risques de volatilité brutale à court terme."
+      "description": "Le flux d’actualités est peu volatil, ce qui limite les catalyseurs d’une forte accélération des mouvements de marché."
     },
     {
-      "label": "Sentiment bull/bear très déséquilibré",
-      "weight": 3,
-      "description": "La dominance des positions haussières est très marquée, ce qui peut indiquer une certaine saturation mais aussi une forte dynamique acheteuse."
+      "label": "Stabilité relative des scores thématiques",
+      "weight": 2,
+      "description": "Les scores des différentes classes d’actifs restent proches, suggérant une absence de rotation majeure entre secteurs."
     }
   ],
   "sources": [
@@ -122,7 +122,7 @@
   "sourceConsensus": 92,
   "tensionScore": 44,
   "totalArticles": 350,
-  "bullishArticles": 193,
+  "bullishArticles": 192,
   "bearishArticles": 5,
   "globalConfidence": 70,
   "history": [
@@ -984,6 +984,14 @@
     },
     {
       "timestamp": "2025-11-19T03:38:23.696Z",
+      "globalScore": 56,
+      "forexScore": 55,
+      "stocksScore": 56,
+      "commoditiesScore": 58,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-19T04:13:35.482Z",
       "globalScore": 56,
       "forexScore": 55,
       "stocksScore": 56,

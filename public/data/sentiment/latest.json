@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-20T03:37:17.389Z",
+  "generatedAt": "2025-11-20T04:12:11.018Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Optimisme modéré avec consensus fort",
-    "description": "Le marché affiche un sentiment globalement positif soutenu par un consensus élevé entre les sources et une dominance nette des opinions haussières, malgré une température d’actualité modérée qui limite les tensions. Ce contexte favorise une confiance mesurée dans la poursuite des tendances haussières avec une certaine vigilance.",
+    "label": "Régime d'optimisme modéré",
+    "description": "Le sentiment global est positivement orienté avec une forte dominance des opinions haussières et un consensus élevé, malgré une faible tension dans le flux d'actualités. Ce contexte suggère une confiance mesurée dans la poursuite des tendances haussières tout en restant vigilant aux évolutions.",
     "confidence": 60
   },
   "themes": [
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
+      "label": "Dominance haussière forte",
+      "weight": 3,
+      "description": "Une large majorité des sources exprime un sentiment haussier, renforçant la confiance dans la tendance positive globale."
+    },
+    {
       "label": "Consensus élevé entre sources",
-      "weight": 3,
-      "description": "La forte concordance des analyses et opinions des sources renforce la validité du sentiment haussier observé."
-    },
-    {
-      "label": "Balance bull/bear très favorable",
-      "weight": 3,
-      "description": "La prédominance nette des positions haussières sur les positions baissières soutient une dynamique positive sur les marchés."
-    },
-    {
-      "label": "Température modérée du flux d’actualités",
       "weight": 2,
-      "description": "Un volume d’actualités conséquent mais sans excès de tension permet un environnement stable, limitant les risques de volatilité excessive."
+      "description": "Un fort accord entre différentes sources d'information soutient la robustesse du signal haussier."
+    },
+    {
+      "label": "Faible tension dans le flux d'actualités",
+      "weight": 1,
+      "description": "Un niveau modéré de tension réduit les risques de volatilité soudaine liée à des événements imprévus."
     }
   ],
   "sources": [
@@ -1168,6 +1168,14 @@
     },
     {
       "timestamp": "2025-11-20T03:37:17.389Z",
+      "globalScore": 56,
+      "forexScore": 54,
+      "stocksScore": 56,
+      "commoditiesScore": 59,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-20T04:12:11.018Z",
       "globalScore": 56,
       "forexScore": 54,
       "stocksScore": 56,

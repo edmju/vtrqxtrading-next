@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-20T00:43:04.236Z",
+  "generatedAt": "2025-11-20T02:23:36.591Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Bullish Modéré avec Consensus Fort",
-    "description": "Le sentiment global reste modérément positif avec une forte dominance des positions haussières et un consensus élevé parmi les sources, malgré une température d’actualité relativement basse indiquant une moindre volatilité ou tension sur les marchés.",
-    "confidence": 60
+    "label": "Sentiment modérément haussier avec consensus fort",
+    "description": "Le marché affiche un sentiment global modérément positif soutenu par un consensus élevé parmi les sources et une nette dominance des opinions haussières, malgré une température d’actualité modérée qui limite l’intensité du mouvement.",
+    "confidence": 75
   },
   "themes": [
     {
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance Haussière",
+      "label": "Consensus élevé entre sources",
       "weight": 3,
-      "description": "La balance bull/bear est fortement en faveur des haussiers, ce qui soutient un biais positif sur les actifs."
+      "description": "Un très fort accord entre les différentes sources d’information renforce la confiance dans la tendance haussière actuelle."
     },
     {
-      "label": "Consensus Fort des Sources",
+      "label": "Balance bull/bear très favorable",
+      "weight": 3,
+      "description": "La prédominance nette des opinions haussières sur les baissières soutient un biais positif sur les marchés."
+    },
+    {
+      "label": "Température du flux d’actualités modérée",
       "weight": 2,
-      "description": "Un accord élevé entre les différentes sources d’information renforce la crédibilité du sentiment haussier."
-    },
-    {
-      "label": "Faible Tension d’Actualité",
-      "weight": 1,
-      "description": "La température modérée des flux d’actualités suggère un environnement de marché calme, limitant les risques de volatilité soudaine."
+      "description": "Un flux d’actualités modéré limite la volatilité et la dynamique extrême, suggérant un marché plutôt stable."
     }
   ],
   "sources": [
@@ -124,7 +124,7 @@
   "totalArticles": 350,
   "bullishArticles": 220,
   "bearishArticles": 6,
-  "globalConfidence": 85,
+  "globalConfidence": 80,
   "history": [
     {
       "timestamp": "2025-11-14T12:00:00Z",
@@ -1152,6 +1152,14 @@
     },
     {
       "timestamp": "2025-11-20T00:43:04.236Z",
+      "globalScore": 56,
+      "forexScore": 54,
+      "stocksScore": 56,
+      "commoditiesScore": 59,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-20T02:23:36.591Z",
       "globalScore": 56,
       "forexScore": 54,
       "stocksScore": 56,

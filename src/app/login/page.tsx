@@ -4,11 +4,11 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 
+const DEFAULT_CALLBACK_URL = "/boot";
+
 export default function LoginPage() {
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,13 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const callbackUrl = searchParams?.get("callbackUrl") || "/subscribe";
+      let callbackUrl = DEFAULT_CALLBACK_URL;
+
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        callbackUrl =
+          url.searchParams.get("callbackUrl") || DEFAULT_CALLBACK_URL;
+      }
 
       await signIn("credentials", {
         redirect: true,

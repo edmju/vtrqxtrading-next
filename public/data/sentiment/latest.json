@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-20T15:10:12.772Z",
+  "generatedAt": "2025-11-20T16:11:55.910Z",
   "globalScore": 58,
   "marketRegime": {
-    "label": "Optimisme modéré généralisé",
-    "description": "Le sentiment global du marché est positivement orienté avec une forte dominance des perspectives haussières, soutenu par un consensus élevé parmi les sources. La tension dans les flux d’actualités est modérée, indiquant un environnement d’informations stable sans excès de volatilité émotionnelle.",
+    "label": "Optimisme modéré avec vigilance",
+    "description": "Le sentiment global reste positif avec un fort consensus haussier, mais la température du flux d’actualités est modérée, suggérant une attention prudente face à une possible volatilité.",
     "confidence": 60
   },
   "themes": [
@@ -24,7 +24,7 @@
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 61,
+      "score": 60,
       "direction": "bullish",
       "comment": ""
     }
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Dominance haussière nette",
+      "label": "Consensus haussier élevé",
       "weight": 3,
-      "description": "La balance bull/bear est fortement biaisée en faveur des positions haussières, ce qui soutient un biais positif global."
+      "description": "Une large majorité des sources exprime un sentiment positif, renforçant la confiance dans une tendance favorable."
     },
     {
-      "label": "Consensus élevé des sources",
+      "label": "Température du flux modérée",
       "weight": 2,
-      "description": "Un accord marqué entre les sources d’information renforce la fiabilité du sentiment positif."
+      "description": "Le volume d’articles est important mais sans tension excessive, indiquant un environnement d’information stable mais à surveiller."
     },
     {
-      "label": "Tension modérée dans les flux d’actualités",
-      "weight": 1,
-      "description": "Le volume d’articles est important mais la température du flux reste modérée, limitant les risques de surchauffe émotionnelle."
+      "label": "Balance bull/bear très déséquilibrée",
+      "weight": 3,
+      "description": "La quasi-absence de positions baissières peut signaler un risque de surchauffe ou de retournement à court terme."
     }
   ],
   "sources": [
@@ -122,7 +122,7 @@
   "sourceConsensus": 89,
   "tensionScore": 46,
   "totalArticles": 350,
-  "bullishArticles": 250,
+  "bullishArticles": 248,
   "bearishArticles": 2,
   "globalConfidence": 80,
   "history": [
@@ -1268,6 +1268,14 @@
       "forexScore": 56,
       "stocksScore": 57,
       "commoditiesScore": 61,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-20T16:11:55.910Z",
+      "globalScore": 58,
+      "forexScore": 56,
+      "stocksScore": 57,
+      "commoditiesScore": 60,
       "totalArticles": 350
     }
   ]

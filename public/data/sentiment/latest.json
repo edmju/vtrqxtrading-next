@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2025-11-20T19:07:40.145Z",
-  "globalScore": 58,
+  "generatedAt": "2025-11-20T20:11:17.699Z",
+  "globalScore": 57,
   "marketRegime": {
-    "label": "Optimisme modéré généralisé",
-    "description": "Le sentiment de marché est globalement positif avec un consensus très fort en faveur des perspectives haussières, malgré une pression médiatique modérée. La confiance est stable, reflétant un environnement d’investissement prudent mais favorable.",
+    "label": "Optimisme modéré et consensuel",
+    "description": "Le marché affiche un sentiment globalement positif avec une forte dominance des opinions haussières et un consensus élevé parmi les sources, malgré une température d’actualité modérée indiquant une certaine retenue dans l’intensité des flux d’information.",
     "confidence": 60
   },
   "themes": [
@@ -17,7 +17,7 @@
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 57,
+      "score": 55,
       "direction": "bullish",
       "comment": ""
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus haussier très marqué",
+      "label": "Consensus élevé",
       "weight": 3,
-      "description": "Une quasi-unanimité des sources exprime un biais positif, renforçant la conviction haussière sur les actifs."
+      "description": "Une large majorité des sources partagent une vision haussière, renforçant la cohérence du sentiment positif."
     },
     {
-      "label": "Pression médiatique modérée",
-      "weight": 2,
-      "description": "Le volume d’articles est élevé mais la tonalité reste tempérée, limitant les excès d’enthousiasme ou de panique."
+      "label": "Balance bull/bear très favorable",
+      "weight": 3,
+      "description": "La quasi-absence de positions baissières souligne une confiance dominante dans la poursuite de la tendance haussière."
     },
     {
-      "label": "Stabilité des scores sectoriels",
+      "label": "Température modérée du flux d’actualités",
       "weight": 2,
-      "description": "Les scores des différents thèmes montrent une tendance cohérente et stable, suggérant une dynamique équilibrée entre les classes d’actifs."
+      "description": "Le volume d’articles est important mais l’intensité émotionnelle reste contenue, suggérant un marché optimiste mais prudent."
     }
   ],
   "sources": [
@@ -122,7 +122,7 @@
   "sourceConsensus": 90,
   "tensionScore": 46,
   "totalArticles": 350,
-  "bullishArticles": 233,
+  "bullishArticles": 206,
   "bearishArticles": 1,
   "globalConfidence": 80,
   "history": [
@@ -1299,6 +1299,14 @@
       "globalScore": 58,
       "forexScore": 56,
       "stocksScore": 57,
+      "commoditiesScore": 60,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-20T20:11:17.699Z",
+      "globalScore": 57,
+      "forexScore": 56,
+      "stocksScore": 55,
       "commoditiesScore": 60,
       "totalArticles": 350
     }

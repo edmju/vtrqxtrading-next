@@ -1,3 +1,4 @@
+// src/app/(site)/profile/page.tsx
 // path: src/app/(site)/profile/page.tsx
 "use client";
 
@@ -16,8 +17,8 @@ function initials(name?: string | null) {
   );
 }
 
-// URL unique vers la page d’auth (signup + login)
-const AUTH_URL = "/api/auth/signin?callbackUrl=/boot";
+// URL unique vers la page d’auth (login + accès signup depuis la page login)
+const AUTH_URL = "/login?callbackUrl=/boot";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();

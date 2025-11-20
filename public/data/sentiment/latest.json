@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2025-11-20T02:23:36.591Z",
+  "generatedAt": "2025-11-20T03:37:17.389Z",
   "globalScore": 56,
   "marketRegime": {
-    "label": "Sentiment modérément haussier avec consensus fort",
-    "description": "Le marché affiche un sentiment global modérément positif soutenu par un consensus élevé parmi les sources et une nette dominance des opinions haussières, malgré une température d’actualité modérée qui limite l’intensité du mouvement.",
-    "confidence": 75
+    "label": "Optimisme modéré avec consensus fort",
+    "description": "Le marché affiche un sentiment globalement positif soutenu par un consensus élevé entre les sources et une dominance nette des opinions haussières, malgré une température d’actualité modérée qui limite les tensions. Ce contexte favorise une confiance mesurée dans la poursuite des tendances haussières avec une certaine vigilance.",
+    "confidence": 60
   },
   "themes": [
     {
@@ -49,8 +49,8 @@
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 90,
-      "value": "90/100",
+      "score": 91,
+      "value": "91/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
@@ -59,17 +59,17 @@
     {
       "label": "Consensus élevé entre sources",
       "weight": 3,
-      "description": "Un très fort accord entre les différentes sources d’information renforce la confiance dans la tendance haussière actuelle."
+      "description": "La forte concordance des analyses et opinions des sources renforce la validité du sentiment haussier observé."
     },
     {
       "label": "Balance bull/bear très favorable",
       "weight": 3,
-      "description": "La prédominance nette des opinions haussières sur les baissières soutient un biais positif sur les marchés."
+      "description": "La prédominance nette des positions haussières sur les positions baissières soutient une dynamique positive sur les marchés."
     },
     {
-      "label": "Température du flux d’actualités modérée",
+      "label": "Température modérée du flux d’actualités",
       "weight": 2,
-      "description": "Un flux d’actualités modéré limite la volatilité et la dynamique extrême, suggérant un marché plutôt stable."
+      "description": "Un volume d’actualités conséquent mais sans excès de tension permet un environnement stable, limitant les risques de volatilité excessive."
     }
   ],
   "sources": [
@@ -119,10 +119,10 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 90,
+  "sourceConsensus": 91,
   "tensionScore": 45,
   "totalArticles": 350,
-  "bullishArticles": 220,
+  "bullishArticles": 211,
   "bearishArticles": 6,
   "globalConfidence": 80,
   "history": [
@@ -1160,6 +1160,14 @@
     },
     {
       "timestamp": "2025-11-20T02:23:36.591Z",
+      "globalScore": 56,
+      "forexScore": 54,
+      "stocksScore": 56,
+      "commoditiesScore": 59,
+      "totalArticles": 350
+    },
+    {
+      "timestamp": "2025-11-20T03:37:17.389Z",
       "globalScore": 56,
       "forexScore": 54,
       "stocksScore": 56,

@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2025-11-21T04:12:33.340Z",
+  "generatedAt": "2025-11-21T05:10:31.271Z",
   "globalScore": 53,
   "marketRegime": {
-    "label": "Modéré haussier consolidant",
-    "description": "Le marché montre un biais haussier modéré avec une confiance élevée des acteurs, mais la faible tension dans les flux d’actualités suggère une phase de consolidation ou d’attentisme.",
+    "label": "Régime d’optimisme modéré",
+    "description": "Le sentiment global montre une confiance modérée avec une majorité d’opinions bullish et un consensus élevé, malgré une faible tension dans le flux d’actualités. Le marché semble stable avec une légère préférence pour la prise de risque, sans euphorie excessive.",
     "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 53,
+      "score": 52,
       "direction": "neutral",
       "comment": ""
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 52,
-      "direction": "neutral",
+      "score": 55,
+      "direction": "bullish",
       "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 55,
-      "direction": "bullish",
+      "score": 52,
+      "direction": "neutral",
       "comment": ""
     }
   ],
@@ -41,35 +41,35 @@
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 92,
-      "value": "92% bull / 8% bear",
+      "score": 88,
+      "value": "88% bull / 12% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 91,
-      "value": "91/100",
+      "score": 92,
+      "value": "92/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Sentiment global très positif",
+      "label": "Consensus élevé",
       "weight": 3,
-      "description": "La balance bull/bear est fortement en faveur des haussiers, indiquant un optimisme marqué sur les marchés."
+      "description": "Un fort accord entre les sources d’information renforce la visibilité et la cohérence du sentiment haussier."
     },
     {
-      "label": "Consensus élevé entre sources",
-      "weight": 2,
-      "description": "Les sources d’information convergent largement vers une vision positive, renforçant la confiance dans la tendance actuelle."
+      "label": "Balance bull/bear dominante",
+      "weight": 3,
+      "description": "La prédominance des opinions bullish soutient un environnement favorable aux actifs risqués."
     },
     {
       "label": "Faible tension dans le flux d’actualités",
       "weight": 2,
-      "description": "Le faible niveau de tension suggère une absence de catalyseurs majeurs, ce qui peut limiter la volatilité à court terme."
+      "description": "Un contexte d’actualités peu conflictuel limite les risques de volatilité soudaine ou de retournement."
     }
   ],
   "sources": [
@@ -119,11 +119,11 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 91,
+  "sourceConsensus": 92,
   "tensionScore": 37,
   "totalArticles": 200,
-  "bullishArticles": 103,
-  "bearishArticles": 9,
+  "bullishArticles": 85,
+  "bearishArticles": 12,
   "globalConfidence": 80,
   "history": [
     {
@@ -1364,6 +1364,14 @@
       "forexScore": 53,
       "stocksScore": 52,
       "commoditiesScore": 55,
+      "totalArticles": 200
+    },
+    {
+      "timestamp": "2025-11-21T05:10:31.271Z",
+      "globalScore": 53,
+      "forexScore": 52,
+      "stocksScore": 55,
+      "commoditiesScore": 52,
       "totalArticles": 200
     }
   ]

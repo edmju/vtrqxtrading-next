@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2025-11-21T15:09:37.640Z",
+  "generatedAt": "2025-11-21T16:11:33.192Z",
   "globalScore": 54,
   "marketRegime": {
-    "label": "Sentiment modérément haussier avec vigilance",
-    "description": "Le sentiment global reste légèrement positif, soutenu par un consensus majoritairement haussier et un faible niveau de tension dans les flux d’actualités. Toutefois, la dynamique montre une certaine stabilisation voire un léger repli, suggérant prudence face à une possible consolidation ou correction.",
+    "label": "Modéréement haussier avec prudence",
+    "description": "Le sentiment global reste légèrement positif, porté par un consensus fortement haussier et un faible niveau de tension dans les flux d’actualités. Cependant, la dynamique s’est stabilisée récemment, suggérant une phase d’attentisme où les investisseurs restent confiants mais vigilants.",
     "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 53,
-      "direction": "neutral",
+      "score": 55,
+      "direction": "bullish",
       "comment": ""
     },
     {
       "id": "stocks",
       "label": "Actions",
-      "score": 53,
+      "score": 54,
       "direction": "neutral",
       "comment": ""
     },
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 56,
-      "direction": "bullish",
+      "score": 53,
+      "direction": "neutral",
       "comment": ""
     }
   ],
@@ -59,17 +59,17 @@
     {
       "label": "Consensus haussier élevé",
       "weight": 3,
-      "description": "Un consensus très marqué en faveur des positions haussières soutient la confiance dans la poursuite d’une tendance positive."
+      "description": "Un large accord parmi les sources indique une majorité d’opinions favorables aux marchés, soutenant un biais positif."
     },
     {
       "label": "Faible tension dans les actualités",
       "weight": 2,
-      "description": "Le faible niveau de tension dans les flux d’actualités limite les risques de volatilité soudaine, mais peut aussi indiquer une absence de catalyseurs forts."
+      "description": "Le faible niveau d’agitation dans les flux d’information réduit les risques de volatilité soudaine, favorisant la stabilité."
     },
     {
-      "label": "Stabilité relative des scores sectoriels",
+      "label": "Stabilisation des scores sectoriels",
       "weight": 2,
-      "description": "Les scores des différentes classes d’actifs restent proches, reflétant une absence de rotation sectorielle marquée."
+      "description": "Les indices sectoriels montrent une légère consolidation, traduisant un équilibre entre optimisme et prudence."
     }
   ],
   "sources": [
@@ -123,8 +123,8 @@
   "tensionScore": 37,
   "totalArticles": 200,
   "bullishArticles": 133,
-  "bearishArticles": 2,
-  "globalConfidence": 75,
+  "bearishArticles": 1,
+  "globalConfidence": 70,
   "history": [
     {
       "timestamp": "2025-11-14T12:00:00Z",
@@ -1452,6 +1452,14 @@
       "forexScore": 53,
       "stocksScore": 53,
       "commoditiesScore": 56,
+      "totalArticles": 200
+    },
+    {
+      "timestamp": "2025-11-21T16:11:33.192Z",
+      "globalScore": 54,
+      "forexScore": 55,
+      "stocksScore": 54,
+      "commoditiesScore": 53,
       "totalArticles": 200
     }
   ]

@@ -1214,5 +1214,13 @@
     "stocksScore": 56,
     "commoditiesScore": 56,
     "totalArticles": 250
+  },
+  {
+    "timestamp": "2025-11-21T02:23:52.140Z",
+    "globalScore": 53,
+    "forexScore": 52,
+    "stocksScore": 53,
+    "commoditiesScore": 55,
+    "totalArticles": 200
   }
 ]

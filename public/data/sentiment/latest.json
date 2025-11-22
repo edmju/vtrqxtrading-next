@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2025-11-22T20:09:39.504Z",
-  "globalScore": 53,
+  "generatedAt": "2025-11-22T21:07:37.053Z",
+  "globalScore": 54,
   "marketRegime": {
-    "label": "Modéréement haussier avec prudence",
-    "description": "Le sentiment global est légèrement positif avec une forte dominance des opinions haussières, mais la faible tension dans le flux d’actualités suggère une absence d’événements majeurs pour soutenir une dynamique forte. Le consensus élevé renforce la cohérence du signal, mais la stabilité des scores indique un marché prudent et peu volatil.",
-    "confidence": 60
+    "label": "Optimisme modéré avec faible tension",
+    "description": "Le sentiment global est légèrement positif avec une forte dominance des opinions haussières, mais la température du flux d’actualités reste basse, indiquant un environnement calme sans volatilité excessive. La confiance dans le consensus est élevée, renforçant la stabilité du régime.",
+    "confidence": 75
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 52,
+      "score": 53,
       "direction": "neutral",
       "comment": ""
     },
@@ -24,7 +24,7 @@
     {
       "id": "commodities",
       "label": "Commodities",
-      "score": 50,
+      "score": 53,
       "direction": "neutral",
       "comment": ""
     }
@@ -33,43 +33,43 @@
     {
       "id": "tension_flux",
       "label": "Température du flux d’actualités",
-      "score": 35,
-      "value": "150 articles",
+      "score": 38,
+      "value": "200 articles",
       "direction": "down",
       "comment": "Flux plus calme que la moyenne récente."
     },
     {
       "id": "bull_bear_balance",
       "label": "Balance bull/bear globale",
-      "score": 97,
-      "value": "97% bull / 3% bear",
+      "score": 99,
+      "value": "99% bull / 1% bear",
       "direction": "up",
       "comment": "Légère dominance des articles haussiers."
     },
     {
       "id": "source_consensus",
       "label": "Consensus des sources",
-      "score": 89,
-      "value": "89/100",
+      "score": 88,
+      "value": "88/100",
       "direction": "up",
       "comment": "Forte convergence des sources."
     }
   ],
   "focusDrivers": [
     {
-      "label": "Dominance haussière du sentiment",
+      "label": "Dominance haussière marquée",
       "weight": 3,
-      "description": "Une large majorité des sources exprime un sentiment positif, ce qui soutient un biais haussier modéré sur les marchés."
+      "description": "La balance bull/bear montre une nette prédominance des positions haussières, ce qui soutient un biais positif sur les marchés."
     },
     {
-      "label": "Faible tension médiatique",
+      "label": "Faible tension dans le flux d’actualités",
       "weight": 2,
-      "description": "Le faible niveau de tension dans les actualités indique un environnement calme, limitant les risques de volatilité soudaine."
+      "description": "Le faible niveau de tension reflète un contexte d’information calme, limitant les risques de volatilité soudaine."
     },
     {
-      "label": "Consensus élevé entre sources",
+      "label": "Consensus des sources élevé",
       "weight": 2,
-      "description": "Une forte concordance entre les différentes sources d’information renforce la fiabilité du signal haussier modéré."
+      "description": "Un fort accord entre les sources d’information renforce la crédibilité du sentiment haussier observé."
     }
   ],
   "sources": [
@@ -119,11 +119,11 @@
       "weight": 1
     }
   ],
-  "sourceConsensus": 89,
-  "tensionScore": 35,
-  "totalArticles": 150,
-  "bullishArticles": 102,
-  "bearishArticles": 3,
+  "sourceConsensus": 88,
+  "tensionScore": 38,
+  "totalArticles": 200,
+  "bullishArticles": 142,
+  "bearishArticles": 1,
   "globalConfidence": 80,
   "history": [
     {
@@ -1677,6 +1677,14 @@
       "stocksScore": 57,
       "commoditiesScore": 50,
       "totalArticles": 150
+    },
+    {
+      "timestamp": "2025-11-22T21:07:37.053Z",
+      "globalScore": 54,
+      "forexScore": 53,
+      "stocksScore": 57,
+      "commoditiesScore": 53,
+      "totalArticles": 200
     }
   ]
 }

@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2025-11-22T14:07:43.094Z",
+  "generatedAt": "2025-11-22T15:07:45.236Z",
   "globalScore": 53,
   "marketRegime": {
-    "label": "Régime d’Optimisme Modéré",
-    "description": "Le sentiment global est légèrement positif avec un consensus fort en faveur d’une orientation haussière, mais la faible tension dans le flux d’actualités suggère une dynamique prudente et un environnement sans volatilité marquée.",
+    "label": "Régime d'optimisme modéré",
+    "description": "Le sentiment global est légèrement positif avec une forte dominance des opinions haussières et un consensus élevé parmi les sources, malgré une faible tension dans le flux d’actualités. Cela traduit un environnement de marché plutôt stable et confiant sans excès d’euphorie.",
     "confidence": 60
   },
   "themes": [
     {
       "id": "forex",
       "label": "Forex",
-      "score": 54,
+      "score": 52,
       "direction": "neutral",
       "comment": ""
     },
@@ -33,8 +33,8 @@
     {
       "id": "tension_flux",
       "label": "Température du flux d’actualités",
-      "score": 38,
-      "value": "200 articles",
+      "score": 35,
+      "value": "150 articles",
       "direction": "down",
       "comment": "Flux plus calme que la moyenne récente."
     },
@@ -57,19 +57,19 @@
   ],
   "focusDrivers": [
     {
-      "label": "Consensus des sources",
+      "label": "Dominance haussière",
       "weight": 3,
-      "description": "Un consensus très élevé parmi les sources d’information indique une forte convergence d’opinions positives sur les marchés."
+      "description": "Un équilibre nettement favorable aux perspectives haussières qui soutient la confiance des investisseurs."
     },
     {
-      "label": "Balance bull/bear globale",
-      "weight": 3,
-      "description": "La dominance claire des positions bullish renforce la confiance dans la poursuite d’une tendance favorable."
-    },
-    {
-      "label": "Température du flux d’actualités",
+      "label": "Consensus élevé",
       "weight": 2,
-      "description": "Le faible niveau de tension reflète un environnement d’information calme, limitant les risques de volatilité soudaine."
+      "description": "Une forte convergence des sources d’information qui renforce la visibilité et la cohérence du sentiment de marché."
+    },
+    {
+      "label": "Faible tension médiatique",
+      "weight": 1,
+      "description": "Un flux d’actualités peu conflictuel qui limite les risques de volatilité soudaine."
     }
   ],
   "sources": [
@@ -120,10 +120,10 @@
     }
   ],
   "sourceConsensus": 90,
-  "tensionScore": 38,
-  "totalArticles": 200,
-  "bullishArticles": 106,
-  "bearishArticles": 6,
+  "tensionScore": 35,
+  "totalArticles": 150,
+  "bullishArticles": 80,
+  "bearishArticles": 4,
   "globalConfidence": 80,
   "history": [
     {
@@ -1629,6 +1629,14 @@
       "stocksScore": 53,
       "commoditiesScore": 53,
       "totalArticles": 200
+    },
+    {
+      "timestamp": "2025-11-22T15:07:45.236Z",
+      "globalScore": 53,
+      "forexScore": 52,
+      "stocksScore": 53,
+      "commoditiesScore": 53,
+      "totalArticles": 150
     }
   ]
 }
